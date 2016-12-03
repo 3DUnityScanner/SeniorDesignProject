@@ -64,15 +64,15 @@ game engines in the market today.
 
 I was also excited by the prospect of getting to work with hardware and computer
 vision algorithms, things that I haven't had much experience with in my time at UCF.
-This project gives me the opportunity to expand my knowlege in these fields, making
-it more interesting and overall benefitial for my future in and industry by helping
+This project gives me the opportunity to expand my knowledge in these fields, making
+it more interesting and overall beneficial for my future in and industry by helping
 me learn to adapt to different scenarios.
 
 The final reason is that I already had some background in the subject to begin with.
 In addition to my Computer Science degree I also pursued a Digital Media minor, during
 that time I learned skills that I believed would help me add to this project such as
 3D modeling and a general proficiency in using Unity from a game designer's perspective.
-That plus the connections I made in my Digital Media classses helped me pick this project
+That plus the connections I made in my Digital Media classes helped me pick this project
 as my first choice.
 
 ### Timothy Flowers
