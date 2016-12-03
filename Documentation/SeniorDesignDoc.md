@@ -301,12 +301,17 @@ maintenance of the project simpler.
 
 ### Intel® RealSense™ Overview
 
-The Intel® RealSense™ SDK is
+The Intel® RealSense™ SDK provides access to the camera as well as access
+to some 3D Scanning algorithms. Fundamentally the SDK is needed so that 
+we can receive the data from the camera and then pass it along to the 
+computer vision module.
+
+#### SenseManager
+#### SampleReader
 
 ## Computer Vision Research
 
-### 2.1 – Previous Methods
-
+### Previous Methods
 We have studied many state-of-the-art computer vision methods for 3D
 scene processing, object detection, object recognition, and model
 alignment. Our goal with this research is to find a method or methods to
@@ -341,18 +346,52 @@ software. This will satisfy our project requirements, but will not make
 a robust system for broader use. A stretch goal would be to implement
 more robust methods for alignment that do not rely on pre-existing
 models. For now, we will adapt one of the model-alignment methods for
-our software. Any of the methods that require 3D models are appropriate
+our software and write an implementation in C# for use in a Unity Engine plugin. 
+Any of the methods that require 3D models are appropriate
 for our purposes because we have been provided 3D models for each of the
 block types present in our target block set.
 
-#### 2.1.1 - Learning 6D Object Pose Estimation using 3D Object Coordinates
+#### Aligning 3D Models to RGB-D Images of Cluttered Scenes
+This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propogated forward through the network and the network outputs a pose estimate of an object's orientation.
 
-#### 2.1.2 - Aligning 3D Models to RGB-D Images of Cluttered Scenes
+Then this method performs a search on a list of CAD models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
 
-#### 2.1.3 - Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
+This method provides useful ideas about a potential convolutional neural network approach to our project's computer vision problem. The dataset and model-fitting methods are not applicable to our specific needs, but I believe the neural network approach could be a potentially useful architecture that we may consider for risk mitigation if another structure fails to meet our needs. 
 
-#### 2.1.4 - Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
+#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
 
+#### Learning 6D Object Pose Estimation using 3D Object Coordinates
+This method begins by predicting probabilities and coordinates of object instances using 
+a decision forest. An energy function is applied to the output of the forest next. Then, 
+optimization is performed using an algorithm based on Random Sample Consensus (RANSAC). 
+
+First, the decision forest is used to classify each pixel of an RGB-D input 
+image. Each pixel becomes a leaf node of one of the decision trees in the forest. 
+Then a prediction can be made about which object a pixel may belong and where on 
+the object it is located. The forests were trained on RGB-D background images with random 
+pixels from object images that were already segmented.
+
+Then, to give each pixel a probability distribution and a coordinate prediction for each tree 
+and object, each pixel of an input image is run through every tree in the trained decision forest. 
+The result of this is the vectorized results from all leaf nodes in the forest containing probabilities and predictions for each pixel. This allows for the prediction of a single pixel belonging to the desired object. If the object was predicted in all of the leaf nodes then its object probability will be 
+calculated.
+
+Pose estimation is calculated by optimizing the energy function in this method. Depth energy, 
+coordinate energy, and object energy are calculated and summed to form the total energy for an 
+estimated pose. The depth component is an indicator of how much an observed depth differs from 
+that of an expected depth of a predefined object at the estimated pose. The other components are 
+measures of how much the observed coordinates and object predictions differ from the predicted 
+tree values. 
+
+Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. The Kabsch algorithm is used for otaining object pose hypotheses. A transformation error is calculated for each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is accepted as an inlier. 
+
+The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of three conditions occur. The conditions are as follows: the number of inliers becomes less than three, the error stops decreasing, or the number of iterations exceeds the limit of 100.
+
+#### Aligning 3D Models to RGB-D Images of Cluttered Scenes
+
+#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
+
+#### Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
 This paper, which debuted at the 2016 Computer Vision and Pattern
 Recognition (CVPR) Conference, by Brachmann *et al.* is currently our
 most useful resource for the computer vision interface of our software.
@@ -367,9 +406,8 @@ modified random forest called a joint classification regression forest.
 Then Brachmann *et al.* use a stack of forests to generate context
 information for each pixel in the input image(s).
 
-The object poses are then estimated using Random Sample Consensus
-(RANSAC). This method is able to perform multi-object detections by
-obtaining pose estimations for multiple objects and deciding which
+The object poses are then estimated using RANSAC. This method is able to perform multi-object 
+detections by obtaining pose estimations for multiple objects and deciding which
 object the estimations belong to during processing. This is done with
 the initial predicted values on the input image.
 
@@ -378,7 +416,7 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-### 2.2 – Inputs
+### Inputs
 
 There are two basic input formats for the incoming camera data: Point
 Cloud Data (PCD) or RGB-D image pairs. Point Cloud Data provides
@@ -393,9 +431,9 @@ accurate processing results for our purposes. For these reasons we have
 chosen to utilize the ability of the Intel® RealSense™ camera to capture
 RGB-D image pairs for our application.
 
-### 2.3 – Datasets
+### Datasets
 
-### 2.4 – Outputs
+### Outputs
 
 ## Unity Game Engine Research
 
@@ -458,15 +496,38 @@ interface.
 # Detailed Design
 
 ## Camera Design
-### Public Interface
+
+### Public Members
+The `CameraInterface` has four public members. They include: `StartCapture`,
+`StopCapture`, `ImageAvailable`, and `OutOfImages`. Each of these public members
+are described below.
+
 #### StartCapture
+The `StartCapture` method of the `CameraInterface` signals the class 
+to start capturing images from the Intel® RealSense™ Camera. The camera
+will continually capture images until the class is signaled by the 
+`StopCapture` method.
+
 #### StopCapture
+The `StopCapture` method of the `CameraInterface` signals the class
+to stop capturing images from the Intel® RealSense™ Camera. The camera
+module will then finish sending any images it had already captured via
+the `ImageAvailable` event.
+
 #### ImageAvailable
-### Sub Modules
-#### RealSenseInterface
-This will be the module that interacts with the Intel® RealSense™ SDK
-directly. It will make all the calls to the Sensor
-#### DataPreprocessor
+The `ImageAvailable` event of the `CameraInterface` signals to a listener
+that there is a new image available. It sends the new Image through the 
+delegate and the listener is able to receive the new image. This event can
+only happen while the `CameraInterface` is in the `CameraInterfaceState.Capture` 
+state.
+
+#### OutOfImages
+The `OutOfImages` event of the `CameraInterface` signals to a listener that
+there are no longer any images available to send via the ImageAvailable
+event. This event can only be called after the `StopCapture` event has been
+called on the `CameraInterface`. This is to make sure that all images that
+were obtained within the capture period are sent to the listener and that no
+data is lost.
 
 ## Computer Vision Design
 
