@@ -347,11 +347,22 @@ software. This will satisfy our project requirements, but will not make
 a robust system for broader use. A stretch goal would be to implement
 more robust methods for alignment that do not rely on pre-existing
 models. For now, we will adapt one of the model-alignment methods for
-our software. Any of the methods that require 3D models are appropriate
+our software and write an implementation in C# for use in a Unity Engine plugin. Any of the methods that require 3D models are appropriate
 for our purposes because we have been provided 3D models for each of the
 block types present in our target block set.
 
 #### 2.1.1 - Learning 6D Object Pose Estimation using 3D Object Coordinates
+This method works by predicts probabilities and coordinates of object instances using a decision forest. An energy function is applied to the output of the forest next. Then, optimization is performed using an algorithm based on Random Sample Consensus (RANSAC). 
+
+First, the decision forest is used to classify each pixel of an RGB-D input image. Each pixel becomes a leaf node of one of the decision trees in the forest. Then a prediction can be made about which object a pixel may belong and where on the object it is located. The forests were trained on RGB-D background images with random pixels from object images that were already segmented.
+
+Then, to give each pixel a probability distribution and a coordinate prediction for each tree and object, each pixel of an input image is run through every tree in the trained decision forest. The result of this is the vectorized results from all leaf nodes in the forest containing probabilities and predictions for each pixel. This allows for the prediction of a single pixel belonging to the desired object. If the object was predicted in all of the leaf nodes then its object probability will be calculated.
+
+Pose estimation is calculated by optimizing the energy function in this method. Depth energy, coordinate energy, and object energy are calculated and summed to form the total energy for an estimated pose. The depth component is an indicator of how much an observed depth differs from that of an expected depth of a predefined object at the estimated pose. The other components are measures of how much the observed coordinates and object predictions differ from the predicted tree values. 
+
+Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. The Kabsch algorithm is used for objtaining pose hypotheses. A transformation error is calculated for each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is accepted as an inlier. 
+
+The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of three conditions occur. The conditions are as follows: the number of inliers becomes less than three, the error stops decreasing, or the number of iterations exceeds the limit of 100.
 
 #### 2.1.2 - Aligning 3D Models to RGB-D Images of Cluttered Scenes
 
@@ -373,8 +384,7 @@ modified random forest called a joint classification regression forest.
 Then Brachmann *et al.* use a stack of forests to generate context
 information for each pixel in the input image(s).
 
-The object poses are then estimated using Random Sample Consensus
-(RANSAC). This method is able to perform multi-object detections by
+The object poses are then estimated using RANSAC. This method is able to perform multi-object detections by
 obtaining pose estimations for multiple objects and deciding which
 object the estimations belong to during processing. This is done with
 the initial predicted values on the input image.
