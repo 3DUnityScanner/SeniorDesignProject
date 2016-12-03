@@ -115,7 +115,7 @@ passionate about.
 
 ## Camera Research
 
-### - Available Cameras
+### Available Cameras
 
 The UCF Games Research Group had several devices available to us for no
 charge. These included: Intel® RealSense 3D, Microsoft Hololens, HTC
@@ -378,6 +378,13 @@ RGB-D image pairs for our application.
 # Detailed Design
 
 ## Camera Design
+### Public Interface
+#### StartCapture
+#### StopCapture
+#### ImageAvailable
+### Sub Modules
+#### CameraInterface
+#### DataPreprocessor
 
 ## Computer Vision Design
 
