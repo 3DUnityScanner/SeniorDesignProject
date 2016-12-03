@@ -312,6 +312,7 @@ computer vision module.
 ## Computer Vision Research
 
 ### Previous Methods
+
 We have studied many state-of-the-art computer vision methods for 3D
 scene processing, object detection, object recognition, and model
 alignment. Our goal with this research is to find a method or methods to
@@ -352,15 +353,15 @@ for our purposes because we have been provided 3D models for each of the
 block types present in our target block set.
 
 #### Aligning 3D Models to RGB-D Images of Cluttered Scenes
-This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propogated forward through the network and the network outputs a pose estimate of an object's orientation.
+
+This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propagated forward through the network and the network outputs a pose estimate of an object's orientation.
 
 Then this method performs a search on a list of CAD models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
 
 This method provides useful ideas about a potential convolutional neural network approach to our project's computer vision problem. The dataset and model-fitting methods are not applicable to our specific needs, but I believe the neural network approach could be a potentially useful architecture that we may consider for risk mitigation if another structure fails to meet our needs. 
 
-#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
-
 #### Learning 6D Object Pose Estimation using 3D Object Coordinates
+
 This method begins by predicting probabilities and coordinates of object instances using 
 a decision forest. An energy function is applied to the output of the forest next. Then, 
 optimization is performed using an algorithm based on Random Sample Consensus (RANSAC). 
@@ -383,15 +384,16 @@ that of an expected depth of a predefined object at the estimated pose. The othe
 measures of how much the observed coordinates and object predictions differ from the predicted 
 tree values. 
 
-Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. The Kabsch algorithm is used for otaining object pose hypotheses. A transformation error is calculated for each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is accepted as an inlier. 
+Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. The Kabsch algorithm is used for obtaining object pose hypotheses. A transformation error is calculated for each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is accepted as an inlier. 
 
 The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of three conditions occur. The conditions are as follows: the number of inliers becomes less than three, the error stops decreasing, or the number of iterations exceeds the limit of 100.
 
-#### Aligning 3D Models to RGB-D Images of Cluttered Scenes
+#### 6-DOF Model Based Tracking via Object Coordinate Regression
 
-#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
 
-#### - Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
+
+#### Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
+
 This paper, which debuted at the 2016 Computer Vision and Pattern
 Recognition (CVPR) Conference, by Brachmann *et al.* is currently our
 most useful resource for the computer vision interface of our software.
@@ -420,7 +422,7 @@ object positions when depth data is not available.
 
 There are two basic input formats for the incoming camera data: Point
 Cloud Data (PCD) or RGB-D image pairs. Point Cloud Data provides
-millions of data points which provides an implied high accuracy level.
+millions of data points which provides an implicit high accuracy level.
 The trouble with Point Cloud Data is that minimization or simplification
 would be required before processing if we wish to achieve fast runtimes.
 
@@ -432,6 +434,16 @@ chosen to utilize the ability of the Intel® RealSense™ camera to capture
 RGB-D image pairs for our application.
 
 ### Datasets
+
+#### The RGB-D Object Dataset
+
+This dataset contains 300 objects placed into 51 different categories. It was created with a Kinect camera which is very similar to the Intel® RealSense™ camera we plan to use for our application. The RGB frames are captured with width of 640 pixels and height of 480 pixels. The corresponding depth frames are captured at a rate of 30 Hz. The data was captured by recording objects rotating 360 degrees on a spinning table. There is pose-based ground truth data for every object in this dataset. 
+
+This dataset also includes 22 videos of indoor scenes including the objects in the dataset with sufficient cluttering and occlusion for our training purposes. The varying distances in the scenes can help with robust training for different camera setups as well.
+
+####  Big Berkeley Instance Recognition Dataset (Big BIRD)
+
+This dataset includes 600 images, 600 RGB-D-based point clouds, 
 
 ### Outputs
 
