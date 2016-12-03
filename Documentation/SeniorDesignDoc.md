@@ -311,7 +311,7 @@ computer vision module.
 
 ## Computer Vision Research
 
-### 2.1 – Previous Methods
+### Previous Methods
 
 We have studied many state-of-the-art computer vision methods for 3D
 scene processing, object detection, object recognition, and model
@@ -351,7 +351,7 @@ our software and write an implementation in C# for use in a Unity Engine plugin.
 for our purposes because we have been provided 3D models for each of the
 block types present in our target block set.
 
-#### 2.1.1 - Learning 6D Object Pose Estimation using 3D Object Coordinates
+#### Learning 6D Object Pose Estimation using 3D Object Coordinates
 This method works by predicts probabilities and coordinates of object instances using a decision forest. An energy function is applied to the output of the forest next. Then, optimization is performed using an algorithm based on Random Sample Consensus (RANSAC). 
 
 First, the decision forest is used to classify each pixel of an RGB-D input image. Each pixel becomes a leaf node of one of the decision trees in the forest. Then a prediction can be made about which object a pixel may belong and where on the object it is located. The forests were trained on RGB-D background images with random pixels from object images that were already segmented.
@@ -364,11 +364,11 @@ Pose sampling is done by choosing three pixels from an integral of the image to 
 
 The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of three conditions occur. The conditions are as follows: the number of inliers becomes less than three, the error stops decreasing, or the number of iterations exceeds the limit of 100.
 
-#### 2.1.2 - Aligning 3D Models to RGB-D Images of Cluttered Scenes
+#### Aligning 3D Models to RGB-D Images of Cluttered Scenes
 
-#### 2.1.3 - Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
+#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
 
-#### 2.1.4 - Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
+#### Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
 
 This paper, which debuted at the 2016 Computer Vision and Pattern
 Recognition (CVPR) Conference, by Brachmann *et al.* is currently our
@@ -394,7 +394,7 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-### 2.2 – Inputs
+### Inputs
 
 There are two basic input formats for the incoming camera data: Point
 Cloud Data (PCD) or RGB-D image pairs. Point Cloud Data provides
@@ -409,9 +409,9 @@ accurate processing results for our purposes. For these reasons we have
 chosen to utilize the ability of the Intel® RealSense™ camera to capture
 RGB-D image pairs for our application.
 
-### 2.3 – Datasets
+### Datasets
 
-### 2.4 – Outputs
+### Outputs
 
 ## Unity Game Engine Research
 
@@ -427,7 +427,8 @@ RGB-D image pairs for our application.
 ### Sub Modules
 #### RealSenseInterface
 This will be the module that interacts with the Intel® RealSense™ SDK
-directly. It will make all the calls to the Sensor
+directly.
+
 #### DataPreprocessor
 
 ## Computer Vision Design
