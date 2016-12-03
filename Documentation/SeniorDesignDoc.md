@@ -153,7 +153,13 @@ made for battery life. The cost of the device is also prohibitively
 expensive. It would not be a resource that could be acquired easily by
 small game studios or individual developers. To maintain the
 accessibility of our tool a more cost effective device is needed.
-Finally
+Finally, we considered the use of a head mounted device impractical for
+our project. The benefit of allowing the user to capture the spatial data
+hands free is not significant since the user's hands would have to be 
+cleared from the workspace before capture could begin. This means that 
+the user cannot perform any actions with their hands while capturing the
+data. This makes the hands free capability of any head mounted headset
+insignificant for our project.
 
 #### HTC Vive
 
