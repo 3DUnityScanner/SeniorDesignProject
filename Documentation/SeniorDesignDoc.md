@@ -391,7 +391,7 @@ The inliers' correspondences are saved and used for repeated runs of the Kabsch 
 
 #### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
 
-#### - Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
+#### Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
 This paper, which debuted at the 2016 Computer Vision and Pattern
 Recognition (CVPR) Conference, by Brachmann *et al.* is currently our
 most useful resource for the computer vision interface of our software.
