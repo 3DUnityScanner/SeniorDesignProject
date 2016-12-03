@@ -256,9 +256,9 @@ native implementation is not necessary.
 #### C\# Unity
 
 This implementation allows the camera module to be written directly into
-the plugin. One of the benefits of implementing the camera module within
-the Unity plugin, is the reduction in complexity of the project. There
-will not be the need for an external DLL for the camera module and will
+a Unity Managed Plugin. One of the benefits of implementing the camera module within
+the Unity plugin, is the reduction in complexity of the project.
+There will not be the need for us to generate an external DLL for the camera module and will
 simplify the structure of the project. Another benefit to this approach
 is the automatic memory management that a managed language provides.
 This reduces the complexity for the programmer, allows for faster
@@ -449,21 +449,97 @@ This dataset includes 600 images, 600 RGB-D-based point clouds,
 
 ## Unity Game Engine Research
 
-### 3.1
+### Basic Unity
+
+#### Overview
+
+#### Scripting
+
+#### 3D Models
+
+#### Extending the Editor (Maybe change this part's location)
+
+### Plugin types
+
+#### Managed Plugins
+
+Managed plugins are a type of plugin that Unity supports which allows
+Unity to use C# code that has been created by a third party to supplement
+created code. It allows for a community to form around Unity that continuously
+builds additional functionality allowing users to create better products.
+Unity allows for any C# files in a folder labeled "plugins" under the Assets folder
+to be considered a plugin, the files in that folder will be included with every C# script that the user creates, allowing
+access to the methods.
+
+Managed plugins can also be implemented through the usage of Dynamically Linked Libraries (DLLs).
+This allows a user to take C# code and compile it through a different compiler into a DLL,
+then the user can place the DLL into a unity plugin folder to be used in their scripts. from
+there the DLLs can be used in the same way that normal C# scripts are used in Unity.
+
+#### Native Plugins
+
+Native plugins are libraries of native code that is written in any language that isn't directly
+compiled by Unity, that can also be compiled into a DLL (Windows). The process of placing the 
+Native Plugin into the project is the same as Managed Plugins, you create a folder titled "plugins"
+located under the Assets folder and drop the DLLs in there.
+
+To access the methods or functions from the DLL files the user must add tags on both the 
+C# method used to call the DLL method. First you import the plugin using:
+
+`[DllImport ("PluginName")]`
+
+Then you can declare the external method using the extern modifier to mark it as an external 
+function:
+
+`private static extern pFunction();`
+
+The user can then use the declared method to make a call to the native method/function from the
+DLL. IT should be noted that when creating Native Plugins using C++ or Objective-C, there muse be
+steps taken to avoid name mangling issues, because plugin functions use a C-based call 
+interface.
+
+
+### Version Differences
+
+#### Unity free
+
+#### Unity Pro
 
 # Detailed Design
 
 ## Camera Design
-### Public Interface
-#### StartCapture
-#### StopCapture
-#### ImageAvailable
-### Sub Modules
-#### RealSenseInterface
-This will be the module that interacts with the Intel® RealSense™ SDK
-directly.
 
-#### DataPreprocessor
+### Public Members
+The `CameraInterface` has four public members. They include: `StartCapture`,
+`StopCapture`, `ImageAvailable`, and `OutOfImages`. Each of these public members
+are described below.
+
+#### StartCapture
+The `StartCapture` method of the `CameraInterface` signals the class 
+to start capturing images from the Intel® RealSense™ Camera. The camera
+will continually capture images until the class is signaled by the 
+`StopCapture` method.
+
+#### StopCapture
+The `StopCapture` method of the `CameraInterface` signals the class
+to stop capturing images from the Intel® RealSense™ Camera. The camera
+module will then finish sending any images it had already captured via
+the `ImageAvailable` event.
+
+#### ImageAvailable
+The `ImageAvailable` event of the `CameraInterface` signals to a listener
+that there is a new image available. It sends the new Image through the 
+delegate and the listener is able to receive the new image. This event can
+only happen while the `CameraInterface` is in the `CameraInterfaceState.Capture` 
+state.
+
+#### OutOfImages
+The `OutOfImages` event of the `CameraInterface` signals to a listener that
+there are no longer any images available to send via the ImageAvailable
+event. This event can only be called after the `StopCapture` event has been
+called on the `CameraInterface`. This is to make sure that all images that
+were obtained within the capture period are sent to the listener and that no
+data is lost.
 
 ## Computer Vision Design
 
