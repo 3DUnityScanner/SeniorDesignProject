@@ -256,9 +256,9 @@ native implementation is not necessary.
 #### C\# Unity
 
 This implementation allows the camera module to be written directly into
-the plugin. One of the benefits of implementing the camera module within
-the Unity plugin, is the reduction in complexity of the project. There
-will not be the need for an external DLL for the camera module and will
+a Unity Managed Plugin. One of the benefits of implementing the camera module within
+the Unity plugin, is the reduction in complexity of the project.
+There will not be the need for us to generate an external DLL for the camera module and will
 simplify the structure of the project. Another benefit to this approach
 is the automatic memory management that a managed language provides.
 This reduces the complexity for the programmer, allows for faster
@@ -301,7 +301,8 @@ maintenance of the project simpler.
 
 ### Intel® RealSense™ Overview
 
-The Intel® RealSense™ SDK is 
+The Intel® RealSense™ SDK is
+
 ## Computer Vision Research
 
 ### 2.1 – Previous Methods
@@ -398,7 +399,61 @@ RGB-D image pairs for our application.
 
 ## Unity Game Engine Research
 
-### 3.1
+### Basic Unity
+
+#### Overview
+
+#### Scripting
+
+#### 3D Models
+
+#### Extending the Editor (Maybe change this part's location)
+
+### Plugin types
+
+#### Managed Plugins
+
+Managed plugins are a type of plugin that Unity supports which allows
+Unity to use C# code that has been created by a third party to supplement
+created code. It allows for a community to form around Unity that continuously
+builds additional functionality allowing users to create better products.
+Unity allows for any C# files in a folder labeled "plugins" under the Assets folder
+to be considered a plugin, the files in that folder will be included with every C# script that the user creates, allowing
+access to the methods.
+
+Managed plugins can also be implemented through the usage of Dynamically Linked Libraries (DLLs).
+This allows a user to take C# code and compile it through a different compiler into a DLL,
+then the user can place the DLL into a unity plugin folder to be used in their scripts. from
+there the DLLs can be used in the same way that normal C# scripts are used in Unity.
+
+#### Native Plugins
+
+Native plugins are libraries of native code that is written in any language that isn't directly
+compiled by Unity, that can also be compiled into a DLL (Windows). The process of placing the 
+Native Plugin into the project is the same as Managed Plugins, you create a folder titled "plugins"
+located under the Assets folder and drop the DLLs in there.
+
+To access the methods or functions from the DLL files the user must add tags on both the 
+C# method used to call the DLL method. First you import the plugin using:
+
+`[DllImport ("PluginName")]`
+
+Then you can declare the external method using the extern modifier to mark it as an external 
+function:
+
+`private static extern pFunction();`
+
+The user can then use the declared method to make a call to the native method/function from the
+DLL. IT should be noted that when creating Native Plugins using C++ or Objective-C, there muse be
+steps taken to avoid name mangling issues, because plugin functions use a C-based call 
+interface.
+
+
+### Version Differences
+
+#### Unity free
+
+#### Unity Pro
 
 # Detailed Design
 
