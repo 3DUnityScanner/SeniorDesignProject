@@ -301,10 +301,17 @@ maintenance of the project simpler.
 
 ### Intel® RealSense™ Overview
 
-The Intel® RealSense™ SDK is 
+The Intel® RealSense™ SDK provides access to the camera as well as access
+to some 3D Scanning algorithms. Fundamentally the SDK is needed so that 
+we can receive the data from the camera and then pass it along to the 
+computer vision module.
+
+#### SenseManager
+#### SampleReader
+
 ## Computer Vision Research
 
-### 2.1 – Previous Methods
+### Previous Methods
 We have studied many state-of-the-art computer vision methods for 3D
 scene processing, object detection, object recognition, and model
 alignment. Our goal with this research is to find a method or methods to
@@ -353,7 +360,6 @@ This method provides useful ideas about a potential convolutional neural network
 
 #### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
 
-
 #### Learning 6D Object Pose Estimation using 3D Object Coordinates
 This method begins by predicting probabilities and coordinates of object instances using 
 a decision forest. An energy function is applied to the output of the forest next. Then, 
@@ -377,16 +383,13 @@ that of an expected depth of a predefined object at the estimated pose. The othe
 measures of how much the observed coordinates and object predictions differ from the predicted 
 tree values. 
 
-Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. 
-The Kabsch algorithm is used for otaining object pose hypotheses. A transformation error is calculated for 
-each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under 
-five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined 
-by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is 
-accepted as an inlier. 
+Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. The Kabsch algorithm is used for otaining object pose hypotheses. A transformation error is calculated for each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is accepted as an inlier. 
 
-The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of 
-three conditions occur. The conditions are as follows: the number of inliers becomes less than three, 
-the error stops decreasing, or the number of iterations exceeds the limit of 100.
+The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of three conditions occur. The conditions are as follows: the number of inliers becomes less than three, the error stops decreasing, or the number of iterations exceeds the limit of 100.
+
+#### Aligning 3D Models to RGB-D Images of Cluttered Scenes
+
+#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
 
 #### - Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
 This paper, which debuted at the 2016 Computer Vision and Pattern
@@ -413,7 +416,7 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-### 2.2 – Inputs
+### Inputs
 
 There are two basic input formats for the incoming camera data: Point
 Cloud Data (PCD) or RGB-D image pairs. Point Cloud Data provides
@@ -428,9 +431,9 @@ accurate processing results for our purposes. For these reasons we have
 chosen to utilize the ability of the Intel® RealSense™ camera to capture
 RGB-D image pairs for our application.
 
-### 2.3 – Datasets
+### Datasets
 
-### 2.4 – Outputs
+### Outputs
 
 ## Unity Game Engine Research
 
@@ -446,7 +449,8 @@ RGB-D image pairs for our application.
 ### Sub Modules
 #### RealSenseInterface
 This will be the module that interacts with the Intel® RealSense™ SDK
-directly. It will make all the calls to the Sensor
+directly.
+
 #### DataPreprocessor
 
 ## Computer Vision Design
