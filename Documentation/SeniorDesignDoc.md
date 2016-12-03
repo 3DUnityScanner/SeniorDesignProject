@@ -301,7 +301,14 @@ maintenance of the project simpler.
 
 ### Intel® RealSense™ Overview
 
-The Intel® RealSense™ SDK is 
+The Intel® RealSense™ SDK provides access to the camera as well as access
+to some 3D Scanning algorithms. Fundamentally the SDK is needed so that 
+we can receive the data from the camera and then pass it along to the 
+computer vision module.
+
+#### SenseManager
+#### SampleReader
+
 ## Computer Vision Research
 
 ### 2.1 – Previous Methods
