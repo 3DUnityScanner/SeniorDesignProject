@@ -118,13 +118,13 @@ passionate about.
 ### Available Cameras
 
 The UCF Games Research Group had several devices available to us for no
-charge. These included: Intel® RealSense 3D, Microsoft Hololens, HTC
+charge. These included: Intel® RealSense™ 3D, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
 suitability of each of the devices
 
-#### Intel® RealSense 3D
+#### Intel® RealSense™ 3D
 
-The Intel® RealSense 3D camera is a small rectangular camera that could
+The Intel® RealSense™ 3D camera is a small rectangular camera that could
 easily be mounted in a variety of settings. The camera provides the
 ability the obtain both color streams and depth streams. Its SDK
 includes not only the tools to interface with the device itself, but
@@ -175,7 +175,7 @@ we desired our tool to provide.
 #### Microsoft Kinect
 
 The Microsoft Kinect is a rectangular sensor that can provide both depth
-and color data. Much like the Intel® RealSense 3D camera, its SDK also
+and color data. Much like the Intel® RealSense™ 3D camera, its SDK also
 includes prebuilt computer vision algorithms in addition to the standard
 camera interface functionality. It also shares the disadvantage of
 needing to be tethered via USB to the main computing device. The current
@@ -185,10 +185,10 @@ well as marginally increasing the complexity of the set up for the user.
 
 #### Final Decision
 
-Our main decision was choosing between the Intel® RealSense 3D Camera and
+Our main decision was choosing between the Intel® RealSense™ 3D Camera and
 the Microsoft Kinect. Both sensors had many of the same advantages and
 disadvantages. The differentiating factor between the two was the size
-of the sensor and the cost of the sensors. The Intel® RealSense Camera
+of the sensor and the cost of the sensors. The Intel® RealSense™ Camera
 was marginally cheaper and we felt that its smaller size provided us
 with more flexibility as to mounting options. The primary benefits we
 saw the camera providing were the affordability of the device, the
@@ -213,7 +213,7 @@ different approaches are described and analyzed below.
 #### C\# .NET4
 
 This implementation allows for the .NET4 Framework to interface with the
-Intel® RealSense camera. We would create a DLL file that provides access
+Intel® RealSense™ camera. We would create a DLL file that provides access
 to the data that we wish to retrieve from the camera. This
 implementation provides the benefit of allowing me to draw on my
 previous .NET development experience. The implementation provides the
@@ -246,7 +246,7 @@ memory leaks into the project.
 #### C\# UWP
 
 This implementation allows for the Universal Windows Platform to
-interface with the Intel® RealSense camera. This would involve creating a
+interface with the Intel® RealSense™ camera. This would involve creating a
 UWP app that would interface with the camera and then transfer the image
 data to back to Unity as a saved file. The benefit of creating a UWP
 application is that the camera module can be run on all variants of
@@ -277,6 +277,9 @@ since the code is incorporated directly into the Unity plugin, the need
 to call an external DLL is eliminated and will make the deployment and
 maintenance of the project simpler.
 
+### Intel® RealSense™ Overview
+
+The Intel® RealSense™ SDK is 
 ## Computer Vision Research
 
 ### 2.1 – Previous Methods
@@ -364,7 +367,7 @@ RGB-D image pairs would contain an RGB image alongside a depth image per
 frame. This provides a faster runtime more similar to image processing
 tasks, but it still provides depth information to make sufficiently
 accurate processing results for our purposes. For these reasons we have
-chosen to utilize the ability of the Intel® RealSense camera to capture
+chosen to utilize the ability of the Intel® RealSense™ camera to capture
 RGB-D image pairs for our application.
 
 ### 2.3 – Datasets
@@ -383,7 +386,9 @@ RGB-D image pairs for our application.
 #### StopCapture
 #### ImageAvailable
 ### Sub Modules
-#### CameraInterface
+#### RealSenseInterface
+This will be the module that interacts with the Intel® RealSense™ SDK
+directly. It will make all the calls to the Sensor
 #### DataPreprocessor
 
 ## Computer Vision Design
