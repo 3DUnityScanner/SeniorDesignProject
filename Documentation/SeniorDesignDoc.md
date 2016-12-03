@@ -409,6 +409,9 @@ RGB-D image pairs for our application.
 ## Unity Testing
 
 # Budget
+Our sponsors did not specify a specific dollar amount for our budget but 
+our possible costs are highly controlled. All possible costs are described 
+below.
 
 ## Camera Costs
 The Intel® RealSense™ was already available to the UCF Games
