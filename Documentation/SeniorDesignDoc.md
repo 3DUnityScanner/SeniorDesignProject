@@ -119,7 +119,7 @@ gives the same satisfaction in assisting game developers increase
 efficiency in level prototyping and will allow me to work with the Unity
 Game Engine as I intended.
 
-I hadn’t considered that my experience with Computer Vision could help
+I had not considered that my experience with Computer Vision could help
 with game development and I am excited to apply my experience in this
 field and learn much more. I am already familiar with resources for
 potential previous implementations of Computer Vision systems in 3D
@@ -137,16 +137,16 @@ passionate about.
 
 ## Camera Research
 
-### - Available Cameras
+### Available Cameras
 
 The UCF Games Research Group had several devices available to us for no
-charge. These included: Intel RealSense 3D, Microsoft Hololens, HTC
+charge. These included: Intel® RealSense 3D, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
 suitability of each of the devices
 
-#### Intel RealSense 3D
+#### Intel® RealSense 3D
 
-The Intel RealSense 3D camera is a small rectangular camera that could
+The Intel® RealSense 3D camera is a small rectangular camera that could
 easily be mounted in a variety of settings. The camera provides the
 ability the obtain both color streams and depth streams. Its SDK
 includes not only the tools to interface with the device itself, but
@@ -197,7 +197,7 @@ we desired our tool to provide.
 #### Microsoft Kinect
 
 The Microsoft Kinect is a rectangular sensor that can provide both depth
-and color data. Much like the Intel RealSense 3D camera, its SDK also
+and color data. Much like the Intel® RealSense 3D camera, its SDK also
 includes prebuilt computer vision algorithms in addition to the standard
 camera interface functionality. It also shares the disadvantage of
 needing to be tethered via USB to the main computing device. The current
@@ -207,10 +207,10 @@ well as marginally increasing the complexity of the set up for the user.
 
 #### Final Decision
 
-Our main decision was choosing between the Intel RealSense 3D Camera and
+Our main decision was choosing between the Intel® RealSense 3D Camera and
 the Microsoft Kinect. Both sensors had many of the same advantages and
 disadvantages. The differentiating factor between the two was the size
-of the sensor and the cost of the sensors. The Intel RealSense Camera
+of the sensor and the cost of the sensors. The Intel® RealSense Camera
 was marginally cheaper and we felt that its smaller size provided us
 with more flexibility as to mounting options. The primary benefits we
 saw the camera providing were the affordability of the device, the
@@ -235,7 +235,7 @@ different approaches are described and analyzed below.
 #### C\# .NET4
 
 This implementation allows for the .NET4 Framework to interface with the
-Intel RealSense camera. We would create a DLL file that provides access
+Intel® RealSense camera. We would create a DLL file that provides access
 to the data that we wish to retrieve from the camera. This
 implementation provides the benefit of allowing me to draw on my
 previous .NET development experience. The implementation provides the
@@ -268,7 +268,7 @@ memory leaks into the project.
 #### C\# UWP
 
 This implementation allows for the Universal Windows Platform to
-interface with the Intel RealSense camera. This would involve creating a
+interface with the Intel® RealSense camera. This would involve creating a
 UWP app that would interface with the camera and then transfer the image
 data to back to Unity as a saved file. The benefit of creating a UWP
 application is that the camera module can be run on all variants of
@@ -386,7 +386,7 @@ RGB-D image pairs would contain an RGB image alongside a depth image per
 frame. This provides a faster runtime more similar to image processing
 tasks, but it still provides depth information to make sufficiently
 accurate processing results for our purposes. For these reasons we have
-chosen to utilize the ability of the Intel RealSense camera to capture
+chosen to utilize the ability of the Intel® RealSense camera to capture
 RGB-D image pairs for our application.
 
 ### 2.3 – Datasets
@@ -400,6 +400,13 @@ RGB-D image pairs for our application.
 # Detailed Design
 
 ## Camera Design
+### Public Interface
+#### StartCapture
+#### StopCapture
+#### ImageAvailable
+### Sub Modules
+#### CameraInterface
+#### DataPreprocessor
 
 ## Computer Vision Design
 
@@ -430,7 +437,7 @@ The Intel® RealSense™ was already available to the UCF Games
 Research Group. Therefore the use of the camera will not carry a cost
 to our group. The only potential cost the camera could pose is if we
 find the Intel® RealSense™ camera to be unusable and we have to use a
-camera that the UCF Games Research Group doesn't already have in their
+camera that the UCF Games Research Group does not already have in their
 possession.
 
 ## Unity Costs
