@@ -4,7 +4,7 @@ The purpose of our 3D scanner for Unity is to provide a useful and novel
 tool for the Unity game engine. This application will be free to use for
 UCF students and potentially added to the Unity Asset Store for use by
 indie game developers. The only similar application that is currently
-available is Intel^®^ RealSense™, which does not offer the 3D scene
+available is Intel® RealSense™, which does not offer the 3D scene
 segmentation features to help developers with level creation that we are
 planning.
 
@@ -404,6 +404,12 @@ RGB-D image pairs for our application.
 # Budget
 
 ## Camera Costs
+The Intel® RealSense™ was already available to the UCF Games
+Research Group. Therefore the use of the camera will not carry a cost
+to our group. The only potential cost the camera could pose is if we
+find the Intel® RealSense™ camera to be unusable and we have to use a
+camera that the UCF Games Research Group doesn't already have in their
+possession.
 
 ## Unity Costs
 
