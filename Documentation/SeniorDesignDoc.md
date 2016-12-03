@@ -305,7 +305,6 @@ The Intel® RealSense™ SDK is
 ## Computer Vision Research
 
 ### 2.1 – Previous Methods
-
 We have studied many state-of-the-art computer vision methods for 3D
 scene processing, object detection, object recognition, and model
 alignment. Our goal with this research is to find a method or methods to
@@ -340,29 +339,56 @@ software. This will satisfy our project requirements, but will not make
 a robust system for broader use. A stretch goal would be to implement
 more robust methods for alignment that do not rely on pre-existing
 models. For now, we will adapt one of the model-alignment methods for
-our software and write an implementation in C# for use in a Unity Engine plugin. Any of the methods that require 3D models are appropriate
+our software and write an implementation in C# for use in a Unity Engine plugin. 
+Any of the methods that require 3D models are appropriate
 for our purposes because we have been provided 3D models for each of the
 block types present in our target block set.
 
-#### 2.1.1 - Learning 6D Object Pose Estimation using 3D Object Coordinates
-This method works by predicts probabilities and coordinates of object instances using a decision forest. An energy function is applied to the output of the forest next. Then, optimization is performed using an algorithm based on Random Sample Consensus (RANSAC). 
+#### Aligning 3D Models to RGB-D Images of Cluttered Scenes
+This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propogated forward through the network and the network outputs a pose estimate of an object's orientation.
 
-First, the decision forest is used to classify each pixel of an RGB-D input image. Each pixel becomes a leaf node of one of the decision trees in the forest. Then a prediction can be made about which object a pixel may belong and where on the object it is located. The forests were trained on RGB-D background images with random pixels from object images that were already segmented.
+Then this method performs a search on a list of CAD models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
 
-Then, to give each pixel a probability distribution and a coordinate prediction for each tree and object, each pixel of an input image is run through every tree in the trained decision forest. The result of this is the vectorized results from all leaf nodes in the forest containing probabilities and predictions for each pixel. This allows for the prediction of a single pixel belonging to the desired object. If the object was predicted in all of the leaf nodes then its object probability will be calculated.
+This method provides useful ideas about a potential convolutional neural network approach to our project's computer vision problem. The dataset and model-fitting methods are not applicable to our specific needs, but I believe the neural network approach could be a potentially useful architecture that we may consider for risk mitigation if another structure fails to meet our needs. 
 
-Pose estimation is calculated by optimizing the energy function in this method. Depth energy, coordinate energy, and object energy are calculated and summed to form the total energy for an estimated pose. The depth component is an indicator of how much an observed depth differs from that of an expected depth of a predefined object at the estimated pose. The other components are measures of how much the observed coordinates and object predictions differ from the predicted tree values. 
+#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
 
-Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. The Kabsch algorithm is used for objtaining pose hypotheses. A transformation error is calculated for each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is accepted as an inlier. 
 
-The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of three conditions occur. The conditions are as follows: the number of inliers becomes less than three, the error stops decreasing, or the number of iterations exceeds the limit of 100.
+#### Learning 6D Object Pose Estimation using 3D Object Coordinates
+This method begins by predicting probabilities and coordinates of object instances using 
+a decision forest. An energy function is applied to the output of the forest next. Then, 
+optimization is performed using an algorithm based on Random Sample Consensus (RANSAC). 
 
-#### 2.1.2 - Aligning 3D Models to RGB-D Images of Cluttered Scenes
+First, the decision forest is used to classify each pixel of an RGB-D input 
+image. Each pixel becomes a leaf node of one of the decision trees in the forest. 
+Then a prediction can be made about which object a pixel may belong and where on 
+the object it is located. The forests were trained on RGB-D background images with random 
+pixels from object images that were already segmented.
 
-#### 2.1.3 - Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
+Then, to give each pixel a probability distribution and a coordinate prediction for each tree 
+and object, each pixel of an input image is run through every tree in the trained decision forest. 
+The result of this is the vectorized results from all leaf nodes in the forest containing probabilities and predictions for each pixel. This allows for the prediction of a single pixel belonging to the desired object. If the object was predicted in all of the leaf nodes then its object probability will be 
+calculated.
 
-#### 2.1.4 - Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
+Pose estimation is calculated by optimizing the energy function in this method. Depth energy, 
+coordinate energy, and object energy are calculated and summed to form the total energy for an 
+estimated pose. The depth component is an indicator of how much an observed depth differs from 
+that of an expected depth of a predefined object at the estimated pose. The other components are 
+measures of how much the observed coordinates and object predictions differ from the predicted 
+tree values. 
 
+Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. 
+The Kabsch algorithm is used for otaining object pose hypotheses. A transformation error is calculated for 
+each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under 
+five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined 
+by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is 
+accepted as an inlier. 
+
+The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of 
+three conditions occur. The conditions are as follows: the number of inliers becomes less than three, 
+the error stops decreasing, or the number of iterations exceeds the limit of 100.
+
+#### - Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
 This paper, which debuted at the 2016 Computer Vision and Pattern
 Recognition (CVPR) Conference, by Brachmann *et al.* is currently our
 most useful resource for the computer vision interface of our software.
@@ -377,8 +403,8 @@ modified random forest called a joint classification regression forest.
 Then Brachmann *et al.* use a stack of forests to generate context
 information for each pixel in the input image(s).
 
-The object poses are then estimated using RANSAC. This method is able to perform multi-object detections by
-obtaining pose estimations for multiple objects and deciding which
+The object poses are then estimated using RANSAC. This method is able to perform multi-object 
+detections by obtaining pose estimations for multiple objects and deciding which
 object the estimations belong to during processing. This is done with
 the initial predicted values on the input image.
 
