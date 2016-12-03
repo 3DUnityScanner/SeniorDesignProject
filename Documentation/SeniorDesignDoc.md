@@ -420,16 +420,38 @@ RGB-D image pairs for our application.
 # Detailed Design
 
 ## Camera Design
-### Public Interface
-#### StartCapture
-#### StopCapture
-#### ImageAvailable
-### Sub Modules
-#### RealSenseInterface
-This will be the module that interacts with the Intel® RealSense™ SDK
-directly.
 
-#### DataPreprocessor
+### Public Members
+The `CameraInterface` has four public members. They include: `StartCapture`,
+`StopCapture`, `ImageAvailable`, and `OutOfImages`. Each of these public members
+are described below.
+
+#### StartCapture
+The `StartCapture` method of the `CameraInterface` signals the class 
+to start capturing images from the Intel® RealSense™ Camera. The camera
+will continually capture images until the class is signaled by the 
+`StopCapture` method.
+
+#### StopCapture
+The `StopCapture` method of the `CameraInterface` signals the class
+to stop capturing images from the Intel® RealSense™ Camera. The camera
+module will then finish sending any images it had already captured via
+the `ImageAvailable` event.
+
+#### ImageAvailable
+The `ImageAvailable` event of the `CameraInterface` signals to a listener
+that there is a new image available. It sends the new Image through the 
+delegate and the listener is able to receive the new image. This event can
+only happen while the `CameraInterface` is in the `CameraInterfaceState.Capture` 
+state.
+
+#### OutOfImages
+The `OutOfImages` event of the `CameraInterface` signals to a listener that
+there are no longer any images available to send via the ImageAvailable
+event. This event can only be called after the `StopCapture` event has been
+called on the `CameraInterface`. This is to make sure that all images that
+were obtained within the capture period are sent to the listener and that no
+data is lost.
 
 ## Computer Vision Design
 
