@@ -142,7 +142,7 @@ passionate about.
 The UCF Games Research Group had several devices available to us for no
 charge. These included: Intel® RealSense™ 3D, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
-suitability of each of the devices
+suitability of each of the devices.
 
 #### Intel® RealSense™ 3D
 
@@ -307,7 +307,28 @@ we can receive the data from the camera and then pass it along to the
 computer vision module.
 
 #### SenseManager
+
+The `SenseManager` is the access point for all other modules within the Intel®
+RealSense™ SDK. An instance of the `SenseManager` class is obtained by the static
+method `SenseManager.CreateInstance()`. Once the `SenseManager` is created, all access
+to the Intel® RealSense™ camera I/O is accessible via a `SampleReader` object 
+created from the `SenseManager`. This I/0 includes both the depth stream and
+color stream provided by the camera.
+
 #### SampleReader
+
+The `SampleReader` provides access to a stream of color or depth samples. A 
+`SampleReader` is obtained by calling the function `SampleReader.Activate(sm)`
+where `sm` is the `SenseManager` obtained from the camera. The 
+`SampleReader.Activate(sm)` method returns a `SampleReader` object which the 
+caller should capture. The stream is then activated by the 
+`reader.EnableStream(type, width, height, fps)` where reader is the `StreamReader` 
+object, type is the data type of the stream, width is a measure of the captured 
+image's width in pixels, height is a measure of the captured image's height in 
+pixels, and fps is the the number of frames to capture per second. Once this is
+complete the stream is prepared to capture data.
+
+#### Capturing Data
 
 ## Computer Vision Research
 
