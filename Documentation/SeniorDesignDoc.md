@@ -439,6 +439,8 @@ RGB-D image pairs for our application.
 
 ### Basic Unity
 
+Unity is 
+
 #### Overview
 
 #### Scripting
@@ -471,18 +473,16 @@ compiled by Unity, that can also be compiled into a DLL (Windows). The process o
 Native Plugin into the project is the same as Managed Plugins, you create a folder titled "plugins"
 located under the Assets folder and drop the DLLs in there.
 
-To access the methods or functions from the DLL files the user must add tags on both the 
-C# method used to call the DLL method. First you import the plugin using:
+To access the methods or functions from the DLL files the user must add tags on the 
+C# method used to call the DLL method. First you import the plugin, then you can declare 
+the external method using the extern modifier to mark it as an external function:
 
 `[DllImport ("PluginName")]`
-
-Then you can declare the external method using the extern modifier to mark it as an external 
-function:
 
 `private static extern pFunction();`
 
 The user can then use the declared method to make a call to the native method/function from the
-DLL. IT should be noted that when creating Native Plugins using C++ or Objective-C, there muse be
+DLL. It should be noted that when creating Native Plugins using C++ or Objective-C, there must be
 steps taken to avoid name mangling issues, because plugin functions use a C-based call 
 interface.
 
