@@ -115,7 +115,7 @@ I had previously suggested a Senior Design project similar to this, but
 utilizing procedural generation techniques. I wanted to assist game
 developers in level creation by creating procedurally generated
 assets/levels as a tool for the Unity or Unreal Engine. This project
-gives the same satisfaction in assisting game developers increase
+gives the same satisfaction in assisting game developers to increase their
 efficiency in level prototyping and will allow me to work with the Unity
 Game Engine as I intended.
 
@@ -123,9 +123,9 @@ I had not considered that my experience with Computer Vision could help
 with game development and I am excited to apply my experience in this
 field and learn much more. I am already familiar with resources for
 potential previous implementations of Computer Vision systems in 3D
-scene reproduction. I felt that this opportunity could open a door to
-future game development positions and combines two fields that I am
-passionate about.
+scene processing and reproduction. I enjoy researching the field of computer vision and hope to write an original implementation for this project alongside Mark.
+
+I've always been enthralled with the game development process and I am excited to have a chance to contribute. My career plans are still an open book at this point in my life and I feel that this project could even open a door to future game development positions. Consisting of both computer vision systems and game development methodologies, this project combines two fields that I am passionate about and I .
 
 # Specifications
 
@@ -374,8 +374,7 @@ pixels from object images that were already segmented.
 
 Then, to give each pixel a probability distribution and a coordinate prediction for each tree 
 and object, each pixel of an input image is run through every tree in the trained decision forest. 
-The result of this is the vectorized results from all leaf nodes in the forest containing probabilities and predictions for each pixel. This allows for the prediction of a single pixel belonging to the desired object. If the object was predicted in all of the leaf nodes then its object probability will be 
-calculated.
+The result of this is the vectorized results from all leaf nodes in the forest containing probabilities and predictions for each pixel. This allows for the prediction of a single pixel belonging to the desired object. If the object was predicted in all of the leaf nodes then its object probability will be calculated.
 
 Pose estimation is calculated by optimizing the energy function in this method. Depth energy, 
 coordinate energy, and object energy are calculated and summed to form the total energy for an 
@@ -388,7 +387,7 @@ Pose sampling is done by choosing three pixels from an integral of the image to 
 
 The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of three conditions occur. The conditions are as follows: the number of inliers becomes less than three, the error stops decreasing, or the number of iterations exceeds the limit of 100.
 
-#### 6-DOF Model Based Tracking via Object Coordinate Regression
+#### Learning Analysis-by-Synthesis for 6D Pose Estimation in RGB-D Images
 
 
 
@@ -441,9 +440,19 @@ This dataset contains 300 objects placed into 51 different categories. It was cr
 
 This dataset also includes 22 videos of indoor scenes including the objects in the dataset with sufficient cluttering and occlusion for our training purposes. The varying distances in the scenes can help with robust training for different camera setups as well.
 
+### The Object Segmentation Database (OSD)
+
+The Object Segmentation Database includes data on 111 objects with corresponding RGB-D data divided into appropriate categories based on their basic shapes. There are categories for boxes, stacked boxes, occlusion, cylindric objects, mixed objects, and complex scenes. The basic shapes provided could be an excellent resource for testing our algorithm since the blocks provided by our sponsors are the same basic shapes as those included in this database.
+
+### Willow and Challenge Dataset
+
+The Willow dataset contains 24 series of 353 total RGB-D images with available ground-truth information and separate sets for training and testing. These include 110 objects and 1168 appearances of those objects. 
+
+The Challenge dataset is available alongside the Willow dataset. It includes 39 frame sequences, with 176 RGB-D images total. These include 97 objects with 434 appearances.
+
 ####  Big Berkeley Instance Recognition Dataset (Big BIRD)
 
-This dataset includes 600 images, 600 RGB-D-based point clouds, 
+This dataset includes 600 images, 600 RGB-D-based point clouds, pose information for every image and point cloud, segmentation masks for all images, and meshes created from merged point clouds. This dataset is extensive but utilizes point clouds which would not be applicable for our purposes. if extra data is needed, this could be a potentially useful resource.
 
 ### Outputs
 
