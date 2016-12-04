@@ -320,36 +320,56 @@ since the code is incorporated directly into the Unity plugin, the need
 to call an external DLL is eliminated and will make the deployment and
 maintenance of the project simpler.
 
-### Intel® RealSense™ Overview
+### Intel® RealSense™ SDK Overview
 
 The Intel® RealSense™ SDK provides access to the camera as well as access
-to some 3D Scanning algorithms. Fundamentally the SDK is needed so that 
+to some computer vision algorithms. Fundamentally the SDK is needed so that 
 we can receive the data from the camera and then pass it along to the 
 computer vision module.
 
 #### SenseManager
 
-The `SenseManager` is the access point for all other modules within the Intel®
-RealSense™ SDK. An instance of the `SenseManager` class is obtained by the static
-method `SenseManager.CreateInstance()`. Once the `SenseManager` is created, all access
-to the Intel® RealSense™ camera I/O is accessible via a `SampleReader` object 
-created from the `SenseManager`. This I/0 includes both the depth stream and
-color stream provided by the camera.
+The `SenseManager` class is the access point for all other modules within the Intel®
+RealSense™ SDK. An instance of the `SenseManager` class cannot be created with
+a constructor but instead is created with a factory pattern using a static method
+of the `SenseManager` class. The primary purpose of the `SenseManager` class is to
+create `SampleReader` objects, initiate the data pipeline for processing, and to
+control execution of the pipeline. The exact methods required for these functions
+in the "Capturing Data" section below.
 
 #### SampleReader
 
-The `SampleReader` provides access to a stream of color or depth samples. A 
-`SampleReader` is obtained by calling the function `SampleReader.Activate(sm)`
-where `sm` is the `SenseManager` obtained from the camera. The 
-`SampleReader.Activate(sm)` method returns a `SampleReader` object which the 
-caller should capture. The stream is then activated by the 
-`reader.EnableStream(type, width, height, fps)` where reader is the `StreamReader` 
-object, type is the data type of the stream, width is a measure of the captured 
-image's width in pixels, height is a measure of the captured image's height in 
-pixels, and fps is the the number of frames to capture per second. Once this is
-complete the stream is prepared to capture data.
+The `SampleReader` class provides access to a stream of color samples, depth 
+samples, or both. The sample reader is obtained through a member function
+contained within a `SenseManager` object. The type of data that the `SampleReader`
+provides is determined by the parameters of a member function call on the
+`SampleReader` object in question. The `SampleReader` provides properties 
+for accessing the sample that the pipeline generates.
 
 #### Capturing Data
+
+In order to begin capturing data 4 steps have to be executed
+
+1. Acquire the `SenseManager`
+2. Acquire a `SampleReader` using the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
+3. Call `EnableStream` on the acquired `SampleReader` and pass it the type of desired stream
+4. Call `Init` on the `SenseManager` with no arguments
+
+Once these steps have been completed it is possible to acquire data from
+the video pipeline. Acquire data can be achieved in 3 easy steps
+
+1. Call `AcquireFrame` on the acquired `SenseManager`
+2. Retrieve the `Sample` Property from the acquired `SampleReader`
+3. Call `ReleaseFrame` on the acquired `SenseManager` when frame processing is complete
+
+The above three steps may be repeated as many times as desired. Upon 
+completion of data capture. The `Close` method or `Dispose` method must
+be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
+instance will be used to stream data later. Otherwise use `Dispose` to 
+free all resources associated with the instance. 
+
+#### IDisposable interface
+
 
 ## Computer Vision Research
 
@@ -372,7 +392,29 @@ The amount of images passed to the computer vision interface is a crucial detail
 
 ### Outputs
 
-Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translational matrix,  
+Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
+
+### Terminology Overview
+
+We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with.
+
+* 6D or 6DOF - The six degrees of freedom typically used for pose estimation algorithms. These include the x translation, y translation, z translation, x rotation, y rotation, and z rotation. 
+
+* Convolutional Neural Network (CNN) - A CNN is a data structure composed of layers. Each of these layers is composed of individual processing units called neurons which have weights associated with them. The advantage of CNNs over normal neural networks is that they are explicitly designed for image processing. They can handle large images due to their three dimensional structure, the third dimension of which is the depth of the neuron structure not the network itself. The network's layers can be categorized into three basic types: Convolutional layers, Pooling layers, and Fully-Connected Layers.
+
+* Convolution - A convolution in a CNN context is a matrix operation resulting in one scalar value as a result. The dot product of two matricies are computed, one of which is a small matrix called a filter. The result is a single scalar value.
+
+* Convolutional layers - Convolution layers in a CNN are what make this structure special. Each of these layers contains filters that are usually small but deep, extending the full depth of the input data. These filters are convolved with sections of the input data to create a two dimensional list of values called an activation map. This map represents the filter reactions at every point in the input data. Each layer can have many different filters and each filter has its own activation map. These maps are what make up the depth of each layer. These layers do most of the processing work in the network.
+
+* Pooling layer - The job of a pooling layer is to reduce the spatial complexity of the data being passed through the network. The operation these layers perform downspamples the images in the network to reduce the amount of parameters and therefore reduce the processing load on the network.
+
+* Normalization layer - A normalization layer in a CNN is a method of regularization that provides the activations with more of a significant value peak leading to more recognizable local maxima when compared with neighboring values.
+
+* Fully connected layer - A fully connected layer in a CNN is a layer whose neurons are attached to all of the activations of the previous layer rather than a small amount. This makes their activations able to be computed by a matrix multiplication with a bias offset.
+
+* Dropout layer - Dropout layers in a CNN are helpful in training because they reduce the size of the network by having a probability of forcing nodes to drop out of the network. The nodes are reinserted after the network is trained with their original weights. This process cuts down on training time and prevents the model becoming too complex. 
+
+* 
 
 ### Previous Methods
 
@@ -393,7 +435,7 @@ vision algorithm from scratch.
 
 The heart of the problem that this project faces is pose estimation of a rigid object in a 3D scene with six degrees of freedom. This problem can be described as converting the position of a physical object from its own coordinate system to the camera's coordinate system. The important aspects of an object's rotation are defined as its rotation and translation relative to the total coordinate system.
 
-Most of these methods provide bounding box information as output after
+Most of these methods provide bounding-box information as output after
 processing. If rotational information is not provided this bounding box
 gives us the ability to infer where objects are in the scene and allows
 us to convert this information into a 3D box primitive as our input into
@@ -401,10 +443,9 @@ the Unity Game Engine. This would work for a physical level built with
 only rectangular blocks, but we would like to find a method robust
 enough to include other types of blocks such as cylinders, cones, and
 pyramids. If a 3D model of the object and sufficient rotational
-information is provided we can fit other block types within the bounding
-box. With the appropriate rotations applied this provides a successfully
+information is provided we can fit other block types within the bounding-box. With the appropriate rotations applied, this provides a successfully
 and robustly matched object in the 3D scene space. Other methods match
-pre-existing 3D models to specific data points in the scene provided.
+pre-existing 3D models to specific data points, typically pixels with object labels associated with them, in the scene provided.
 
 The limitation set by these model-matching methods would be that users
 must use these specific types of blocks to get accurate results from our
@@ -704,24 +745,54 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 
 ## Integration Testing
 
-# Budget
+# Budget and Resources Provided by Sponsors
 Our sponsors did not specify a specific dollar amount for our budget but 
-our possible costs are highly controlled. All possible costs are described 
-below.
+our possible costs are highly controlled. The UCF Games Research Group has 
+many resources available for our team to utilize for this project.
+All possible costs or necessary resources are described below.
 
-## Camera Costs
+## Cameras
 The Intel® RealSense™ was already available to the UCF Games
 Research Group. Therefore the use of the camera will not carry a cost
 to our group. The only potential cost the camera could pose is if we
 find the Intel® RealSense™ camera to be unusable and we have to use a
 camera that the UCF Games Research Group does not already have in their
-possession.
+possession. They also have a Microsoft Kinect, Microsoft Hololens, and an HTC Vive.
 
-## Unity Costs
+## Working Area
+The UCF Games Research Group has an office space with computers, cameras, and 
+space for team collaboration. This area provides ample space for our team to work with 
+the cameras and a table with objects placed on it.
+
+## Expert Consultation
+Under the UCF Games Research group, we have contact with students and experts in 
+various fields that can be useful for help with the development process. We have 
+access to the following:
+
+*   Unity experts to consult in order to learn and work with the intricacies of the 
+    Unity Software.
+
+*   3D models to create assets that may be required for the process of instantiating 
+    the models within the Unity Platform
 
 # Milestones
-October 2016 - Compile and run the source code provided with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[].
 
-January 2017 - Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing and Random Forest testing. We must ensure the framework integrity before continuing.
+### October 2016 - Run and test Bachmann implementation
+
+Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo for "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[]. Resolve any dependency issues involved with nlopt, PNG++, or OpenCV.
+
+Status: Completed successfully
+
+### November 2017 - Train Bachmann implementation on 'Dummy Data' and test on test set
+
+Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
+
+Status: Completed successfully
+
+### January 2017 - Set up Accord Framework
+
+Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing and Random Forest testing. We must ensure the framework integrity before continuing.
+
+Status: Pending
 
 # Summary
