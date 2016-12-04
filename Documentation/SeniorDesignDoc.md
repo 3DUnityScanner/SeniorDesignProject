@@ -512,11 +512,24 @@ This dataset includes 600 images, 600 RGB-D-based point clouds, pose information
 
 ### Basic Unity
 
-Unity is 
-
 #### Overview
 
+Unity is a game development engine that permits users to create a variety of games for different
+platforms, some of the biggest being PC, Xbox, Playstation, and Android/IOS. 
+
 #### Scripting
+
+Unity uses an implementation of the Mono runtime for scripting. Unity mainly supports two scripting
+languages, C# (which is what this project is using) and UnityScript, which is a language that is
+modelled after Javascript to use specifically for Unity. Unity can compile the source code 
+that is in the "Assets" folder of the project. For other languages, they can be used in Unity scripts
+in the form of DLLs, so as long as a language can be compiled into a Dynamically Linked Library(DLL) 
+file it can be tied into Unity scripts.
+
+Unity's GameObjects are controlled by Components that are attached to them, and scripts allow
+the user to create these Components and manipulate them dynamically. Unity's GUI allows for 
+a simple script creation by going to Assets -> Create -> C# Script or Assets -> Create -> Javascript.
+
 
 #### 3D Models
 
