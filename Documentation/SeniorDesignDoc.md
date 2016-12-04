@@ -539,37 +539,43 @@ interface.
 
 ## Camera Design
 
+The design of the camera module strives to implement the fundamental 
+concept of separating interface from implementation. By defining an
+`ICamera` interface that handles all public access, the underlying 
+implementation can change dramatically as long as it conforms to the 
+contract specified by the interface. This allows for supporting additional
+cameras in future versions of the product as well as making camera changes
+should unforeseeable events occur. All these changes can happen within
+the camera module without the unity plugin needing to change its method
+calls at all.
+
 ### Public Members
-The `CameraInterface` has four public members. They include: `StartCapture`,
-`StopCapture`, `ImageAvailable`, and `OutOfImages`. Each of these public members
-are described below.
+The `RealSenseCamera` has three public members. All three of its public 
+members are implementations of the `ICamera` interface's public members 
+They include: `StartCapture()`, `StopCapture()`, and `GetImages()`. 
+Each of these public members are described below.
 
 #### StartCapture
-The `StartCapture` method of the `CameraInterface` signals the class 
-to start capturing images from the Intel® RealSense™ Camera. The camera
-will continually capture images until the class is signaled by the 
-`StopCapture` method.
+The `StartCapture` method of the `RealSenseCamera` signals the class 
+to start capturing images from the Intel® RealSense™ Camera. This updates
+the camera's state variable to the `CameraState.RUNNING` state. The method
+will engage the camera capture loop which will continually capture images 
+until otherwise notified. This notification is created by calling the 
+`StopCapture` method described below.
 
 #### StopCapture
-The `StopCapture` method of the `CameraInterface` signals the class
-to stop capturing images from the Intel® RealSense™ Camera. The camera
-module will then finish sending any images it had already captured via
-the `ImageAvailable` event.
+The `StopCapture` method of the `RealSenseCamera` signals the class
+to stop capturing images from the Intel® RealSense™ Camera. The `State`
+member variable will be changed in order to signal to the capture loop
+to terminate. The camera module will then finish converting and saving
+all images that have been captured. Image capture will not resume again 
+until the `StartCapture` method has been called.
 
-#### ImageAvailable
-The `ImageAvailable` event of the `CameraInterface` signals to a listener
-that there is a new image available. It sends the new Image through the 
-delegate and the listener is able to receive the new image. This event can
-only happen while the `CameraInterface` is in the `CameraInterfaceState.Capture` 
-state.
-
-#### OutOfImages
-The `OutOfImages` event of the `CameraInterface` signals to a listener that
-there are no longer any images available to send via the ImageAvailable
-event. This event can only be called after the `StopCapture` event has been
-called on the `CameraInterface`. This is to make sure that all images that
-were obtained within the capture period are sent to the listener and that no
-data is lost.
+#### GetImage
+Gets the next available image from the camera as a `Bitmap`. 
+The image is likely to have already been captured and possibly written to 
+disk. In this case the image would need to be read from disk and then 
+returned. If the image is still in memory then the `Bitmap`.
 
 ## Computer Vision Design
 
@@ -587,23 +593,55 @@ data is lost.
 
 # Testing Plan
 
-## CameraInterface Testing
+## RealSenseCamera Testing
 
 ### Unit Tests
 
-### Public Interface
+#### StartCapture
 
-#### Start()
+The  job of the `StartCapture` method is to signal to the rest of the
+`RealSenseCamera` that capture should begin. This starts the capture 
+loop and 
 
-#### Stop()
+| Input | Output |          Starting Conditions |            Ending Conditions |
+|-------|--------|------------------------------|------------------------------|
+|   N/A |   N/A  | State == CameraState.STOPPED | State == CameraState.RUNNING |
 
-#### ImageAvailable
+#### StopCapture
 
-#### OutOfImages
+The job of the `StopCapture` method is simply to signal to the rest of the 
+`RealSenseCamera` class that the capture should halt. This is used to signal
+to the capture loop to terminate execution. 
+
+| Input | Output |          Starting Conditions |           Ending Conditions |
+|-------|--------|------------------------------|-----------------------------|
+|   N/A |    N/A | State == CameraState.RUNNING | State = CameraState.STOPPED |
+
+#### ConvertImage
+
+The only way to objectively test the ConvertImage method is to procedurally
+generate `Image` objects from the Intel® RealSense™ SDK as input for the 
+`ConvertImage` method. A brief description of the attributes are below:
+
+* **TestRSImage1** - TODO: Image Description
+* **TestRSImage2** - TODO: Image Description
+* **TestRSImage3** - TODO: Image Description
+
+The test would make sure that the `Bitmap` (denoted as ImageGeneratingBitmap#)
+that was used to produce the Intel® RealSense™ SDK `Image` objects (denoted as TestRSImage#) 
+are what the `ConvertImage` method produces.
+
+|        Input |                 Output | Starting Conditions | Ending Conditions |
+|--------------|------------------------|---------------------|-------------------|
+| TestRSImage1 | ImageGeneratingBitmap1 |                 N/A |               N/A |
+| TestRSImage2 | ImageGeneratingBitmap2 |                 N/A |               N/A |
+| TestRSImage3 | ImageGeneratingBitmap3 |                 N/A |               N/A |
 
 ## Computer Vision Testing
 
 ## Unity Testing
+
+## Integration Testing
 
 # Budget
 Our sponsors did not specify a specific dollar amount for our budget but 
