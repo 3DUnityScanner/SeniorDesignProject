@@ -109,13 +109,34 @@ do.
 
 ### Mark McCulloh
 
+Out of all the possible projects the I could choose for senior design, 
+I sought after one that provided an interesting outlet for algorithms 
+related to computer vision whilst also allowing the project to not be 
+especially daunting due to my lack of experience. I know that I will 
+fully invest myself in the project if it is interesting and approachable, 
+regardless of how I feel about my lack of experience. This project fit that 
+bill immediately, but there were even more positives on top of that.
+
+I spend a lot of my leisure time both playing and creating games, so 
+it was natural for me to choose a project that integrates with that 
+culture and helps others in the same field. The love the idea that I could 
+create a tool that students of game development can use to develop their 
+skills or simply have fun visualizing their creativity. I have a hope that 
+this tool is something that people would actually want to use.
+
+Our project at first seems to lack requirements in a structures way, but 
+there is a large open field of possibilities that we can tap into.
+I see Senior Design as a way to sharpen my skills as a programmer whilst 
+creating something that I can be proud of, and I consider this project as 
+a way to accomplish the goals set by my outlook.
+
 ### Christopher Williams
 
 I had previously suggested a Senior Design project similar to this, but
 utilizing procedural generation techniques. I wanted to assist game
 developers in level creation by creating procedurally generated
 assets/levels as a tool for the Unity or Unreal Engine. This project
-gives the same satisfaction in assisting game developers increase
+gives the same satisfaction in assisting game developers to increase their
 efficiency in level prototyping and will allow me to work with the Unity
 Game Engine as I intended.
 
@@ -123,9 +144,9 @@ I had not considered that my experience with Computer Vision could help
 with game development and I am excited to apply my experience in this
 field and learn much more. I am already familiar with resources for
 potential previous implementations of Computer Vision systems in 3D
-scene reproduction. I felt that this opportunity could open a door to
-future game development positions and combines two fields that I am
-passionate about.
+scene processing and reproduction. I enjoy researching the field of computer vision and hope to write an original implementation for this project alongside Mark.
+
+I've always been enthralled with the game development process and I am excited to have a chance to contribute. My career plans are still an open book at this point in my life and I feel that this project could even open a door to future game development positions. Consisting of both computer vision systems and game development methodologies, this project combines two fields that I am passionate about and I .
 
 # Specifications
 
@@ -142,7 +163,7 @@ passionate about.
 The UCF Games Research Group had several devices available to us for no
 charge. These included: Intel® RealSense™ 3D, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
-suitability of each of the devices
+suitability of each of the devices.
 
 #### Intel® RealSense™ 3D
 
@@ -307,11 +328,54 @@ we can receive the data from the camera and then pass it along to the
 computer vision module.
 
 #### SenseManager
+
+The `SenseManager` is the access point for all other modules within the Intel®
+RealSense™ SDK. An instance of the `SenseManager` class is obtained by the static
+method `SenseManager.CreateInstance()`. Once the `SenseManager` is created, all access
+to the Intel® RealSense™ camera I/O is accessible via a `SampleReader` object 
+created from the `SenseManager`. This I/0 includes both the depth stream and
+color stream provided by the camera.
+
 #### SampleReader
+
+The `SampleReader` provides access to a stream of color or depth samples. A 
+`SampleReader` is obtained by calling the function `SampleReader.Activate(sm)`
+where `sm` is the `SenseManager` obtained from the camera. The 
+`SampleReader.Activate(sm)` method returns a `SampleReader` object which the 
+caller should capture. The stream is then activated by the 
+`reader.EnableStream(type, width, height, fps)` where reader is the `StreamReader` 
+object, type is the data type of the stream, width is a measure of the captured 
+image's width in pixels, height is a measure of the captured image's height in 
+pixels, and fps is the the number of frames to capture per second. Once this is
+complete the stream is prepared to capture data.
+
+#### Capturing Data
 
 ## Computer Vision Research
 
+### Inputs
+
+There are two basic input formats for the incoming camera data: Point
+Cloud Data (PCD) or RGB-D image pairs. Point Cloud Data provides
+millions of data points which provides an implicit high accuracy level.
+The difficulty with Point Cloud Data is that minimization or simplification
+would be required before processing if we wish to achieve fast runtimes.
+
+RGB-D image pairs would contain an RGB image alongside a depth image per
+frame. This provides a faster runtime more similar to image processing
+tasks, but it still provides depth information to make sufficiently
+accurate processing results for our purposes. For these reasons we have
+chosen to utilize the ability of the Intel® RealSense™ camera to capture
+RGB-D image pairs for our application.
+
+The amount of images passed to the computer vision interface is a crucial detail and will take testing to determine the optimal amount of images, angles of view, and capture rate. 
+
+### Outputs
+
+Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translational matrix,  
+
 ### Previous Methods
+
 We have studied many state-of-the-art computer vision methods for 3D
 scene processing, object detection, object recognition, and model
 alignment. Our goal with this research is to find a method or methods to
@@ -326,6 +390,8 @@ not satisfying the needs of the user. All of the following methods will
 require significant refinement and alteration to meet our needs but will
 save us time overall because we will not have to develop a 3D computer
 vision algorithm from scratch.
+
+The heart of the problem that this project faces is pose estimation of a rigid object in a 3D scene with six degrees of freedom. This problem can be described as converting the position of a physical object from its own coordinate system to the camera's coordinate system. The important aspects of an object's rotation are defined as its rotation and translation relative to the total coordinate system.
 
 Most of these methods provide bounding box information as output after
 processing. If rotational information is not provided this bounding box
@@ -352,15 +418,15 @@ for our purposes because we have been provided 3D models for each of the
 block types present in our target block set.
 
 #### Aligning 3D Models to RGB-D Images of Cluttered Scenes
-This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propogated forward through the network and the network outputs a pose estimate of an object's orientation.
+
+This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propagated forward through the network and the network outputs a pose estimate of an object's orientation.
 
 Then this method performs a search on a list of CAD models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
 
 This method provides useful ideas about a potential convolutional neural network approach to our project's computer vision problem. The dataset and model-fitting methods are not applicable to our specific needs, but I believe the neural network approach could be a potentially useful architecture that we may consider for risk mitigation if another structure fails to meet our needs. 
 
-#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
-
 #### Learning 6D Object Pose Estimation using 3D Object Coordinates
+
 This method begins by predicting probabilities and coordinates of object instances using 
 a decision forest. An energy function is applied to the output of the forest next. Then, 
 optimization is performed using an algorithm based on Random Sample Consensus (RANSAC). 
@@ -373,8 +439,7 @@ pixels from object images that were already segmented.
 
 Then, to give each pixel a probability distribution and a coordinate prediction for each tree 
 and object, each pixel of an input image is run through every tree in the trained decision forest. 
-The result of this is the vectorized results from all leaf nodes in the forest containing probabilities and predictions for each pixel. This allows for the prediction of a single pixel belonging to the desired object. If the object was predicted in all of the leaf nodes then its object probability will be 
-calculated.
+The result of this is the vectorized results from all leaf nodes in the forest containing probabilities and predictions for each pixel. This allows for the prediction of a single pixel belonging to the desired object. If the object was predicted in all of the leaf nodes then its object probability will be calculated.
 
 Pose estimation is calculated by optimizing the energy function in this method. Depth energy, 
 coordinate energy, and object energy are calculated and summed to form the total energy for an 
@@ -383,15 +448,18 @@ that of an expected depth of a predefined object at the estimated pose. The othe
 measures of how much the observed coordinates and object predictions differ from the predicted 
 tree values. 
 
-Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. The Kabsch algorithm is used for otaining object pose hypotheses. A transformation error is calculated for each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is accepted as an inlier. 
+Pose sampling is done by choosing three pixels from an integral of the image to increase efficiency. The Kabsch algorithm is used for obtaining object pose hypotheses. A transformation error is calculated for each pose hypothesis using 3D coordinate correspondences. The error for these distances must be under five percent of the target object's diameter. After 210 hypotheses are accepted the best 25 are refined by calculating error for all the trees. If the error distances are within 20 millimeters the pixel is accepted as an inlier. 
 
 The inliers' correspondences are saved and used for repeated runs of the Kabsch algorithm until one of three conditions occur. The conditions are as follows: the number of inliers becomes less than three, the error stops decreasing, or the number of iterations exceeds the limit of 100.
 
-#### Aligning 3D Models to RGB-D Images of Cluttered Scenes
+#### Learning Analysis-by-Synthesis for 6D Pose Estimation in RGB-D Images
 
-#### Deep Sliding Shapes for Amodal 3D Object Detection in RGB-D Images
+This is another convolutional neural network implementation of 6D pose estimation. The network takes 6 modes of input: observed depth, rendered depth, rendered mask, depth mask, object probability, and object coordinates.  For image preparation to use the network this method runs the RGB input image through a random forest and produces the observed probabilities and coordinates based on the forest's modes of output. The probabilities are denoted by grayscale pixel intensity in the outputted image. The images created for object coordinate measures are visualized in RGB and there is one image for every tree in the random forest. 
+
+After the random forest process is completed once, the image renders are then passed into the input channels of the convolutional network with the input image's observed depth image. The data is fed through the network and an energy function is calculated. The energy function is then used to calculate the object pose hypothesis. The pose hypothesis transformations are then applied to a 3d model to produce a pair of rendered object coordinate and depth images. These are passed into the CNN and the process repeats until the energy function is at its apparent minimum.  
 
 #### Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
+
 This paper, which debuted at the 2016 Computer Vision and Pattern
 Recognition (CVPR) Conference, by Brachmann *et al.* is currently our
 most useful resource for the computer vision interface of our software.
@@ -416,24 +484,29 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-### Inputs
-
-There are two basic input formats for the incoming camera data: Point
-Cloud Data (PCD) or RGB-D image pairs. Point Cloud Data provides
-millions of data points which provides an implied high accuracy level.
-The trouble with Point Cloud Data is that minimization or simplification
-would be required before processing if we wish to achieve fast runtimes.
-
-RGB-D image pairs would contain an RGB image alongside a depth image per
-frame. This provides a faster runtime more similar to image processing
-tasks, but it still provides depth information to make sufficiently
-accurate processing results for our purposes. For these reasons we have
-chosen to utilize the ability of the Intel® RealSense™ camera to capture
-RGB-D image pairs for our application.
+Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full ACCV object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
 ### Datasets
 
-### Outputs
+#### The RGB-D Object Dataset
+
+This dataset contains 300 objects placed into 51 different categories. It was created with a Kinect camera which is very similar to the Intel® RealSense™ camera we plan to use for our application. The RGB frames are captured with width of 640 pixels and height of 480 pixels. The corresponding depth frames are captured at a rate of 30 Hz. The data was captured by recording objects rotating 360 degrees on a spinning table. There is pose-based ground truth data for every object in this dataset. 
+
+This dataset also includes 22 videos of indoor scenes including the objects in the dataset with sufficient cluttering and occlusion for our training purposes. The varying distances in the scenes can help with robust training for different camera setups as well.
+
+### The Object Segmentation Database (OSD)
+
+The Object Segmentation Database includes data on 111 objects with corresponding RGB-D data divided into appropriate categories based on their basic shapes. There are categories for boxes, stacked boxes, occlusion, cylindrical objects, mixed objects, and complex scenes. The basic shapes provided could be an excellent resource for testing our algorithm since the blocks provided by our sponsors are the same basic shapes as those included in this database.
+
+### Willow and Challenge Dataset
+
+The Willow dataset contains 24 series of 353 total RGB-D images with available ground-truth information and separate sets for training and testing. These include 110 objects and 1168 appearances of those objects. 
+
+The Challenge dataset is available alongside the Willow dataset. It includes 39 frame sequences, with 176 RGB-D images total. These include 97 objects with 434 appearances.
+
+####  Big Berkeley Instance Recognition Dataset (Big BIRD)
+
+This dataset includes 600 images, 600 RGB-D-based point clouds, pose information for every image and point cloud, segmentation masks for all images, and meshes created from merged point clouds. This dataset is extensive but utilizes point clouds which would not be applicable for our purposes. if extra data is needed, this could be a potentially useful resource.
 
 ## Unity Game Engine Research
 
@@ -497,37 +570,43 @@ interface.
 
 ## Camera Design
 
+The design of the camera module strives to implement the fundamental 
+concept of separating interface from implementation. By defining an
+`ICamera` interface that handles all public access, the underlying 
+implementation can change dramatically as long as it conforms to the 
+contract specified by the interface. This allows for supporting additional
+cameras in future versions of the product as well as making camera changes
+should unforeseeable events occur. All these changes can happen within
+the camera module without the unity plugin needing to change its method
+calls at all.
+
 ### Public Members
-The `CameraInterface` has four public members. They include: `StartCapture`,
-`StopCapture`, `ImageAvailable`, and `OutOfImages`. Each of these public members
-are described below.
+The `RealSenseCamera` has three public members. All three of its public 
+members are implementations of the `ICamera` interface's public members 
+They include: `StartCapture()`, `StopCapture()`, and `GetImages()`. 
+Each of these public members are described below.
 
 #### StartCapture
-The `StartCapture` method of the `CameraInterface` signals the class 
-to start capturing images from the Intel® RealSense™ Camera. The camera
-will continually capture images until the class is signaled by the 
-`StopCapture` method.
+The `StartCapture` method of the `RealSenseCamera` signals the class 
+to start capturing images from the Intel® RealSense™ Camera. This updates
+the camera's state variable to the `CameraState.RUNNING` state. The method
+will engage the camera capture loop which will continually capture images 
+until otherwise notified. This notification is created by calling the 
+`StopCapture` method described below.
 
 #### StopCapture
-The `StopCapture` method of the `CameraInterface` signals the class
-to stop capturing images from the Intel® RealSense™ Camera. The camera
-module will then finish sending any images it had already captured via
-the `ImageAvailable` event.
+The `StopCapture` method of the `RealSenseCamera` signals the class
+to stop capturing images from the Intel® RealSense™ Camera. The `State`
+member variable will be changed in order to signal to the capture loop
+to terminate. The camera module will then finish converting and saving
+all images that have been captured. Image capture will not resume again 
+until the `StartCapture` method has been called.
 
-#### ImageAvailable
-The `ImageAvailable` event of the `CameraInterface` signals to a listener
-that there is a new image available. It sends the new Image through the 
-delegate and the listener is able to receive the new image. This event can
-only happen while the `CameraInterface` is in the `CameraInterfaceState.Capture` 
-state.
-
-#### OutOfImages
-The `OutOfImages` event of the `CameraInterface` signals to a listener that
-there are no longer any images available to send via the ImageAvailable
-event. This event can only be called after the `StopCapture` event has been
-called on the `CameraInterface`. This is to make sure that all images that
-were obtained within the capture period are sent to the listener and that no
-data is lost.
+#### GetImage
+Gets the next available image from the camera as a `Bitmap`. 
+The image is likely to have already been captured and possibly written to 
+disk. In this case the image would need to be read from disk and then 
+returned. If the image is still in memory then the `Bitmap`.
 
 ## Computer Vision Design
 
@@ -545,11 +624,72 @@ data is lost.
 
 # Testing Plan
 
-## Camera Testing
+## RealSenseCamera Testing
+
+### Unit Tests
+
+#### StartCapture
+
+The  job of the `StartCapture` method is to signal to the rest of the
+`RealSenseCamera` that capture should begin. This starts the capture 
+loop and 
+
+| Input | Output |          Starting Conditions |            Ending Conditions |
+|-------|--------|------------------------------|------------------------------|
+|   N/A |   N/A  | State == CameraState.STOPPED | State == CameraState.RUNNING |
+
+#### StopCapture
+
+The job of the `StopCapture` method is simply to signal to the rest of the 
+`RealSenseCamera` class that the capture should halt. This is used to signal
+to the capture loop to terminate execution. 
+
+| Input | Output |          Starting Conditions |           Ending Conditions |
+|-------|--------|------------------------------|-----------------------------|
+|   N/A |    N/A | State == CameraState.RUNNING | State = CameraState.STOPPED |
+
+#### ConvertImage
+
+The only way to objectively test the ConvertImage method is to procedurally
+generate `Image` objects from the Intel® RealSense™ SDK as input for the 
+`ConvertImage` method. A brief description of the attributes are below:
+
+* **TestRSImage1** - TODO: Image Description
+* **TestRSImage2** - TODO: Image Description
+* **TestRSImage3** - TODO: Image Description
+
+The test would make sure that the `Bitmap` (denoted as ImageGeneratingBitmap#)
+that was used to produce the Intel® RealSense™ SDK `Image` objects (denoted as TestRSImage#) 
+are what the `ConvertImage` method produces.
+
+|        Input |                 Output | Starting Conditions | Ending Conditions |
+|--------------|------------------------|---------------------|-------------------|
+| TestRSImage1 | ImageGeneratingBitmap1 |                 N/A |               N/A |
+| TestRSImage2 | ImageGeneratingBitmap2 |                 N/A |               N/A |
+| TestRSImage3 | ImageGeneratingBitmap3 |                 N/A |               N/A |
 
 ## Computer Vision Testing
 
+### Benchmark Testing
+
+We will be using "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" as a benchmark for our computer vision interface. We would like to track metrics on our training and detection processes to attempt to get as close as possible to the results of Bachmann *et al.*. 
+
+On the Hintersoisser dataset Bachmann *et al.* achieved 82.1% accuracy when estimating 3D 6-DOF pose with a maximum re-projection error for all vertices of 5cm and a maximum rotation error of 5°.  Processing time was calculated at a maximum of 1 second for 13 objects, nearly 2 seconds for 25 objects and nearly 4 seconds for 50 images. The issue with utilizing processing time is that the authors mention that processing time can broadly vary with hypothesis acceptance. If it is more difficult to accept a hypothesis the processing time increases. We will mitigate this risk by testing both their implementation and our implementation on the same data after being trained on the same dataset and compare those recorded processing times.
+
+The primary classes for benchmark testing in the CVPR 2016 implementation of "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" are `train_trees` and `test_pose_estimation`. `train_trees` monitors training time by using the `stopWatch` and in `test_pose_estimation` the average RANSAC runtime, the average auto-context random forest runtime, and the evaluation results are given in `avgRansacTime`,`avgForestTime`, and `objEval` respectively.
+
+### Accord Framework Unit Tests
+
+
+
+### Unit Testing
+
+
+### Integration Testing
+
 ## Unity Testing
+
+## Integration Testing
 
 # Budget
 Our sponsors did not specify a specific dollar amount for our budget but 
@@ -567,5 +707,8 @@ possession.
 ## Unity Costs
 
 # Milestones
+October 2016 - Compile and run the source code provided with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[].
+
+January 2017 - Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing and Random Forest testing. We must ensure the framework integrity before continuing.
 
 # Summary
