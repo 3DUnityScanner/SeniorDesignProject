@@ -109,6 +109,27 @@ do.
 
 ### Mark McCulloh
 
+Out of all the possible projects the I could choose for senior design, 
+I sought after one that provided an interesting outlet for algorithms 
+related to computer vision whilst also allowing the project to not be 
+especially daunting due to my lack of experience. I know that I will 
+fully invest myself in the project if it is interesting and approachable, 
+regardless of how I feel about my lack of experience. This project fit that 
+bill immediately, but there were even more positives on top of that.
+
+I spend a lot of my leisure time both playing and creating games, so 
+it was natural for me to choose a project that integrates with that 
+culture and helps others in the same field. The love the idea that I could 
+create a tool that students of game development can use to develop their 
+skills or simply have fun visualizing their creativity. I have a hope that 
+this tool is something that people would actually want to use.
+
+Our project at first seems to lack requirements in a structures way, but 
+there is a large open field of possibilities that we can tap into.
+I see Senior Design as a way to sharpen my skills as a programmer whilst 
+creating something that I can be proud of, and I consider this project as 
+a way to accomplish the goals set by my outlook.
+
 ### Christopher Williams
 
 I had previously suggested a Senior Design project similar to this, but
@@ -142,7 +163,7 @@ I've always been enthralled with the game development process and I am excited t
 The UCF Games Research Group had several devices available to us for no
 charge. These included: Intel® RealSense™ 3D, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
-suitability of each of the devices
+suitability of each of the devices.
 
 #### Intel® RealSense™ 3D
 
@@ -307,7 +328,28 @@ we can receive the data from the camera and then pass it along to the
 computer vision module.
 
 #### SenseManager
+
+The `SenseManager` is the access point for all other modules within the Intel®
+RealSense™ SDK. An instance of the `SenseManager` class is obtained by the static
+method `SenseManager.CreateInstance()`. Once the `SenseManager` is created, all access
+to the Intel® RealSense™ camera I/O is accessible via a `SampleReader` object 
+created from the `SenseManager`. This I/0 includes both the depth stream and
+color stream provided by the camera.
+
 #### SampleReader
+
+The `SampleReader` provides access to a stream of color or depth samples. A 
+`SampleReader` is obtained by calling the function `SampleReader.Activate(sm)`
+where `sm` is the `SenseManager` obtained from the camera. The 
+`SampleReader.Activate(sm)` method returns a `SampleReader` object which the 
+caller should capture. The stream is then activated by the 
+`reader.EnableStream(type, width, height, fps)` where reader is the `StreamReader` 
+object, type is the data type of the stream, width is a measure of the captured 
+image's width in pixels, height is a measure of the captured image's height in 
+pixels, and fps is the the number of frames to capture per second. Once this is
+complete the stream is prepared to capture data.
+
+#### Capturing Data
 
 ## Computer Vision Research
 
