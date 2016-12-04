@@ -311,6 +311,27 @@ computer vision module.
 
 ## Computer Vision Research
 
+### Inputs
+
+There are two basic input formats for the incoming camera data: Point
+Cloud Data (PCD) or RGB-D image pairs. Point Cloud Data provides
+millions of data points which provides an implicit high accuracy level.
+The difficulty with Point Cloud Data is that minimization or simplification
+would be required before processing if we wish to achieve fast runtimes.
+
+RGB-D image pairs would contain an RGB image alongside a depth image per
+frame. This provides a faster runtime more similar to image processing
+tasks, but it still provides depth information to make sufficiently
+accurate processing results for our purposes. For these reasons we have
+chosen to utilize the ability of the Intel® RealSense™ camera to capture
+RGB-D image pairs for our application.
+
+The amount of images passed to the computer vision interface is a crucial detail and will take testing to determine the optimal amount of images, angles of view, and capture rate. 
+
+### Outputs
+
+Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translational matrix,  
+
 ### Previous Methods
 
 We have studied many state-of-the-art computer vision methods for 3D
@@ -327,6 +348,8 @@ not satisfying the needs of the user. All of the following methods will
 require significant refinement and alteration to meet our needs but will
 save us time overall because we will not have to develop a 3D computer
 vision algorithm from scratch.
+
+The heart of the problem that this project faces is pose estimation of a rigid object in a 3D scene with six degrees of freedom. This problem can be described as converting the position of a physical object from its own coordinate system to the camera's coordinate system. The important aspects of an object's rotation are defined as its rotation and translation relative to the total coordinate system.
 
 Most of these methods provide bounding box information as output after
 processing. If rotational information is not provided this bounding box
@@ -389,7 +412,9 @@ The inliers' correspondences are saved and used for repeated runs of the Kabsch 
 
 #### Learning Analysis-by-Synthesis for 6D Pose Estimation in RGB-D Images
 
+This is another convolutional neural network implementation of 6D pose estimation. The network takes 6 modes of input: observed depth, rendered depth, rendered mask, depth mask, object probability, and object coordinates.  For image preparation to use the network this method runs the RGB input image through a random forest and produces the observed probabilities and coordinates based on the forest's modes of output. The probabilities are denoted by grayscale pixel intensity in the outputted image. The images created for object coordinate measures are visualized in RGB and there is one image for every tree in the random forest. 
 
+After the random forest process is completed once, the image renders are then passed into the input channels of the convolutional network with the input image's observed depth image. The data is fed through the network and an energy function is calculated. The energy function is then used to calculate the object pose hypothesis. The pose hypothesis transformations are then applied to a 3d model to produce a pair of rendered object coordinate and depth images. These are passed into the CNN and the process repeats until the energy function is at its apparent minimum.  
 
 #### Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image
 
@@ -417,20 +442,7 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-### Inputs
-
-There are two basic input formats for the incoming camera data: Point
-Cloud Data (PCD) or RGB-D image pairs. Point Cloud Data provides
-millions of data points which provides an implicit high accuracy level.
-The trouble with Point Cloud Data is that minimization or simplification
-would be required before processing if we wish to achieve fast runtimes.
-
-RGB-D image pairs would contain an RGB image alongside a depth image per
-frame. This provides a faster runtime more similar to image processing
-tasks, but it still provides depth information to make sufficiently
-accurate processing results for our purposes. For these reasons we have
-chosen to utilize the ability of the Intel® RealSense™ camera to capture
-RGB-D image pairs for our application.
+Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full ACCV object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
 ### Datasets
 
@@ -442,7 +454,7 @@ This dataset also includes 22 videos of indoor scenes including the objects in t
 
 ### The Object Segmentation Database (OSD)
 
-The Object Segmentation Database includes data on 111 objects with corresponding RGB-D data divided into appropriate categories based on their basic shapes. There are categories for boxes, stacked boxes, occlusion, cylindric objects, mixed objects, and complex scenes. The basic shapes provided could be an excellent resource for testing our algorithm since the blocks provided by our sponsors are the same basic shapes as those included in this database.
+The Object Segmentation Database includes data on 111 objects with corresponding RGB-D data divided into appropriate categories based on their basic shapes. There are categories for boxes, stacked boxes, occlusion, cylindrical objects, mixed objects, and complex scenes. The basic shapes provided could be an excellent resource for testing our algorithm since the blocks provided by our sponsors are the same basic shapes as those included in this database.
 
 ### Willow and Challenge Dataset
 
@@ -453,8 +465,6 @@ The Challenge dataset is available alongside the Willow dataset. It includes 39 
 ####  Big Berkeley Instance Recognition Dataset (Big BIRD)
 
 This dataset includes 600 images, 600 RGB-D-based point clouds, pose information for every image and point cloud, segmentation masks for all images, and meshes created from merged point clouds. This dataset is extensive but utilizes point clouds which would not be applicable for our purposes. if extra data is needed, this could be a potentially useful resource.
-
-### Outputs
 
 ## Unity Game Engine Research
 
@@ -570,6 +580,23 @@ data is lost.
 
 ## Computer Vision Testing
 
+### Benchmark Testing
+
+We will be using "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" as a benchmark for our computer vision interface. We would like to track metrics on our training and detection processes to attempt to get as close as possible to the results of Bachmann *et al.*. 
+
+On the Hintersoisser dataset Bachmann *et al.* achieved 82.1% accuracy when estimating 3D 6-DOF pose with a maximum re-projection error for all vertices of 5cm and a maximum rotation error of 5°.  Processing time was calculated at a maximum of 1 second for 13 objects, nearly 2 seconds for 25 objects and nearly 4 seconds for 50 images. The issue with utilizing processing time is that the authors mention that processing time can broadly vary with hypothesis acceptance. If it is more difficult to accept a hypothesis the processing time increases. We will mitigate this risk by testing both their implementation and our implementation on the same data after being trained on the same dataset and compare those recorded processing times.
+
+The primary classes for benchmark testing in the CVPR 2016 implementation of "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" are `train_trees` and `test_pose_estimation`. `train_trees` monitors training time by using the `stopWatch` and in `test_pose_estimation` the average RANSAC runtime, the average auto-context random forest runtime, and the evaluation results are given in `avgRansacTime`,`avgForestTime`, and `objEval` respectively.
+
+### Accord Framework Unit Tests
+
+
+
+### Unit Testing
+
+
+### Integration Testing
+
 ## Unity Testing
 
 # Budget
@@ -588,5 +615,8 @@ possession.
 ## Unity Costs
 
 # Milestones
+October 2016 - Compile and run the source code provided with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[].
+
+January 2017 - Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing and Random Forest testing. We must ensure the framework integrity before continuing.
 
 # Summary
