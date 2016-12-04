@@ -320,36 +320,56 @@ since the code is incorporated directly into the Unity plugin, the need
 to call an external DLL is eliminated and will make the deployment and
 maintenance of the project simpler.
 
-### Intel® RealSense™ Overview
+### Intel® RealSense™ SDK Overview
 
 The Intel® RealSense™ SDK provides access to the camera as well as access
-to some 3D Scanning algorithms. Fundamentally the SDK is needed so that 
+to some computer vision algorithms. Fundamentally the SDK is needed so that 
 we can receive the data from the camera and then pass it along to the 
 computer vision module.
 
 #### SenseManager
 
-The `SenseManager` is the access point for all other modules within the Intel®
-RealSense™ SDK. An instance of the `SenseManager` class is obtained by the static
-method `SenseManager.CreateInstance()`. Once the `SenseManager` is created, all access
-to the Intel® RealSense™ camera I/O is accessible via a `SampleReader` object 
-created from the `SenseManager`. This I/0 includes both the depth stream and
-color stream provided by the camera.
+The `SenseManager` class is the access point for all other modules within the Intel®
+RealSense™ SDK. An instance of the `SenseManager` class cannot be created with
+a constructor but instead is created with a factory pattern using a static method
+of the `SenseManager` class. The primary purpose of the `SenseManager` class is to
+create `SampleReader` objects, initiate the data pipeline for processing, and to
+control execution of the pipeline. The exact methods required for these functions
+in the "Capturing Data" section below.
 
 #### SampleReader
 
-The `SampleReader` provides access to a stream of color or depth samples. A 
-`SampleReader` is obtained by calling the function `SampleReader.Activate(sm)`
-where `sm` is the `SenseManager` obtained from the camera. The 
-`SampleReader.Activate(sm)` method returns a `SampleReader` object which the 
-caller should capture. The stream is then activated by the 
-`reader.EnableStream(type, width, height, fps)` where reader is the `StreamReader` 
-object, type is the data type of the stream, width is a measure of the captured 
-image's width in pixels, height is a measure of the captured image's height in 
-pixels, and fps is the the number of frames to capture per second. Once this is
-complete the stream is prepared to capture data.
+The `SampleReader` class provides access to a stream of color samples, depth 
+samples, or both. The sample reader is obtained through a member function
+contained within a `SenseManager` object. The type of data that the `SampleReader`
+provides is determined by the parameters of a member function call on the
+`SampleReader` object in question. The `SampleReader` provides properties 
+for accessing the sample that the pipeline generates.
 
 #### Capturing Data
+
+In order to begin capturing data 4 steps have to be executed
+
+1. Acquire the `SenseManager`
+2. Acquire a `SampleReader` using the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
+3. Call `EnableStream` on the acquired `SampleReader` and pass it the type of desired stream
+4. Call `Init` on the `SenseManager` with no arguments
+
+Once these steps have been completed it is possible to acquire data from
+the video pipeline. Acquire data can be achieved in 3 easy steps
+
+1. Call `AcquireFrame` on the acquired `SenseManager`
+2. Retrieve the `Sample` Property from the acquired `SampleReader`
+3. Call `ReleaseFrame` on the acquired `SenseManager` when frame processing is complete
+
+The above three steps may be repeated as many times as desired. Upon 
+completion of data capture. The `Close` method or `Dispose` method must
+be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
+instance will be used to stream data later. Otherwise use `Dispose` to 
+free all resources associated with the instance. 
+
+#### IDisposable interface
+
 
 ## Computer Vision Research
 
@@ -591,37 +611,43 @@ interface.
 
 ## Camera Design
 
+The design of the camera module strives to implement the fundamental 
+concept of separating interface from implementation. By defining an
+`ICamera` interface that handles all public access, the underlying 
+implementation can change dramatically as long as it conforms to the 
+contract specified by the interface. This allows for supporting additional
+cameras in future versions of the product as well as making camera changes
+should unforeseeable events occur. All these changes can happen within
+the camera module without the unity plugin needing to change its method
+calls at all.
+
 ### Public Members
-The `CameraInterface` has four public members. They include: `StartCapture`,
-`StopCapture`, `ImageAvailable`, and `OutOfImages`. Each of these public members
-are described below.
+The `RealSenseCamera` has three public members. All three of its public 
+members are implementations of the `ICamera` interface's public members 
+They include: `StartCapture()`, `StopCapture()`, and `GetImages()`. 
+Each of these public members are described below.
 
 #### StartCapture
-The `StartCapture` method of the `CameraInterface` signals the class 
-to start capturing images from the Intel® RealSense™ Camera. The camera
-will continually capture images until the class is signaled by the 
-`StopCapture` method.
+The `StartCapture` method of the `RealSenseCamera` signals the class 
+to start capturing images from the Intel® RealSense™ Camera. This updates
+the camera's state variable to the `CameraState.RUNNING` state. The method
+will engage the camera capture loop which will continually capture images 
+until otherwise notified. This notification is created by calling the 
+`StopCapture` method described below.
 
 #### StopCapture
-The `StopCapture` method of the `CameraInterface` signals the class
-to stop capturing images from the Intel® RealSense™ Camera. The camera
-module will then finish sending any images it had already captured via
-the `ImageAvailable` event.
+The `StopCapture` method of the `RealSenseCamera` signals the class
+to stop capturing images from the Intel® RealSense™ Camera. The `State`
+member variable will be changed in order to signal to the capture loop
+to terminate. The camera module will then finish converting and saving
+all images that have been captured. Image capture will not resume again 
+until the `StartCapture` method has been called.
 
-#### ImageAvailable
-The `ImageAvailable` event of the `CameraInterface` signals to a listener
-that there is a new image available. It sends the new Image through the 
-delegate and the listener is able to receive the new image. This event can
-only happen while the `CameraInterface` is in the `CameraInterfaceState.Capture` 
-state.
-
-#### OutOfImages
-The `OutOfImages` event of the `CameraInterface` signals to a listener that
-there are no longer any images available to send via the ImageAvailable
-event. This event can only be called after the `StopCapture` event has been
-called on the `CameraInterface`. This is to make sure that all images that
-were obtained within the capture period are sent to the listener and that no
-data is lost.
+#### GetImage
+Gets the next available image from the camera as a `Bitmap`. 
+The image is likely to have already been captured and possibly written to 
+disk. In this case the image would need to be read from disk and then 
+returned. If the image is still in memory then the `Bitmap`.
 
 ## Computer Vision Design
 
@@ -639,7 +665,49 @@ data is lost.
 
 # Testing Plan
 
-## Camera Testing
+## RealSenseCamera Testing
+
+### Unit Tests
+
+#### StartCapture
+
+The  job of the `StartCapture` method is to signal to the rest of the
+`RealSenseCamera` that capture should begin. This starts the capture 
+loop and 
+
+| Input | Output |          Starting Conditions |            Ending Conditions |
+|-------|--------|------------------------------|------------------------------|
+|   N/A |   N/A  | State == CameraState.STOPPED | State == CameraState.RUNNING |
+
+#### StopCapture
+
+The job of the `StopCapture` method is simply to signal to the rest of the 
+`RealSenseCamera` class that the capture should halt. This is used to signal
+to the capture loop to terminate execution. 
+
+| Input | Output |          Starting Conditions |           Ending Conditions |
+|-------|--------|------------------------------|-----------------------------|
+|   N/A |    N/A | State == CameraState.RUNNING | State = CameraState.STOPPED |
+
+#### ConvertImage
+
+The only way to objectively test the ConvertImage method is to procedurally
+generate `Image` objects from the Intel® RealSense™ SDK as input for the 
+`ConvertImage` method. A brief description of the attributes are below:
+
+* **TestRSImage1** - TODO: Image Description
+* **TestRSImage2** - TODO: Image Description
+* **TestRSImage3** - TODO: Image Description
+
+The test would make sure that the `Bitmap` (denoted as ImageGeneratingBitmap#)
+that was used to produce the Intel® RealSense™ SDK `Image` objects (denoted as TestRSImage#) 
+are what the `ConvertImage` method produces.
+
+|        Input |                 Output | Starting Conditions | Ending Conditions |
+|--------------|------------------------|---------------------|-------------------|
+| TestRSImage1 | ImageGeneratingBitmap1 |                 N/A |               N/A |
+| TestRSImage2 | ImageGeneratingBitmap2 |                 N/A |               N/A |
+| TestRSImage3 | ImageGeneratingBitmap3 |                 N/A |               N/A |
 
 ## Computer Vision Testing
 
@@ -662,20 +730,37 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 
 ## Unity Testing
 
-# Budget
-Our sponsors did not specify a specific dollar amount for our budget but 
-our possible costs are highly controlled. All possible costs are described 
-below.
+## Integration Testing
 
-## Camera Costs
+# Budget and Resources Provided by Sponsors
+Our sponsors did not specify a specific dollar amount for our budget but 
+our possible costs are highly controlled. The UCF Games Research Group has 
+many resources available for our team to utilize for this project.
+All possible costs or necessary resources are described below.
+
+## Cameras
 The Intel® RealSense™ was already available to the UCF Games
 Research Group. Therefore the use of the camera will not carry a cost
 to our group. The only potential cost the camera could pose is if we
 find the Intel® RealSense™ camera to be unusable and we have to use a
 camera that the UCF Games Research Group does not already have in their
-possession.
+possession. They also have a Microsoft Kinect, Microsoft Hololens, and an HTC Vive.
 
-## Unity Costs
+## Working Area
+The UCF Games Research Group has an office space with computers, cameras, and 
+space for team collaboration. This area provides ample space for our team to work with 
+the cameras and a table with objects placed on it.
+
+## Expert Consultation
+Under the UCF Games Research group, we have contact with students and experts in 
+various fields that can be useful for help with the development process. We have 
+access to the following:
+
+*   Unity experts to consult in order to learn and work with the intricacies of the 
+    Unity Software.
+
+*   3D models to create assets that may be required for the process of instantiating 
+    the models within the Unity Platform
 
 # Milestones
 
