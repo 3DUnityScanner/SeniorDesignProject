@@ -154,6 +154,21 @@ I've always been enthralled with the game development process and I am excited t
 
 ## Requirements
 
+### Necessary Features
+
+1. The system functions on the Windows platform
+2. The system is fully invoked enclosed within the Unity platform
+3. The system takes data from pictures taken from within the system
+4. The system can interpret a single vertical layer of blocks (minimal occlusion) on a flat surface
+5. The system analyses RGB-D data to calculate objects' placements and orientations
+6. The system uses object data to create and place models into an established Unity scene
+
+### Possible Features
+
+1. The system has Linux and OSX compatibility
+2. The system can take and analyse RGB or RGB-D data
+3. The system can interpret multiple vertical layers of blocks on a flat surface
+
 # Research
 
 ## Camera Research
@@ -774,6 +789,12 @@ access to the following:
 
 *   3D models to create assets that may be required for the process of instantiating 
     the models within the Unity Platform
+
+# Challenges
+
+## Computer Vision Algorithmic Complexities
+
+## Realistic Goals and Requirements
 
 # Milestones
 
