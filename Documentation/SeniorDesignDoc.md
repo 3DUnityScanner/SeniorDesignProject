@@ -372,7 +372,29 @@ The amount of images passed to the computer vision interface is a crucial detail
 
 ### Outputs
 
-Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translational matrix,  
+Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
+
+### Terminology Overview
+
+We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with.
+
+* 6D or 6DOF - The six degrees of freedom typically used for pose estimation algorithms. These include the x translation, y translation, z translation, x rotation, y rotation, and z rotation. 
+
+* Convolutional Neural Network (CNN) - A CNN is a data structure composed of layers. Each of these layers is composed of individual processing units called neurons which have weights associated with them. The advantage of CNNs over normal neural networks is that they are explicitly designed for image processing. They can handle large images due to their three dimensional structure, the third dimension of which is the depth of the neuron structure not the network itself. The network's layers can be categorized into three basic types: Convolutional layers, Pooling layers, and Fully-Connected Layers.
+
+* Convolution - A convolution in a CNN context is a matrix operation resulting in one scalar value as a result. The dot product of two matricies are computed, one of which is a small matrix called a filter. The result is a single scalar value.
+
+* Convolutional layers - Convolution layers in a CNN are what make this structure special. Each of these layers contains filters that are usually small but deep, extending the full depth of the input data. These filters are convolved with sections of the input data to create a two dimensional list of values called an activation map. This map represents the filter reactions at every point in the input data. Each layer can have many different filters and each filter has its own activation map. These maps are what make up the depth of each layer. These layers do most of the processing work in the network.
+
+* Pooling layer - The job of a pooling layer is to reduce the spatial complexity of the data being passed through the network. The operation these layers perform downspamples the images in the network to reduce the amount of parameters and therefore reduce the processing load on the network.
+
+* Normalization layer - A normalization layer in a CNN is a method of regularization that provides the activations with more of a significant value peak leading to more recognizable local maxima when compared with neighboring values.
+
+* Fully connected layer - A fully connected layer in a CNN is a layer whose neurons are attached to all of the activations of the previous layer rather than a small amount. This makes their activations able to be computed by a matrix multiplication with a bias offset.
+
+* Dropout layer - Dropout layers in a CNN are helpful in training because they reduce the size of the network by having a probability of forcing nodes to drop out of the network. The nodes are reinserted after the network is trained with their original weights. This process cuts down on training time and prevents the model becoming too complex. 
+
+* 
 
 ### Previous Methods
 
@@ -393,7 +415,7 @@ vision algorithm from scratch.
 
 The heart of the problem that this project faces is pose estimation of a rigid object in a 3D scene with six degrees of freedom. This problem can be described as converting the position of a physical object from its own coordinate system to the camera's coordinate system. The important aspects of an object's rotation are defined as its rotation and translation relative to the total coordinate system.
 
-Most of these methods provide bounding box information as output after
+Most of these methods provide bounding-box information as output after
 processing. If rotational information is not provided this bounding box
 gives us the ability to infer where objects are in the scene and allows
 us to convert this information into a 3D box primitive as our input into
@@ -401,10 +423,9 @@ the Unity Game Engine. This would work for a physical level built with
 only rectangular blocks, but we would like to find a method robust
 enough to include other types of blocks such as cylinders, cones, and
 pyramids. If a 3D model of the object and sufficient rotational
-information is provided we can fit other block types within the bounding
-box. With the appropriate rotations applied this provides a successfully
+information is provided we can fit other block types within the bounding-box. With the appropriate rotations applied, this provides a successfully
 and robustly matched object in the 3D scene space. Other methods match
-pre-existing 3D models to specific data points in the scene provided.
+pre-existing 3D models to specific data points, typically pixels with object labels associated with them, in the scene provided.
 
 The limitation set by these model-matching methods would be that users
 must use these specific types of blocks to get accurate results from our
@@ -657,8 +678,23 @@ possession.
 ## Unity Costs
 
 # Milestones
-October 2016 - Compile and run the source code provided with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[].
 
-January 2017 - Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing and Random Forest testing. We must ensure the framework integrity before continuing.
+### October 2016 - Run and test Bachmann implementation
+
+Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo for "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[]. Resolve any dependency issues involved with nlopt, PNG++, or OpenCV.
+
+Status: Completed successfully
+
+### November 2017 - Train Bachmann implementation on 'Dummy Data' and test on test set
+
+Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
+
+Status: Completed successfully
+
+### January 2017 - Set up Accord Framework
+
+Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing and Random Forest testing. We must ensure the framework integrity before continuing.
+
+Status: Pending
 
 # Summary
