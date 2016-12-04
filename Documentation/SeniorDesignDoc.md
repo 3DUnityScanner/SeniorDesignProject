@@ -802,13 +802,19 @@ access to the following:
 
 Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo for "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[]. Resolve any dependency issues involved with nlopt, PNG++, or OpenCV.
 
-Status: Completed successfully
+Status: Completed Successfully
+
+### December 2016 - Final Documentation
+
+Complete the final documentation for the planning of this project
+
+Status: Completely Successfully
 
 ### November 2017 - Train Bachmann implementation on 'Dummy Data' and test on test set
 
 Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
 
-Status: Completed successfully
+Status: Completed Successfully
 
 ### January 2017 - Set up Accord Framework
 
