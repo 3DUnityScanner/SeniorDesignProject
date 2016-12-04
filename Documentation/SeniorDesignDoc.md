@@ -383,8 +383,15 @@ be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
 instance will be used to stream data later. Otherwise use `Dispose` to 
 free all resources associated with the instance. 
 
-#### IDisposable interface
+#### Dispose Method
 
+Although C# is a managed language there are some classes in the Intel®
+RealSense™ SDK that do not benefit from automatic garbage collection.
+One of these objects is the `SenseManager`. In order for the object to 
+be processed by the garbage collector, the `Dispose` method must be called
+on the `SenseManager`. In order to ensure that the `Dispose` is called,
+it is wise to place the method call inside of a class destructor or to 
+initialize the `SenseManager` in a `using` block.
 
 ## Computer Vision Research
 
