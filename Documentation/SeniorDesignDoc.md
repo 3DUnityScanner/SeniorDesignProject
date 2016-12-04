@@ -320,36 +320,56 @@ since the code is incorporated directly into the Unity plugin, the need
 to call an external DLL is eliminated and will make the deployment and
 maintenance of the project simpler.
 
-### Intel® RealSense™ Overview
+### Intel® RealSense™ SDK Overview
 
 The Intel® RealSense™ SDK provides access to the camera as well as access
-to some 3D Scanning algorithms. Fundamentally the SDK is needed so that 
+to some computer vision algorithms. Fundamentally the SDK is needed so that 
 we can receive the data from the camera and then pass it along to the 
 computer vision module.
 
 #### SenseManager
 
-The `SenseManager` is the access point for all other modules within the Intel®
-RealSense™ SDK. An instance of the `SenseManager` class is obtained by the static
-method `SenseManager.CreateInstance()`. Once the `SenseManager` is created, all access
-to the Intel® RealSense™ camera I/O is accessible via a `SampleReader` object 
-created from the `SenseManager`. This I/0 includes both the depth stream and
-color stream provided by the camera.
+The `SenseManager` class is the access point for all other modules within the Intel®
+RealSense™ SDK. An instance of the `SenseManager` class cannot be created with
+a constructor but instead is created with a factory pattern using a static method
+of the `SenseManager` class. The primary purpose of the `SenseManager` class is to
+create `SampleReader` objects, initiate the data pipeline for processing, and to
+control execution of the pipeline. The exact methods required for these functions
+in the "Capturing Data" section below.
 
 #### SampleReader
 
-The `SampleReader` provides access to a stream of color or depth samples. A 
-`SampleReader` is obtained by calling the function `SampleReader.Activate(sm)`
-where `sm` is the `SenseManager` obtained from the camera. The 
-`SampleReader.Activate(sm)` method returns a `SampleReader` object which the 
-caller should capture. The stream is then activated by the 
-`reader.EnableStream(type, width, height, fps)` where reader is the `StreamReader` 
-object, type is the data type of the stream, width is a measure of the captured 
-image's width in pixels, height is a measure of the captured image's height in 
-pixels, and fps is the the number of frames to capture per second. Once this is
-complete the stream is prepared to capture data.
+The `SampleReader` class provides access to a stream of color samples, depth 
+samples, or both. The sample reader is obtained through a member function
+contained within a `SenseManager` object. The type of data that the `SampleReader`
+provides is determined by the parameters of a member function call on the
+`SampleReader` object in question. The `SampleReader` provides properties 
+for accessing the sample that the pipeline generates.
 
 #### Capturing Data
+
+In order to begin capturing data 4 steps have to be executed
+
+1. Acquire the `SenseManager`
+2. Acquire a `SampleReader` using the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
+3. Call `EnableStream` on the acquired `SampleReader` and pass it the type of desired stream
+4. Call `Init` on the `SenseManager` with no arguments
+
+Once these steps have been completed it is possible to acquire data from
+the video pipeline. Acquire data can be achieved in 3 easy steps
+
+1. Call `AcquireFrame` on the acquired `SenseManager`
+2. Retrieve the `Sample` Property from the acquired `SampleReader`
+3. Call `ReleaseFrame` on the acquired `SenseManager` when frame processing is complete
+
+The above three steps may be repeated as many times as desired. Upon 
+completion of data capture. The `Close` method or `Dispose` method must
+be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
+instance will be used to stream data later. Otherwise use `Dispose` to 
+free all resources associated with the instance. 
+
+#### IDisposable interface
+
 
 ## Computer Vision Research
 
