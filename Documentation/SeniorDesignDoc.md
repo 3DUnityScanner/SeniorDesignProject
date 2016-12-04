@@ -109,6 +109,20 @@ do.
 
 ### Mark McCulloh
 
+Out of all the possible projects the I could choose for senior design, 
+I sought after one that provided an interesting outlet for algorithms 
+related to computer vision whilst also allowing the project to not be 
+especially daunting due to my lack of experience. This project fit that 
+bill immediately, but there were even more positives on top of that.
+
+I spend a lot of my leisure time both playing and creating games, so 
+it was natural for me to choose a project that integrates with that 
+culture and helps others in the same field. The love the idea that I could 
+create a tool that students of game development can use to develop their 
+skills or simply have fun visualizing their creativity.
+
+I see Senior Design as a way to 
+
 ### Christopher Williams
 
 I had previously suggested a Senior Design project similar to this, but
