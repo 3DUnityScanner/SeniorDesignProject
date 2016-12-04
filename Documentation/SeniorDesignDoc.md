@@ -587,7 +587,19 @@ data is lost.
 
 # Testing Plan
 
-## Camera Testing
+## CameraInterface Testing
+
+### Unit Tests
+
+### Public Interface
+
+#### Start()
+
+#### Stop()
+
+#### ImageAvailable
+
+#### OutOfImages
 
 ## Computer Vision Testing
 
