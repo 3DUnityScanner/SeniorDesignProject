@@ -711,20 +711,35 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 
 ## Integration Testing
 
-# Budget
+# Budget and Resources Provided by Sponsors
 Our sponsors did not specify a specific dollar amount for our budget but 
-our possible costs are highly controlled. All possible costs are described 
-below.
+our possible costs are highly controlled. The UCF Games Research Group has 
+many resources available for our team to utilize for this project.
+All possible costs or necessary resources are described below.
 
-## Camera Costs
+## Cameras
 The Intel® RealSense™ was already available to the UCF Games
 Research Group. Therefore the use of the camera will not carry a cost
 to our group. The only potential cost the camera could pose is if we
 find the Intel® RealSense™ camera to be unusable and we have to use a
 camera that the UCF Games Research Group does not already have in their
-possession.
+possession. They also have a Microsoft Kinect, Microsoft Hololens, and an HTC Vive.
 
-## Unity Costs
+## Working Area
+The UCF Games Research Group has an office space with computers, cameras, and 
+space for team collaboration. This area provides ample space for our team to work with 
+the cameras and a table with objects placed on it.
+
+## Expert Consultation
+Under the UCF Games Research group, we have contact with students and experts in 
+various fields that can be useful for help with the development process. We have 
+access to the following:
+
+*   Unity experts to consult in order to learn and work with the intricacies of the 
+    Unity Software.
+
+*   3D models to create assets that may be required for the process of instantiating 
+    the models within the Unity Platform
 
 # Milestones
 October 2016 - Compile and run the source code provided with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[].
