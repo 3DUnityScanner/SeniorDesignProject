@@ -436,7 +436,25 @@ We will present brief definitions for most of the terms related to computer visi
 
 * Dropout layer - Dropout layers in a CNN are helpful in training because they reduce the size of the network by having a probability of forcing nodes to drop out of the network. The nodes are reinserted after the network is trained with their original weights. This process cuts down on training time and prevents the model becoming too complex. 
 
-* 
+* Energy Function - This is the function that is minimized when computing values in machine learning tasks. You can view this function as a method of inferring whether a value is correct or not. Lower energies are associated with correct values and higher energies are associated with incorrect values.
+
+* Classification problem - Image classification problems are determining if an object in a scene belongs to a set, or one of many sets, of other objects or not. 
+
+* Softmax regression - A method of supervised learning extending logistic regression to multi-class classification problems rather than just binary classification problems.
+
+* Iterative closest point (ICP) - This method of point cloud consolidation keeps one point cloud fixed and matches another source cloud to best match these reference points. Using a cost function, the rotation and translation are estimated and applied to the source points.
+
+* Outlier - An outlier is a value point in a statistical distribution located in the tail.
+
+* Inlier - An inlier is a value point in a mathematical model whose distribution can be explained by the model parameters.
+
+* Random sampling consensus (RANSAC) - RANSAC is a algorithm for estimating parameters of a mathematical model. This will fit the data to a certain model (e.g. line fitting). We will provide an in-depth look at our chosen implementation of RANSAC in the Detailed Design section.
+
+* Kabsch Algorithm - This algorithm calculates the rotation matrix of two sets containing pairs of points such that the root mean squared deviation between the sets is minimized. 
+
+* Decision tree - A decision tree is a tree structure where each node acts as a test of an attribute and every branch is a representation of the outcome of that test. The leaf nodes are labels that indicate which outcome is chosen as the final decision for the tree. These trees can be used as predictive models for machine learning tasks.
+
+* Random forest - A random forest is an ensemble method of machine learning using multiple decision trees usually for classification purposes.
 
 ### Previous Methods
 
@@ -484,7 +502,7 @@ block types present in our target block set.
 
 This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propagated forward through the network and the network outputs a pose estimate of an object's orientation.
 
-Then this method performs a search on a list of CAD models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
+Then this method performs a search on a list of computer-aided design (CAD) models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
 
 This method provides useful ideas about a potential convolutional neural network approach to our project's computer vision problem. The dataset and model-fitting methods are not applicable to our specific needs, but I believe the neural network approach could be a potentially useful architecture that we may consider for risk mitigation if another structure fails to meet our needs. 
 
@@ -547,7 +565,7 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full ACCV object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
+Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
 ### Datasets
 
