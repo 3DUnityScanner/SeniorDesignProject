@@ -840,17 +840,18 @@ Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo
 
 Status: Completed Successfully
 
+
+### November 2016 - Train Bachmann implementation on 'Dummy Data' and test on test set
+
+Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
+
+Status: Completed Successfully
+
 ### December 2016 - Final Documentation
 
 Complete the final documentation for the planning of this project
 
 Status: Completely Successfully
-
-### November 2017 - Train Bachmann implementation on 'Dummy Data' and test on test set
-
-Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
-
-Status: Completed Successfully
 
 ### January 2017 - Set up Accord Framework
 
