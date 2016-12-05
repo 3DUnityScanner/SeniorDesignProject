@@ -634,22 +634,18 @@ it functions. This allows us to accurately weigh the benefits and
 restrictions of this method in comparison to the other methods reviewed.
 
 This algorithm predicts object coordinates and labels with a
-modified random forest called a joint classification regression forest. This forest is trained by mapping object coordinates to a smaller set of discrete values using nearest neighbor assignment to the training data's object coordinates randomly.Then those with the most information gain when compared with the object distribution are chosen and these are stored as a Gaussian Mixture Model. When testing an image, a pixel is fed through a tree in the forest and when it gets to a leaf it will store the distribution of object coordinates and predictions for that pixel. Then all of that tree's object predictions are merged to form an overall prediction for that pixel. The coordinate distribution for the tree is then averaged.  
+modified random forest called a joint classification regression forest. This forest is trained by mapping object coordinates to a smaller set of discrete values using nearest neighbor assignment to the training data's object coordinates randomly.Then those with the most information gain when compared with the object distribution are chosen and these are stored as a Gaussian Mixture Model. When testing an image, a pixel is fed through a tree in the forest and when it gets to a leaf it will store the distribution of object coordinates and predictions for that pixel. Then all of that tree's object predictions are merged to form an overall prediction for that pixel. The coordinate distribution for the tree is then averaged [].  
 
 Then Brachmann *et al.* use a stack of these forests to generate context
-information for each pixel in the input image. The first level of this stack of forests is trained normally, but all the following trees have access to the outputted information of the previous tree. To smooth the object probability distribution they use a median filter on the pixels surrounding each pixel. This median filter optimizes loss, specifically the least absolute deviations that minimize the difference between hypothesized values and target values, which allows it to be effective when dealing with outlier pixels that would otherwise negatively impact the result. The object coordinates are also regularized using a similar method which optimizes loss(reprinted equations 3 and 4 provided with explicit permission).
+information for each pixel in the input image. The first level of this stack of forests is trained normally, but all the following trees have access to the outputted information of the previous tree. To smooth the object probability distribution they use a median filter on the pixels surrounding each pixel. This median filter optimizes loss, specifically the least absolute deviations that minimize the difference between hypothesized values and target values, which allows it to be effective when dealing with outlier pixels that would otherwise negatively impact the result []. The object coordinates are also regularized using a similar method which optimizes loss(reprinted equations 3 and 4 provided with explicit permission []).
 
-The object poses are then estimated using RANSAC. When RANSAC is mentioned in this paper it is actually a specific paradigm of RANSAC called preemptive RANSAC which  For a single object the forest values of object predictions, pixel positions, and object coordinates are used to estimate the 2D-3D correspondences. Then the reprojection error is calculated with the help of a camera matrix. This error is acceptable if it is under a predefined threshold, meaning that this data point is an inlier. The best pose hypothesis is the one in which the largest amount of inliers are found. Hypotheses are drawn by solving the perspective-n-point problem for four correspondences. The first of four pixels is drawn according to a random tree's mean probability distribution then the other three are drawn within a certain distance of the first pixel depending on the size of the object in question, but if the reprojection error calculated for the pixels is found to be above the threshold then this hypothesis is discarded and a new one is drawn. These hypotheses are sorted by their number of included inliers and the lower half is discarded. The hypotheses left after this process are then further refined by repeating the process of solving the perspective-n-point problem on the new set of inlier value points until only one hypothesis is left. This remaining hypothesis is the estimated pose for the object in question. 
+The object poses are then estimated using RANSAC. When RANSAC is mentioned in this paper it is actually a specific paradigm of RANSAC called preemptive RANSAC which  For a single object the forest values of object predictions, pixel positions, and object coordinates are used to estimate the 2D-3D correspondences. Then the reprojection error is calculated and subsequently minimized with the help of a camera matrix. This error is acceptable if it is under a predefined threshold, meaning that this data point is an inlier. The best pose hypothesis is the one in which the largest amount of inliers are found. Hypotheses are drawn by solving the perspective-n-point problem for four correspondences. The first of four pixels is drawn according to a random tree's mean probability distribution then the other three are drawn within a certain distance of the first pixel depending on the size of the object in question, but if the reprojection error calculated for the pixels is found to be above the threshold then this hypothesis is discarded and a new one is drawn. These hypotheses are sorted by their number of included inliers and the lower half is discarded. The hypotheses left after this process are then further refined by repeating the process of solving the perspective-n-point problem on the new set of inlier value points until only one hypothesis is left. This remaining hypothesis is the estimated pose for the object in question []. 
 
- This method is able to perform multi-object detections by obtaining pose estimations for multiple objects and deciding which object the estimations belong to during processing. This is done with
-the initial predicted values on the input image.
+ When this algorithm is detecting multiple objects at once the above method of detection does not maintain efficiency when a large number of objects are to be detected. Multi-object detections are performed by drawing a shared set of hypotheses instead of individual sets for each object. These hypotheses are chosen by analyzing the object probability distributions at the first pixel of the current hypothesis when performing the same actions as a single-object RANSAC pose estimation. These chosen hypotheses still have to pass the same validity check as in single-object detections. Using this method allows the algorithm to decide if a hypothesis belongs to multiple objects during the hypothesis sampling process instead of having a separate process for each object. This allows their RANSAC pose estimation to scale more easily with a large number of object detections in the same image [].
 
-The poses gathered from the use of RANSAC are refined by calculating the
-distribution of object coordinates in the input image(s). Then the
-uncertainty levels previously predicted are used to predict camera and
-object positions when depth data is not available.
+During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood and projection volume using the following equationns [].
 
-Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ F200 camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
+Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code (dubbed the 'Dummy Data') to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.* []. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ F200 camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
 ### Datasets
 
@@ -722,11 +718,31 @@ Unity itself has support for simple models to be created through the editor. In 
 
 Unity also also has support for dynamic Mesh creation.
 
-The file format for 3D models we have chosen to use for our project in the Unity Engine is the .obj format mentioned previously. This format was chosen due to some key advantages such as the ability to generate the file programatically if it is found to be necessary. 
-
-The .obj file specification is publicly available and allows us to contruct .obj files from scratch. The four types of vertex types are geometric vertices (`v`), texture vertices (`vt`), vertex normals (`vn`), and parameter space vertices (`vp`). 
+The file format for 3D models we have chosen to use for our project in the Unity Engine is the .obj format mentioned previously. This format was chosen due to some key advantages such as the ability to generate the file programatically if it is found to be necessary. The .obj file specification is also publicly available and allows us to construct .obj files from scratch. The four types of vertex types are geometric vertices (`v`), texture vertices (`vt`), vertex normals (`vn`), and parameter space vertices (`vp`). 
 
 The following are proper syntax examples in the .obj file format:
+
+`v x y z w`  for a geometric vertex, where `x`, `y`, and `z` are coordinates of a vertex and `w` is a weight for curves defaulted to one.
+
+`vp u v w` for a freeform geometry, where `u` is either a coordinate of a curve or the first coordinate of a surface. `v` is the second coordinate of a surface. `w` is a curve trimming weight defaulted to one.
+
+`vn i j k` for a normal vertex, where `i`, `j`, and `k` are the normal vector components.
+
+`vt u v w` for a texture vertex, where `u` is the horizontal direction, `v` is the vertical direction , and `w` is the depth. Depending on the dimensionality of the texture, `u` and `v` may be 0.
+
+Syntax for different geometric elements are as follows:
+
+`p v1 v2 ... vn` for a point, where `vn` represents the nth vertex which will create the nth point.
+
+`l v1/vt1 v2/vt2 ... vn/vtn` for a line, where `vn/vtn` represents the nth vertex on the line separated from the texture vertex with a `/`.
+
+`f v1/vt1/vn1 v2/vt2/vn2 ... vn/vtn/vnn` for a face, where `vn/vtn/vnn` represents the nth vertex, texture vertex, and normal vertex respectively.
+
+`curv u0 u1 v1 v2 ... vn` for a curve, where `u0` is a float representing the starting parameter value for the curve, `u1` is a float representing the ending parameter value for the curve, and `vn` represents the nth control point parameter vertex for the curve (there must be at least two).
+
+`curv2 vp1 ... vpn` for a 2D curve, where `vpn` is the nth control point parameter vertices.
+
+`surf s0 s1 t0 t1 v1/vt1/vn1 ... vn/vtn/vnn` for a surface, where `s0` is the start parameter value for the u direction, `s1` is the end parameter value for the u direction, `t0` is the start parameter value for the v direction, `t1` is the end parameter value for the v direction and `vn/vtn/vnn` is the nth control vertex with the nth texture vertex and normal vertex separated by a `/`.
 
 ### Plugin types
 
