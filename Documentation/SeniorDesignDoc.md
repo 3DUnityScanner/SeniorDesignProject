@@ -154,6 +154,21 @@ I've always been enthralled with the game development process and I am excited t
 
 ## Requirements
 
+### Necessary Features
+
+1. The system functions on the Windows platform
+2. The system is fully invoked enclosed within the Unity platform
+3. The system takes data from pictures taken from within the system
+4. The system can interpret a single vertical layer of blocks (minimal occlusion) on a flat surface
+5. The system analyses RGB-D data to calculate objects' placements and orientations
+6. The system uses object data to create and place models into an established Unity scene
+
+### Possible Features
+
+1. The system has Linux and OSX compatibility
+2. The system can take and analyse RGB or RGB-D data
+3. The system can interpret multiple vertical layers of blocks on a flat surface
+
 # Research
 
 ## Camera Research
@@ -368,8 +383,15 @@ be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
 instance will be used to stream data later. Otherwise use `Dispose` to 
 free all resources associated with the instance. 
 
-#### IDisposable interface
+#### Dispose Method
 
+Although C# is a managed language there are some classes in the Intel®
+RealSense™ SDK that do not benefit from automatic garbage collection.
+One of these objects is the `SenseManager`. In order for the object to 
+be processed by the garbage collector, the `Dispose` method must be called
+on the `SenseManager`. In order to ensure that the `Dispose` is called,
+it is wise to place the method call inside of a class destructor or to 
+initialize the `SenseManager` in a `using` block.
 
 ## Computer Vision Research
 
@@ -573,7 +595,22 @@ This dataset includes 600 images, 600 RGB-D-based point clouds, pose information
 
 #### Overview
 
+Unity is a game development engine that permits users to create a variety of games for different
+platforms, some of the biggest being PC, Xbox, Playstation, and Android/IOS. 
+
 #### Scripting
+
+Unity uses an implementation of the Mono runtime for scripting. Unity mainly supports two scripting
+languages, C# (which is what this project is using) and UnityScript, which is a language that is
+modelled after Javascript to use specifically for Unity. Unity can compile the source code 
+that is in the "Assets" folder of the project. For other languages, they can be used in Unity scripts
+in the form of DLLs, so as long as a language can be compiled into a Dynamically Linked Library(DLL) 
+file it can be tied into Unity scripts.
+
+Unity's GameObjects are controlled by Components that are attached to them, and scripts allow
+the user to create these Components and manipulate them dynamically. Unity's GUI allows for 
+a simple script creation by going to Assets -> Create -> C# Script or Assets -> Create -> Javascript.
+
 
 #### 3D Models
 
@@ -603,18 +640,16 @@ compiled by Unity, that can also be compiled into a DLL (Windows). The process o
 Native Plugin into the project is the same as Managed Plugins, you create a folder titled "plugins"
 located under the Assets folder and drop the DLLs in there.
 
-To access the methods or functions from the DLL files the user must add tags on both the 
-C# method used to call the DLL method. First you import the plugin using:
+To access the methods or functions from the DLL files the user must add tags on the 
+C# method used to call the DLL method. First you import the plugin, then you can declare 
+the external method using the extern modifier to mark it as an external function:
 
 `[DllImport ("PluginName")]`
-
-Then you can declare the external method using the extern modifier to mark it as an external 
-function:
 
 `private static extern pFunction();`
 
 The user can then use the declared method to make a call to the native method/function from the
-DLL. IT should be noted that when creating Native Plugins using C++ or Objective-C, there muse be
+DLL. It should be noted that when creating Native Plugins using C++ or Objective-C, there must be
 steps taken to avoid name mangling issues, because plugin functions use a C-based call 
 interface.
 
@@ -780,19 +815,31 @@ access to the following:
 *   3D models to create assets that may be required for the process of instantiating 
     the models within the Unity Platform
 
+# Challenges
+
+## Computer Vision Algorithmic Complexities
+
+## Realistic Goals and Requirements
+
 # Milestones
 
 ### October 2016 - Run and test Bachmann implementation
 
 Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo for "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[]. Resolve any dependency issues involved with nlopt, PNG++, or OpenCV.
 
-Status: Completed successfully
+Status: Completed Successfully
+
+### December 2016 - Final Documentation
+
+Complete the final documentation for the planning of this project
+
+Status: Completely Successfully
 
 ### November 2017 - Train Bachmann implementation on 'Dummy Data' and test on test set
 
 Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
 
-Status: Completed successfully
+Status: Completed Successfully
 
 ### January 2017 - Set up Accord Framework
 
