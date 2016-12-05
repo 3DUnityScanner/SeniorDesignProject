@@ -326,14 +326,34 @@ The `SampleReader` class provides access to a stream of color samples, depth
 samples, or both. The sample reader is obtained through a member function
 contained within a `SenseManager` object. The type of data that the `SampleReader`
 provides is determined by the parameters of a member function call on the
-`SampleReader` object in question. The `SampleReader` provides properties 
+`SampleReader` in question. The `SampleReader` provides properties 
 for accessing the sample that the pipeline generates.
 
 ##### Scan3D
 
-The `Scan3D` class provides high level access to the 3D Scanning algorithms.
+The `Scan3D` class provides high level access to the 3D Scanning algorithms. 
+It acts as an interface to the `PreviewImage` property which displays the current
+captured image, as well as the `Reconstruct` method which builds the three 
+dimensional object from the acquired frames.
 
 ##### Image
+
+The `Image` class provides a means to acquire access to the pixel data of an image as
+well as the Image's metadata such as height and width. Its primary elements of interest 
+within the `Image` class are the `AcquireAccess` method, `ReleaseAccess` method, and the
+`Info` property. The `AcquireAccess` method gives the caller a reference to the underlying 
+image data through the use of an `ImageData` object reference. The `AcquireAccess` 
+method must be followed by a `ReleaseAccess` method call. The `ReleaseAccess` method 
+allows other callers to acquire access to the image's data. The `Info` property
+of the `Image` is also of importance as it contains the height, width, and format of
+the `Image`.
+
+##### ImageData
+
+The `ImageData` class is comprised of the actual pixel data. It contains several methods
+for converting to and from various array types as well as some Unity specific and .NET specific
+types. The array types are general enough that they can be used to convert to another type
+of image representation if the need arises.
 
 ##### Capturing Color and Depth Data
 
@@ -383,9 +403,11 @@ capture an image.
 3. Call `ReleaseFrame` on the acquired `SenseManager` in order to capture the next frame
 
 The above three steps may be repeated as many times as desired for each frame of 
-data to be captured. Upon completion of data capture. The `Close` method 
-or `Dispose` method must be called on the acquired `SenseManager`. Use `Close` 
-if the `SenseManager` instance will be used to stream data later. 
+data to be captured. After all desired frames have been captured. The `Reconstruct` 
+method can be called which will save the object with the specified file format and 
+file location. Upon completion of data capture and exporting the data to a file, the 
+`Close` method  or `Dispose` method must be called on the acquired `SenseManager`. 
+Use `Close` if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
 
 TODO: Intel SDK Example
@@ -430,7 +452,7 @@ another and are noted below.
 
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
-|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |                    |
+|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |               TODO |
 |     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
 | Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
 |       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
