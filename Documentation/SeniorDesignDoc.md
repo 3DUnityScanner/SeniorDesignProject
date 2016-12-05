@@ -682,7 +682,33 @@ interface.
 
 #### Extending the Editor (Maybe change this part's location)
 
-### Version Differences
+Similarly to how plugins can be made for game logic in Unity, one could also create plugins to extends
+the Unity editor itself to make game functionality easier. In fact, one might say that is the entire
+purpose of this project. To extend the editor, a script needs to be created where the class extends
+EditorWindow. This script will create a new editor window  
+
+### Version Differences and Pricing
+
+| Features      | Personal      | Plus      | Pro       | Enterprise        |
+|:-------------:|:-------------:|:---------:|:---------:|:-----------------:|
+| All Engine Features | Y       |     Y     |     Y     |        Y          |
+| All Platforms |       Y       |     Y     |     Y     |        Y          |
+| Continuous Updates|   Y       |     Y     |     Y     |        Y          |
+| Royalty Free  |       Y       |     Y     |     Y     |        Y          |
+| Splash Screen |       Y       | Custom    |   Custom  |     Custom        |
+| Revenue Capacity |    $100k   |   $200k   | Unlimited |    Unlimited      |
+| Unity Cloud Build| Standard Queue | Priority Queue | Concurrent Builds | Dedicated Build Agents|
+| Unity Analytics | Personal Analytics | Plus Analytics | Pro Analytics | Custom Analytics|
+| Unity Multiplayer | 20 Concurrent Users | 50 Concurrent Users | 200 Concurrent Users | Custom Multiplayer|
+| Unity Ads     |       Y       |     Y     |     Y     |        Y          |
+| Beta Access   |       Y       |     Y     |     Y     |        Y          |
+| Pro Editor UI Skin | N |Y | Y | Y|
+| Performance Reporting | N | Y | Y | Y |
+| Flexible Seat Management | N | Y | Y | Y |
+| Asset Kits | N | 20% Off | 40% off | 40% off |
+| Unity Certification Courseware | N | 1 Month Access | 3 Month Access | 3 Month Access|
+| Source Code Access | N | N | $ | $ |
+| Premium Support | N | N | $ | $ |
 
 #### Unity free
 
