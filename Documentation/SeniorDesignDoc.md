@@ -855,8 +855,33 @@ access to the following:
 # Challenges
 
 ## Computer Vision Algorithmic Complexities
+The Computer Vision problem that our team is working through is still part of a very 
+active field of research. With this in mind, the members of our team who will be focusing on the 
+Computer Vision interface will need to at least partially catch up to this active field in order 
+to successfully implement a useful algorithm. Our team will be using utilizing an already 
+established paper to implement a proven algorithm so we don't use a large amount of our time 
+becoming experts at computer vision rather than completing the project.
 
 ## Realistic Goals and Requirements
+The project sponsors had a broad idea for a project, in which a user imports real-life blocks 
+into Unity. That being said, the actual requirements of the project were left up to our team to 
+figure out. This is a difficult challenge for our whole team because it is not trivial to decide our 
+limitations, such as:
+
+*  Deadline to completion
+
+*  Amount of time available per week due to other responsibilities
+
+*  Problem complexity and possibility
+
+A priority goal this semester was seeking a means to mitigate this challenge by extensive planning.
+
+## Inexperience with Necessary Tools and Libraries
+There are many technologies that we must use and interface with in order to complete this project. 
+With regards to these technologies, our teams experience is generally very low. In the first half 
+of development with this project, our team has sought to gain experience with these technologies 
+so that implementation from this point on can go smoothly.
+
 
 # Milestones
 
