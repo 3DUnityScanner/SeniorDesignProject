@@ -154,6 +154,21 @@ I've always been enthralled with the game development process and I am excited t
 
 ## Requirements
 
+### Necessary Features
+
+1. The system functions on the Windows platform
+2. The system is fully invoked enclosed within the Unity platform
+3. The system takes data from pictures taken from within the system
+4. The system can interpret a single vertical layer of blocks (minimal occlusion) on a flat surface
+5. The system analyses RGB-D data to calculate objects' placements and orientations
+6. The system uses object data to create and place models into an established Unity scene
+
+### Possible Features
+
+1. The system has Linux and OSX compatibility
+2. The system can take and analyse RGB or RGB-D data
+3. The system can interpret multiple vertical layers of blocks on a flat surface
+
 # Research
 
 ## Camera Research
@@ -368,8 +383,15 @@ be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
 instance will be used to stream data later. Otherwise use `Dispose` to 
 free all resources associated with the instance. 
 
-#### IDisposable interface
+#### Dispose Method
 
+Although C# is a managed language there are some classes in the Intel®
+RealSense™ SDK that do not benefit from automatic garbage collection.
+One of these objects is the `SenseManager`. In order for the object to 
+be processed by the garbage collector, the `Dispose` method must be called
+on the `SenseManager`. In order to ensure that the `Dispose` is called,
+it is wise to place the method call inside of a class destructor or to 
+initialize the `SenseManager` in a `using` block.
 
 ## Computer Vision Research
 
@@ -414,7 +436,25 @@ We will present brief definitions for most of the terms related to computer visi
 
 * Dropout layer - Dropout layers in a CNN are helpful in training because they reduce the size of the network by having a probability of forcing nodes to drop out of the network. The nodes are reinserted after the network is trained with their original weights. This process cuts down on training time and prevents the model becoming too complex. 
 
-* 
+* Energy Function - This is the function that is minimized when computing values in machine learning tasks. You can view this function as a method of inferring whether a value is correct or not. Lower energies are associated with correct values and higher energies are associated with incorrect values.
+
+* Classification problem - Image classification problems are determining if an object in a scene belongs to a set, or one of many sets, of other objects or not. 
+
+* Softmax regression - A method of supervised learning extending logistic regression to multi-class classification problems rather than just binary classification problems.
+
+* Iterative closest point (ICP) - This method of point cloud consolidation keeps one point cloud fixed and matches another source cloud to best match these reference points. Using a cost function, the rotation and translation are estimated and applied to the source points.
+
+* Outlier - An outlier is a value point in a statistical distribution located in the tail.
+
+* Inlier - An inlier is a value point in a mathematical model whose distribution can be explained by the model parameters.
+
+* Random sampling consensus (RANSAC) - RANSAC is a algorithm for estimating parameters of a mathematical model. This will fit the data to a certain model (e.g. line fitting). We will provide an in-depth look at our chosen implementation of RANSAC in the Detailed Design section.
+
+* Kabsch Algorithm - This algorithm calculates the rotation matrix of two sets containing pairs of points such that the root mean squared deviation between the sets is minimized. 
+
+* Decision tree - A decision tree is a tree structure where each node acts as a test of an attribute and every branch is a representation of the outcome of that test. The leaf nodes are labels that indicate which outcome is chosen as the final decision for the tree. These trees can be used as predictive models for machine learning tasks.
+
+* Random forest - A random forest is an ensemble method of machine learning using multiple decision trees usually for classification purposes.
 
 ### Previous Methods
 
@@ -462,7 +502,7 @@ block types present in our target block set.
 
 This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propagated forward through the network and the network outputs a pose estimate of an object's orientation.
 
-Then this method performs a search on a list of CAD models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
+Then this method performs a search on a list of computer-aided design (CAD) models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
 
 This method provides useful ideas about a potential convolutional neural network approach to our project's computer vision problem. The dataset and model-fitting methods are not applicable to our specific needs, but I believe the neural network approach could be a potentially useful architecture that we may consider for risk mitigation if another structure fails to meet our needs. 
 
@@ -525,7 +565,7 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full ACCV object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
+Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
 ### Datasets
 
@@ -706,15 +746,26 @@ returned. If the image is still in memory then the `Bitmap`.
 
 # Testing Plan
 
-## RealSenseCamera Testing
+## CameraModule Testing
+
+The primary aspects of the camera module that need to be tested are: 
+the public interface, the image conversion capabilities, and the ability to write the images to disk.
 
 ### Unit Tests
+
+The unit tests will be used to test the behavior of each function individually 
+in different circumstances. The parameters of each test are as follows:
+
+* **Input** - The explicit parameters passed into each function. The value "N/A" will be used if the function takes no parameters.
+* **Output** - The value which the function returns. The value "N/A" will be used if the function is void
+* **Starting Conditions** - Any significant state values that should be set before the start of the test. The value "N/A" will be used if there aren't any consequential initial state values.
+* **Ending Conditions** - Any significant state values that should be present as a result of the method being tested. The value "N/A" will be used if there aren't any consequential state values.
 
 #### StartCapture
 
 The  job of the `StartCapture` method is to signal to the rest of the
 `RealSenseCamera` that capture should begin. This starts the capture 
-loop and 
+loop and updates the `State` member to `CameraState.RUNNING`.
 
 | Input | Output |          Starting Conditions |            Ending Conditions |
 |-------|--------|------------------------------|------------------------------|
@@ -803,19 +854,31 @@ access to the following:
 *   3D models to create assets that may be required for the process of instantiating 
     the models within the Unity Platform
 
+# Challenges
+
+## Computer Vision Algorithmic Complexities
+
+## Realistic Goals and Requirements
+
 # Milestones
 
 ### October 2016 - Run and test Bachmann implementation
 
 Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo for "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[]. Resolve any dependency issues involved with nlopt, PNG++, or OpenCV.
 
-Status: Completed successfully
+Status: Completed Successfully
+
+### December 2016 - Final Documentation
+
+Complete the final documentation for the planning of this project
+
+Status: Completely Successfully
 
 ### November 2017 - Train Bachmann implementation on 'Dummy Data' and test on test set
 
 Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
 
-Status: Completed successfully
+Status: Completed Successfully
 
 ### January 2017 - Set up Accord Framework
 
