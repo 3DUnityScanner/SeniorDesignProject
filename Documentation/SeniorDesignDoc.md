@@ -833,7 +833,7 @@ should unforeseeable events occur. All these changes can happen within
 the camera module without the unity plugin needing to change its method
 calls at all.
 
-### Public Members
+### ICamera Public Members
 The `RealSenseCamera` has three public members. All three of its public 
 members are implementations of the `ICamera` interface's public members 
 They include: `StartCapture()`, `StopCapture()`, and `GetImages()`. 
