@@ -228,7 +228,7 @@ tethered to the computer via USB. This could make it difficult to
 capture all the necessary angles for the construction of the Unity
 scene.
 
-#### Possible implementations
+#### Possible Implementations
 
 There are four choices of implementation for the Camera module of our
 application. They are C\# .NET4, C\# Unity, C\# UWP, and C++. The C++
@@ -293,6 +293,13 @@ advantages of a native implementation are not as significant here as
 they would be in other applications.
 
 ##### Final Decision
+
+|                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
+|------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
+|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |                    |
+|     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
+| Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |             TODO |               TODO |
+|       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
 
 For this module, it makes the most sense to use the C\# Unity
 implementation. Since C\# is managed, the code required is simpler and
@@ -371,6 +378,10 @@ needing to be tethered via USB to the main computing device. The current
 mode of the Kinect sensor has the additional disadvantage of needing an
 adapter for use with a laptop. This increases the cost of the device as
 well as marginally increasing the complexity of the set up for the user.
+
+#### Possible Implementations
+
+
 
 ### Final Decision
 
