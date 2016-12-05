@@ -294,13 +294,6 @@ they would be in other applications.
 
 ##### Final Decision
 
-|                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
-|------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
-|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |                    |
-|     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
-| Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |             TODO |               TODO |
-|       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
-
 For this module, it makes the most sense to use the C\# Unity
 implementation. Since C\# is managed, the code required is simpler and
 less prone to errors being introduced by the programmer. The lack of
@@ -358,6 +351,13 @@ be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
 instance will be used to stream data later. Otherwise use `Dispose` to 
 free all resources associated with the instance. 
 
+TODO: Intel SDK Example
+
+##### 3D Scanning
+
+The Intel® RealSense™ SDK also provides algorithms for scanning 3D objects into
+common 3D file formats including: .obj, .stl, and .ply
+
 ##### Dispose Method
 
 Although C# is a managed language there are some classes in the Intel®
@@ -384,6 +384,13 @@ well as marginally increasing the complexity of the set up for the user.
 
 
 ### Final Decision
+
+|                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
+|------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
+|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |                    |
+|     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
+| Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |             TODO |               TODO |
+|       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
 
 Our main decision was choosing between the Intel® RealSense™ F200 camera and
 the Microsoft Kinect. Both sensors had many of the same advantages and
