@@ -329,44 +329,79 @@ provides is determined by the parameters of a member function call on the
 `SampleReader` object in question. The `SampleReader` provides properties 
 for accessing the sample that the pipeline generates.
 
-##### Capturing Data
+##### Scan3D
 
-In order to begin capturing data 4 steps have to be executed
+The `Scan3D` class provides high level access to the 3D Scanning algorithms.
 
-1. Acquire the `SenseManager`
-2. Acquire a `SampleReader` using the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
-3. Call `EnableStream` on the acquired `SampleReader` and pass it the type of desired stream
-4. Call `Init` on the `SenseManager` with no arguments
+##### Image
+
+##### Capturing Color and Depth Data
+
+The basis of computer vision algorithms is the capture and analysis of 
+depth and color data In order to begin capturing depth and/or color data, 
+4 steps have to be executed.
+
+1. Acquire the `SenseManager` object by calling the static `SenseManager.CreateInstance` method
+2. Acquire a `SampleReader` object by calling the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
+3. Call the `EnableStream` method on the acquired `SampleReader` and pass it the type of desired stream TODO: Type of stream
+4. Call the `Init` method on the `SenseManager` with no arguments
 
 Once these steps have been completed it is possible to acquire data from
-the video pipeline. Acquire data can be achieved in 3 easy steps
+the video pipeline. Acquiring data can be achieved in 3 easy steps
 
 1. Call `AcquireFrame` on the acquired `SenseManager`
 2. Retrieve the `Sample` Property from the acquired `SampleReader`
 3. Call `ReleaseFrame` on the acquired `SenseManager` when frame processing is complete
 
-The above three steps may be repeated as many times as desired. Upon 
-completion of data capture. The `Close` method or `Dispose` method must
-be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
-instance will be used to stream data later. Otherwise use `Dispose` to 
-free all resources associated with the instance. 
+The above three steps may be repeated as many times as desired for each frame of 
+data to be captured. Upon completion of data capture. The `Close` method 
+or `Dispose` method must be called on the acquired `SenseManager`. Use `Close` 
+if the `SenseManager` instance will be used to stream data later. 
+Otherwise use `Dispose` to free all resources associated with the instance. 
 
 TODO: Intel SDK Example
 
 ##### 3D Scanning
 
 The Intel® RealSense™ SDK also provides algorithms for scanning 3D objects into
-common 3D file formats including: .obj, .stl, and .ply
+common 3D file formats including: OBJ, STL, and PLY. The use of these algorithms
+is made easy through the Intel® RealSense™ SDK and does not require much more
+effort than it does to capture raw color and depth. The process is very similar 
+to process detailed in the Capturing Color and Depth Data section above. In order 
+to scan objects the following steps have to be performed.
+
+1. Acquire the `SenseManager` by calling the static `SenseManager.CreateInstance` method
+2. Acquire a `Scan3D` object by calling the static `Scan3D.Activate` method and passing the acquired `SenseManager` as an argument
+3. Call the `Init` method on the `SenseManager` with no arguments
+
+This initializes the pipeline for constructing a 3D object. Once the pipeline has 
+been initialized the data can begin to be captured. Follow the following steps to 
+capture an image.
+
+1. Call `AcquireFrame` on the acquired `SenseManager`
+2. Capture the result of the `Scan3D` object's `PreviewImage` method as an `Image` object
+3. Call `ReleaseFrame` on the acquired `SenseManager` in order to capture the next frame
+
+The above three steps may be repeated as many times as desired for each frame of 
+data to be captured. Upon completion of data capture. The `Close` method 
+or `Dispose` method must be called on the acquired `SenseManager`. Use `Close` 
+if the `SenseManager` instance will be used to stream data later. 
+Otherwise use `Dispose` to free all resources associated with the instance. 
+
+TODO: Intel SDK Example
 
 ##### Dispose Method
 
-Although C# is a managed language there are some classes in the Intel®
+Although C\# is a managed language there are some classes in the Intel®
 RealSense™ SDK that do not benefit from automatic garbage collection.
-One of these objects is the `SenseManager`. In order for the object to 
-be processed by the garbage collector, the `Dispose` method must be called
-on the `SenseManager`. In order to ensure that the `Dispose` is called,
-it is wise to place the method call inside of a class destructor or to 
-initialize the `SenseManager` in a `using` block.
+These objects include the `SenseManager` class and the `Image` class. 
+In order for the object to be processed by the garbage collector, the 
+`Dispose` method must be called. In order to ensure that the `Dispose` 
+is called, it is wise to place the method call inside of a class 
+destructor or to initialize the `SenseManager` in a `using` block.
+
+##### Intel® RealSense™ Limitations
+
 
 ### Microsoft Kinect
 
@@ -385,11 +420,19 @@ well as marginally increasing the complexity of the set up for the user.
 
 ### Final Decision
 
+In addition to all of the advantages and disadvantages described above, 
+it is also important to the compare the system requirements. Our project 
+team has the computing power to use each of these devices and we feel it 
+is also reasonable to assume that game developers would also already have 
+devices of this caliber in order to run high performance games. Even so
+all the devices compared have comparable hardware requirements to one 
+another and are noted below.
+
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
 |               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |                    |
 |     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
-| Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |             TODO |               TODO |
+| Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
 |       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
 
 Our main decision was choosing between the Intel® RealSense™ F200 camera and
