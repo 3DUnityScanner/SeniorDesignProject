@@ -437,7 +437,7 @@ Due to the demand required in the training process, our team will be using the s
 computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
 specifications listed below.
 
-|               |                                                    |
+|    Component  |          Specification                             |
 |---------------|----------------------------------------------------|
 | CPU           | Intel 6th Generation Core i7                       |
 | OS            | Windows 10 Pro                                     |
@@ -453,9 +453,9 @@ specifications listed below.
 | Battery       | 3-Cell , 65 Whr                                    |
 
 
-### Terminology Overview
+### Computer Vision Terminology Overview
 
-We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with.
+We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with. Please refer back to this sections if you encounter unfamiliar terms in the following section.
 
 * 6D or 6DOF - The six degrees of freedom typically used for pose estimation algorithms. These include the x translation, y translation, z translation, x rotation, y rotation, and z rotation. 
 
@@ -492,6 +492,10 @@ We will present brief definitions for most of the terms related to computer visi
 * Decision tree - A decision tree is a tree structure where each node acts as a test of an attribute and every branch is a representation of the outcome of that test. The leaf nodes are labels that indicate which outcome is chosen as the final decision for the tree. These trees can be used as predictive models for machine learning tasks.
 
 * Random forest - A random forest is an ensemble method of machine learning using multiple decision trees usually for classification purposes.
+
+* Gaussian Mixture Model (GMM) - A GMM is a weighted sum of Gaussian statistical distributions. This creates a parameterized probability model of more continous raw values.  
+
+* Perspective-n-Point - This is a camera localization and pose estimation problem. There are many popular methods for solving this problem using points in a 3D space with their corresponding projections, usually with extended refinement using RANSAC.
 
 ### Previous Methods
 
@@ -587,14 +591,14 @@ it functions. This allows us to accurately weigh the benefits and
 restrictions of this method in comparison to the other methods reviewed.
 
 This algorithm predicts object coordinates and labels with a
-modified random forest called a joint classification regression forest. This forest is trained by quantizing object coordinates and choosing those that have the most information gain from the object distribution. 
+modified random forest called a joint classification regression forest. This forest is trained by mapping object coordinates to a smaller set of discrete values using nearest neighbor assignment to the training data's object coordinates randomly.Then those with the most information gain when compared with the object distribution are chosen and these are stored as a Gaussian Mixture Model. When testing an image, a pixel is fed through a tree in the forest and when it gets to a leaf it will store the distribution of object coordinates and predictions for that pixel. Then all of that tree's object predictions are merged to form an overall prediction for that pixel. The coordinate distribution for the tree is then averaged.  
 
-Then Brachmann *et al.* use a stack of forests to generate context
-information for each pixel in the input image(s).
+Then Brachmann *et al.* use a stack of these forests to generate context
+information for each pixel in the input image. The first level of this stack of forests is trained normally, but all the following trees have access to the outputted information of the previous tree. To smooth the object probability distribution they use a median filter on the pixels surrounding each pixel. This median filter optimizes loss, specifically the least absolute deviations that minimize the difference between hypothesized values and target values, which allows it to be effective when dealing with outlier pixels that would otherwise negatively impact the result. The object coordinates are also regularized using a similar method which optimizes loss(reprinted equations 3 and 4 provided with explicit permission).
 
-The object poses are then estimated using RANSAC. This method is able to perform multi-object 
-detections by obtaining pose estimations for multiple objects and deciding which
-object the estimations belong to during processing. This is done with
+The object poses are then estimated using RANSAC. When RANSAC is mentioned in this paper it is actually a specific paradigm of RANSAC called preemptive RANSAC which  For a single object the forest values of object predictions, pixel positions, and object coordinates are used to estimate the 2D-3D correspondences. Then the reprojection error is calculated with the help of a camera matrix. This error is acceptable if it is under a predefined threshold, meaning that this data point is an inlier. The best pose hypothesis is the one in which the largest amount of inliers are found. Hypotheses are drawn by solving the perspective-n-point problem for four correspondences. The first of four pixels is drawn according to a random tree's mean probability distribution then the other three are drawn within a certain distance of the first pixel depending on the size of the object in question, but if the reprojection error calculated for the pixels is found to be above the threshold then this hypothesis is discarded and a new one is drawn. These hypotheses are sorted by their number of included inliers and the lower half is discarded. The hypotheses left after this process are then further refined by repeating the process of solving the perspective-n-point problem on the new set of inlier value points until only one hypothesis is left. This remaining hypothesis is the estimated pose for the object in question. 
+
+ This method is able to perform multi-object detections by obtaining pose estimations for multiple objects and deciding which object the estimations belong to during processing. This is done with
 the initial predicted values on the input image.
 
 The poses gathered from the use of RANSAC are refined by calculating the
@@ -624,7 +628,7 @@ The Challenge dataset is available alongside the Willow dataset. It includes 39 
 
 ####  Big Berkeley Instance Recognition Dataset (Big BIRD)
 
-This dataset includes 600 images, 600 RGB-D-based point clouds, pose information for every image and point cloud, segmentation masks for all images, and meshes created from merged point clouds. This dataset is extensive but utilizes point clouds which would not be applicable for our purposes. if extra data is needed, this could be a potentially useful resource.
+This dataset includes 600 images, 600 RGB-D-based point clouds, pose information for every image and point cloud, segmentation masks for all images, and meshes created from merged point clouds. This dataset is extensive but utilizes point clouds which would not be applicable for our purposes. Although, if extra data is needed, this could be a potentially useful resource.
 
 ## Unity Game Engine Research
 
