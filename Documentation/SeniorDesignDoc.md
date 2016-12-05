@@ -303,14 +303,14 @@ since the code is incorporated directly into the Unity plugin, the need
 to call an external DLL is eliminated and will make the deployment and
 maintenance of the project simpler.
 
-### Intel® RealSense™ SDK Overview
+#### Intel® RealSense™ SDK Overview
 
 The Intel® RealSense™ SDK provides access to the camera as well as access
 to some computer vision algorithms. Fundamentally the SDK is needed so that 
 we can receive the data from the camera and then pass it along to the 
 computer vision module.
 
-#### SenseManager
+##### SenseManager
 
 The `SenseManager` class is the access point for all other modules within the Intel®
 RealSense™ SDK. An instance of the `SenseManager` class cannot be created with
@@ -320,7 +320,7 @@ create `SampleReader` objects, initiate the data pipeline for processing, and to
 control execution of the pipeline. The exact methods required for these functions
 in the "Capturing Data" section below.
 
-#### SampleReader
+##### SampleReader
 
 The `SampleReader` class provides access to a stream of color samples, depth 
 samples, or both. The sample reader is obtained through a member function
@@ -329,7 +329,7 @@ provides is determined by the parameters of a member function call on the
 `SampleReader` object in question. The `SampleReader` provides properties 
 for accessing the sample that the pipeline generates.
 
-#### Capturing Data
+##### Capturing Data
 
 In order to begin capturing data 4 steps have to be executed
 
@@ -351,7 +351,7 @@ be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
 instance will be used to stream data later. Otherwise use `Dispose` to 
 free all resources associated with the instance. 
 
-#### Dispose Method
+##### Dispose Method
 
 Although C# is a managed language there are some classes in the Intel®
 RealSense™ SDK that do not benefit from automatic garbage collection.
