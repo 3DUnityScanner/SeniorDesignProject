@@ -700,15 +700,26 @@ returned. If the image is still in memory then the `Bitmap`.
 
 # Testing Plan
 
-## RealSenseCamera Testing
+## CameraModule Testing
+
+The primary aspects of the camera module that need to be tested are: 
+the public interface, the image conversion capabilities, and the ability to write the images to disk.
 
 ### Unit Tests
+
+The unit tests will be used to test the behavior of each function individually 
+in different circumstances. The parameters of each test are as follows:
+
+* **Input** - The explicit parameters passed into each function. The value "N/A" will be used if the function takes no parameters.
+* **Output** - The value which the function returns. The value "N/A" will be used if the function is void
+* **Starting Conditions** - Any significant state values that should be set before the start of the test. The value "N/A" will be used if there aren't any consequential initial state values.
+* **Ending Conditions** - Any significant state values that should be present as a result of the method being tested. The value "N/A" will be used if there aren't any consequential state values.
 
 #### StartCapture
 
 The  job of the `StartCapture` method is to signal to the rest of the
 `RealSenseCamera` that capture should begin. This starts the capture 
-loop and 
+loop and updates the `State` member to `CameraState.RUNNING`.
 
 | Input | Output |          Starting Conditions |            Ending Conditions |
 |-------|--------|------------------------------|------------------------------|
