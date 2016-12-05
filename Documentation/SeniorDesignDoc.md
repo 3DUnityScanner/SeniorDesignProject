@@ -342,11 +342,12 @@ The `Image` class provides a means to acquire access to the pixel data of an ima
 well as the Image's metadata such as height and width. Its primary elements of interest 
 within the `Image` class are the `AcquireAccess` method, `ReleaseAccess` method, and the
 `Info` property. The `AcquireAccess` method gives the caller a reference to the underlying 
-image data through the use of an `ImageData` object reference. The `AcquireAccess` 
-method must be followed by a `ReleaseAccess` method call. The `ReleaseAccess` method 
-allows other callers to acquire access to the image's data. The `Info` property
-of the `Image` is also of importance as it contains the height, width, and format of
-the `Image`.
+image data through the use of an `ImageData` object reference. Additional parameters of the
+`AcquireAccess` method can also be used to convert the format of the pixel data received. 
+The `AcquireAccess` method must be followed by a `ReleaseAccess` method call. The 
+`ReleaseAccess` method  allows other callers to acquire access to the image's data. 
+The `Info` property of the `Image` is also of importance as it contains the height, 
+width, and format of the `Image`.
 
 ##### ImageData
 
@@ -460,19 +461,16 @@ another and are noted below.
 Our main decision was choosing between the Intel® RealSense™ F200 camera and
 the Microsoft Kinect. Both sensors had many of the same advantages and
 disadvantages. The differentiating factor between the two was the size
-of the sensor and the cost of the sensors. The Intel® RealSense™ F200 Camera
-was marginally cheaper and we felt that its smaller size provided us
-with more flexibility as to mounting options. The primary benefits we
-saw the camera providing were the affordability of the device, the
-included API, and the handheld usability. The device costs approximately
-\$100, which achieves a greater level of accessibility that we wanted to
-provide with our tool. The handheld usability means that camera can be
+of the sensor, cost of the sensor, and the usability of the APIs. 
+The Intel® RealSense™ F200 Camera was marginally cheaper, costing approximately
+\$100. This reduced price helps to achieve a greater level of accessibility to our tool
+that is an overall goal of our project. The handheld usability means that camera can be
 aimed easily and moved around the workspace as needed. Although the USB
-tethering of the device could make certain angles difficult, the user of
-a rotating platform or a mobile computing device could be used to
-minimize this difficulty. The use of such solutions would allow images
-to be captured from every angle which is necessary for the computer
-vision algorithms that we will implement to process the data.
+tethering of the device could make certain angles difficult, the use of
+a rotating platform or a primary computing device which can be easily moved,
+could be used to minimize this difficulty. The use of such solutions 
+would allow images to be captured from every angle which is necessary 
+for the computer vision algorithms that we will implement to process the data.
 
 ## Computer Vision Research
 
