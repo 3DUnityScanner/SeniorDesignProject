@@ -63,7 +63,7 @@ This project gives me a great chance to learn how to manipulate one of the bigge
 game engines in the market today.
 
 I was also excited by the prospect of getting to work with hardware and computer
-vision algorithms, things that I haven't had much experience with in my time at UCF.
+vision algorithms, things that I have not had much experience with in my time at UCF.
 This project gives me the opportunity to expand my knowledge in these fields, making
 it more interesting and overall beneficial for my future in and industry by helping
 me learn to adapt to different scenarios.
@@ -146,7 +146,7 @@ field and learn much more. I am already familiar with resources for
 potential previous implementations of Computer Vision systems in 3D
 scene processing and reproduction. I enjoy researching the field of computer vision and hope to write an original implementation for this project alongside Mark.
 
-I've always been enthralled with the game development process and I am excited to have a chance to contribute. My career plans are still an open book at this point in my life and I feel that this project could even open a door to future game development positions. Consisting of both computer vision systems and game development methodologies, this project combines two fields that I am passionate about and I .
+I have always been enthralled with the game development process and I am excited to have a chance to contribute. My career plans are still an open book at this point in my life and I feel that this project could even open a door to future game development positions. Consisting of both computer vision systems and game development methodologies, this project combines two fields that I am passionate about and I .
 
 # Specifications
 
@@ -634,7 +634,7 @@ THe applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D
 Maya, Max, and Modo. These kinda of files tend to be simpler for the user to use, especially
 since Unity will re-import every time the user saves the file. But they also tend to be bigger
 than necessary which can cause a slowdown of Unity, plus the software must be licensed on
-the computer in which it's being used.
+the computer in which it is being used.
 
 Unity itself has support for simple models to be created through the editor. In the main editor screen,
 the user can go to Create -> 3D Objects and choose from a list of different simple 3D objects such as 
@@ -662,7 +662,7 @@ there the DLLs can be used in the same way that normal C# scripts are used in Un
 
 #### Native Plugins
 
-Native plugins are libraries of native code that is written in any language that isn't directly
+Native plugins are libraries of native code that is written in any language that is not directly
 compiled by Unity, that can also be compiled into a DLL (Windows). The process of placing the 
 Native Plugin into the project is the same as Managed Plugins, you create a folder titled "plugins"
 located under the Assets folder and drop the DLLs in there.
@@ -758,8 +758,8 @@ in different circumstances. The parameters of each test are as follows:
 
 * **Input** - The explicit parameters passed into each function. The value "N/A" will be used if the function takes no parameters.
 * **Output** - The value which the function returns. The value "N/A" will be used if the function is void
-* **Starting Conditions** - Any significant state values that should be set before the start of the test. The value "N/A" will be used if there aren't any consequential initial state values.
-* **Ending Conditions** - Any significant state values that should be present as a result of the method being tested. The value "N/A" will be used if there aren't any consequential state values.
+* **Starting Conditions** - Any significant state values that should be set before the start of the test. The value "N/A" will be used if there are not any consequential initial state values.
+* **Ending Conditions** - Any significant state values that should be present as a result of the method being tested. The value "N/A" will be used if there are not any consequential state values.
 
 #### StartCapture
 
@@ -783,7 +783,7 @@ to the capture loop to terminate execution.
 
 #### ConvertImage
 
-The only way to objectively test the ConvertImage method is to procedurally
+The only way to objectively test the `ConvertImage` method is to procedurally
 generate `Image` objects from the Intel® RealSense™ SDK as input for the 
 `ConvertImage` method. A brief description of the attributes are below:
 
