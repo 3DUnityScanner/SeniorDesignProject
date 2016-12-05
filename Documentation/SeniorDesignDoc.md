@@ -383,8 +383,15 @@ be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
 instance will be used to stream data later. Otherwise use `Dispose` to 
 free all resources associated with the instance. 
 
-#### IDisposable interface
+#### Dispose Method
 
+Although C# is a managed language there are some classes in the Intel®
+RealSense™ SDK that do not benefit from automatic garbage collection.
+One of these objects is the `SenseManager`. In order for the object to 
+be processed by the garbage collector, the `Dispose` method must be called
+on the `SenseManager`. In order to ensure that the `Dispose` is called,
+it is wise to place the method call inside of a class destructor or to 
+initialize the `SenseManager` in a `using` block.
 
 ## Computer Vision Research
 
@@ -429,7 +436,25 @@ We will present brief definitions for most of the terms related to computer visi
 
 * Dropout layer - Dropout layers in a CNN are helpful in training because they reduce the size of the network by having a probability of forcing nodes to drop out of the network. The nodes are reinserted after the network is trained with their original weights. This process cuts down on training time and prevents the model becoming too complex. 
 
-* 
+* Energy Function - This is the function that is minimized when computing values in machine learning tasks. You can view this function as a method of inferring whether a value is correct or not. Lower energies are associated with correct values and higher energies are associated with incorrect values.
+
+* Classification problem - Image classification problems are determining if an object in a scene belongs to a set, or one of many sets, of other objects or not. 
+
+* Softmax regression - A method of supervised learning extending logistic regression to multi-class classification problems rather than just binary classification problems.
+
+* Iterative closest point (ICP) - This method of point cloud consolidation keeps one point cloud fixed and matches another source cloud to best match these reference points. Using a cost function, the rotation and translation are estimated and applied to the source points.
+
+* Outlier - An outlier is a value point in a statistical distribution located in the tail.
+
+* Inlier - An inlier is a value point in a mathematical model whose distribution can be explained by the model parameters.
+
+* Random sampling consensus (RANSAC) - RANSAC is a algorithm for estimating parameters of a mathematical model. This will fit the data to a certain model (e.g. line fitting). We will provide an in-depth look at our chosen implementation of RANSAC in the Detailed Design section.
+
+* Kabsch Algorithm - This algorithm calculates the rotation matrix of two sets containing pairs of points such that the root mean squared deviation between the sets is minimized. 
+
+* Decision tree - A decision tree is a tree structure where each node acts as a test of an attribute and every branch is a representation of the outcome of that test. The leaf nodes are labels that indicate which outcome is chosen as the final decision for the tree. These trees can be used as predictive models for machine learning tasks.
+
+* Random forest - A random forest is an ensemble method of machine learning using multiple decision trees usually for classification purposes.
 
 ### Previous Methods
 
@@ -477,7 +502,7 @@ block types present in our target block set.
 
 This is a convolutional neural network (CNN) approach to 3D pose recognition with objects from a furniture dataset. The network architecture has 3 convolution layers, 4 normalization layers, 3 rectified linear units, and a dropout layer with a ratio of 0.5. The network is trained for classification with softmax regression loss with the assumption that all objects will be resting on a surface. When testing, the image is propagated forward through the network and the network outputs a pose estimate of an object's orientation.
 
-Then this method performs a search on a list of CAD models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
+Then this method performs a search on a list of computer-aided design (CAD) models at different scales. Then the model search compares bounding box data given by the CNN output with dimension data from the models. When the correct model and scale is found for an object the rotation and translation are computed by using the iterative closest point (ICP) algorithm. Gravity is computed to restrain ICP to only rotate the furniture models in an upright position. The objects' vertical translation is also assumed to be at floor level which helps with occlusion issues. 
 
 This method provides useful ideas about a potential convolutional neural network approach to our project's computer vision problem. The dataset and model-fitting methods are not applicable to our specific needs, but I believe the neural network approach could be a potentially useful architecture that we may consider for risk mitigation if another structure fails to meet our needs. 
 
@@ -540,7 +565,7 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full ACCV object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
+Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
 ### Datasets
 
@@ -575,8 +600,10 @@ platforms, some of the biggest being PC, Xbox, Playstation, and Android/IOS.
 
 #### Scripting
 
-Unity uses an implementation of the Mono runtime for scripting. Unity mainly supports two scripting
-languages, C# (which is what this project is using) and UnityScript, which is a language that is
+Unity uses an implementation of the Mono runtime for scripting. Mono is an implementation of the 
+.NET framework. Mono is sponsored by Microsoft and it follows the ECMA standards for C#.
+
+Unity mainly supports two scripting languages, C# (which is what this project is using) and UnityScript, which is a language that is
 modelled after Javascript to use specifically for Unity. Unity can compile the source code 
 that is in the "Assets" folder of the project. For other languages, they can be used in Unity scripts
 in the form of DLLs, so as long as a language can be compiled into a Dynamically Linked Library(DLL) 
@@ -585,11 +612,36 @@ file it can be tied into Unity scripts.
 Unity's GameObjects are controlled by Components that are attached to them, and scripts allow
 the user to create these Components and manipulate them dynamically. Unity's GUI allows for 
 a simple script creation by going to Assets -> Create -> C# Script or Assets -> Create -> Javascript.
+This will create a class following your naming convention that extends MonoBehaviour and has two
+methods already created, `void Start()` and `void Update()`.
 
+The extension of MonoBehavior is necessary to allow the script to interface with Unity.
+It contains the necessary classes to allow for the created script to affect the GameObjects in Unity.
+It also gives the class access to the functions that determine when the script is called (like start and 
+update). The `Start()` method is called by Unity when the script is initialized, whereas the `Update()`
+method is called by Unity on every frame of the game.
 
 #### 3D Models
 
-#### Extending the Editor (Maybe change this part's location)
+Unity has two kinds of file that it can use to import 3D models. The first is exported 3D file formats
+and the second is application files from 3D Editors.
+
+The exported 3D file formats that Unity uses are: .FBx, .dxf, .obj, .3DS, and.dae. The 
+benefit to these kinds of files are that they tend to be smaller than the application files
+and Unity can accept them no matter where they are from.
+
+THe applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D, Lightwave,
+Maya, Max, and Modo. These kinda of files tend to be simpler for the user to use, especially
+since Unity will re-import every time the user saves the file. But they also tend to be bigger
+than necessary which can cause a slowdown of Unity, plus the software must be licensed on
+the computer in which it's being used.
+
+Unity itself has support for simple models to be created through the editor. In the main editor screen,
+the user can go to Create -> 3D Objects and choose from a list of different simple 3D objects such as 
+cubes or cylinders. Unity will then spawn the object, typically at world coordinates (0, 0, 0), and the
+user can edit them.
+
+Unity also also has support for dynamic Mesh creation.
 
 ### Plugin types
 
@@ -628,6 +680,7 @@ DLL. It should be noted that when creating Native Plugins using C++ or Objective
 steps taken to avoid name mangling issues, because plugin functions use a C-based call 
 interface.
 
+#### Extending the Editor (Maybe change this part's location)
 
 ### Version Differences
 
@@ -693,15 +746,26 @@ returned. If the image is still in memory then the `Bitmap`.
 
 # Testing Plan
 
-## RealSenseCamera Testing
+## CameraModule Testing
+
+The primary aspects of the camera module that need to be tested are: 
+the public interface, the image conversion capabilities, and the ability to write the images to disk.
 
 ### Unit Tests
+
+The unit tests will be used to test the behavior of each function individually 
+in different circumstances. The parameters of each test are as follows:
+
+* **Input** - The explicit parameters passed into each function. The value "N/A" will be used if the function takes no parameters.
+* **Output** - The value which the function returns. The value "N/A" will be used if the function is void
+* **Starting Conditions** - Any significant state values that should be set before the start of the test. The value "N/A" will be used if there aren't any consequential initial state values.
+* **Ending Conditions** - Any significant state values that should be present as a result of the method being tested. The value "N/A" will be used if there aren't any consequential state values.
 
 #### StartCapture
 
 The  job of the `StartCapture` method is to signal to the rest of the
 `RealSenseCamera` that capture should begin. This starts the capture 
-loop and 
+loop and updates the `State` member to `CameraState.RUNNING`.
 
 | Input | Output |          Starting Conditions |            Ending Conditions |
 |-------|--------|------------------------------|------------------------------|
@@ -829,17 +893,18 @@ Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo
 
 Status: Completed Successfully
 
+
+### November 2016 - Train Bachmann implementation on 'Dummy Data' and test on test set
+
+Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
+
+Status: Completed Successfully
+
 ### December 2016 - Final Documentation
 
 Complete the final documentation for the planning of this project
 
 Status: Completely Successfully
-
-### November 2017 - Train Bachmann implementation on 'Dummy Data' and test on test set
-
-Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
-
-Status: Completed Successfully
 
 ### January 2017 - Set up Accord Framework
 
