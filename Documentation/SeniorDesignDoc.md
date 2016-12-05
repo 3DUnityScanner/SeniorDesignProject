@@ -331,6 +331,8 @@ for accessing the sample that the pipeline generates.
 
 ##### Scan3D
 
+The `Scan3D` class provides high level access to the 3D Scanning algorithms.
+
 ##### Image
 
 ##### Capturing Color and Depth Data
@@ -397,6 +399,9 @@ In order for the object to be processed by the garbage collector, the
 `Dispose` method must be called. In order to ensure that the `Dispose` 
 is called, it is wise to place the method call inside of a class 
 destructor or to initialize the `SenseManager` in a `using` block.
+
+##### Intel® RealSense™ Limitations
+
 
 ### Microsoft Kinect
 
