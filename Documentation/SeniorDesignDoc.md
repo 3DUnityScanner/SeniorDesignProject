@@ -173,26 +173,23 @@ I have always been enthralled with the game development process and I am excited
 
 ## Camera Research
 
-### Available Cameras
-
 The UCF Games Research Group had several devices available to us for no
 charge. These included: Intel® RealSense™ 3D, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
 suitability of each of the devices.
 
-#### Intel® RealSense™ 3D
+### HTC Vive
 
-The Intel® RealSense™ 3D camera is a small rectangular camera that could
-easily be mounted in a variety of settings. The camera provides the
-ability the obtain both color streams and depth streams. Its SDK
-includes not only the tools to interface with the device itself, but
-also prebuilt algorithms for 3D scanning and other computer vision
-applications. The only drawback to the device is that it must be
-tethered to the computer via USB. This could make it difficult to
-capture all the necessary angles for the construction of the Unity
-scene.
+The HTC Vive is a virtual reality headset. Although it does have spatial
+scanning capabilities, it completely removes the user from the
+environment they are working in. This does not make it suitable for this
+task since it requires visual presence to place the blocks on the
+scanning surface as well as awareness of the environment to perform the
+actual scanning of the blocks. The cost of the device also makes it
+prohibitively expensive and is not congruent with the accessibility that
+we desired our tool to provide.
 
-#### Microsoft Hololens
+### Microsoft Hololens
 
 The Microsoft Hololens is an augmented reality headset that projects
 images onto the viewing lens to make it appear as if the images are
@@ -219,56 +216,27 @@ the user cannot perform any actions with their hands while capturing the
 data. This makes the hands free capability of any head mounted headset
 insignificant for our project.
 
-#### HTC Vive
+### Intel® RealSense™ 3D
 
-The HTC Vive is a virtual reality headset. Although it does have spatial
-scanning capabilities, it completely removes the user from the
-environment they are working in. This does not make it suitable for this
-task since it requires visual presence to place the blocks on the
-scanning surface as well as awareness of the environment to perform the
-actual scanning of the blocks. The cost of the device also makes it
-prohibitively expensive and is not congruent with the accessibility that
-we desired our tool to provide.
+The Intel® RealSense™ 3D camera is a small rectangular camera that could
+easily be mounted in a variety of settings. The camera provides the
+ability the obtain both color streams and depth streams. Its SDK
+includes not only the tools to interface with the device itself, but
+also prebuilt algorithms for 3D scanning and other computer vision
+applications. The only drawback to the device is that it must be
+tethered to the computer via USB. This could make it difficult to
+capture all the necessary angles for the construction of the Unity
+scene.
 
-#### Microsoft Kinect
-
-The Microsoft Kinect is a rectangular sensor that can provide both depth
-and color data. Much like the Intel® RealSense™ 3D camera, its SDK also
-includes prebuilt computer vision algorithms in addition to the standard
-camera interface functionality. It also shares the disadvantage of
-needing to be tethered via USB to the main computing device. The current
-mode of the Kinect sensor has the additional disadvantage of needing an
-adapter for use with a laptop. This increases the cost of the device as
-well as marginally increasing the complexity of the set up for the user.
-
-#### Final Decision
-
-Our main decision was choosing between the Intel® RealSense™ 3D Camera and
-the Microsoft Kinect. Both sensors had many of the same advantages and
-disadvantages. The differentiating factor between the two was the size
-of the sensor and the cost of the sensors. The Intel® RealSense™ Camera
-was marginally cheaper and we felt that its smaller size provided us
-with more flexibility as to mounting options. The primary benefits we
-saw the camera providing were the affordability of the device, the
-included API, and the handheld usability. The device costs approximately
-\$100, which achieves a greater level of accessibility that we wanted to
-provide with our tool. The handheld usability means that camera can be
-aimed easily and moved around the workspace as needed. Although the USB
-tethering of the device could make certain angles difficult, the user of
-a rotating platform or a mobile computing device could be used to
-minimize this difficulty. The use of such solutions would allow images
-to be captured from every angle which is necessary for the computer
-vision algorithms that we will implement to process the data.
-
-### Camera Module Implementation
+#### Camera Module Implementation
 
 There are four choices of implementation for the Camera module of our
 application. They are C\# .NET4, C\# Unity, C\# UWP, and C++. The C++
 implementation provides a native interface for the camera and the other
-three implementations are wrappers for the C++ implementation. The four
+three implementations are wrappers around the C++ implementation. The four
 different approaches are described and analyzed below.
 
-#### C\# .NET4
+##### C\# .NET4
 
 This implementation allows for the .NET4 Framework to interface with the
 Intel® RealSense™ camera. We would create a DLL file that provides access
@@ -289,7 +257,7 @@ is to gather data from the camera and possibly do some light
 preprocessing. Neither of these tasks are time critical so the need of a
 native implementation is not necessary.
 
-#### C\# Unity
+##### C\# Unity
 
 This implementation allows the camera module to be written directly into
 a Unity Managed Plugin. One of the benefits of implementing the camera module within
@@ -301,7 +269,7 @@ This reduces the complexity for the programmer, allows for faster
 development, and is less likely to introduce common errors such as
 memory leaks into the project.
 
-#### C\# UWP
+##### C\# UWP
 
 This implementation allows for the Universal Windows Platform to
 interface with the Intel® RealSense™ camera. This would involve creating a
@@ -313,7 +281,7 @@ code changes if necessary. Since there is no benefit to being able to
 run the camera application on a phone, the benefits are not useful to
 our project.
 
-#### C++
+##### C++
 
 This implementation does not use a wrapper and is a pure native
 implementation. This gives the advantage of a boost in performance but
@@ -324,7 +292,7 @@ processing that is done in this module is relatively light. The
 advantages of a native implementation are not as significant here as
 they would be in other applications.
 
-#### Final Decision
+##### Final Decision
 
 For this module, it makes the most sense to use the C\# Unity
 implementation. Since C\# is managed, the code required is simpler and
@@ -392,6 +360,36 @@ be processed by the garbage collector, the `Dispose` method must be called
 on the `SenseManager`. In order to ensure that the `Dispose` is called,
 it is wise to place the method call inside of a class destructor or to 
 initialize the `SenseManager` in a `using` block.
+
+### Microsoft Kinect
+
+The Microsoft Kinect is a rectangular sensor that can provide both depth
+and color data. Much like the Intel® RealSense™ 3D camera, its SDK also
+includes prebuilt computer vision algorithms in addition to the standard
+camera interface functionality. It also shares the disadvantage of
+needing to be tethered via USB to the main computing device. The current
+mode of the Kinect sensor has the additional disadvantage of needing an
+adapter for use with a laptop. This increases the cost of the device as
+well as marginally increasing the complexity of the set up for the user.
+
+### Final Decision
+
+Our main decision was choosing between the Intel® RealSense™ 3D Camera and
+the Microsoft Kinect. Both sensors had many of the same advantages and
+disadvantages. The differentiating factor between the two was the size
+of the sensor and the cost of the sensors. The Intel® RealSense™ Camera
+was marginally cheaper and we felt that its smaller size provided us
+with more flexibility as to mounting options. The primary benefits we
+saw the camera providing were the affordability of the device, the
+included API, and the handheld usability. The device costs approximately
+\$100, which achieves a greater level of accessibility that we wanted to
+provide with our tool. The handheld usability means that camera can be
+aimed easily and moved around the workspace as needed. Although the USB
+tethering of the device could make certain angles difficult, the user of
+a rotating platform or a mobile computing device could be used to
+minimize this difficulty. The use of such solutions would allow images
+to be captured from every angle which is necessary for the computer
+vision algorithms that we will implement to process the data.
 
 ## Computer Vision Research
 
