@@ -356,6 +356,8 @@ for converting to and from various array types as well as some Unity specific an
 types. The array types are general enough that they can be used to convert to another type
 of image representation if the need arises.
 
+##### Important Enumerations
+
 ##### Capturing Color and Depth Data
 
 The basis of computer vision algorithms is the capture and analysis of 
@@ -439,28 +441,67 @@ well as marginally increasing the complexity of the set up for the user.
 
 #### Possible Implementations
 
+The Kinect API provides three different types of APIs. It provides 
+APIs for the Windows Runtime, .NET Framework, and Native APIs. All three 
+APIs use similar naming conventions and therefore skills learned with one 
+API should be able to easily transfer to another. The advantages, disadvantages, 
+and types of applications that can be written with these APIs are detailed below. 
 
+##### Windows Runtime
+
+The Windows Runtime APIs allow Windows Store Apps that interface with 
+the Kinect to be written. These APIs can be accessed by any language that
+supports the Windows Runtime including C# and Visual Basic. The APIs are 
+managed which allow for automatic garbage collection and memory allocation.
+Since Windows Store apps have to be distributed through the Windows Store,
+we are not interested in this implementation. We want to be able to package 
+and distribute our plugin together so having to download one component from
+the store and another component from another location is not ideal. We would
+also have to communicate the data captured by the Microsoft Kinect to the game 
+engine using a localhost loopback or saved file. 
+
+##### .NET Framework
+
+The .NET Framework APIs allow WPF applications to interface with the Microsoft
+Kinect. WPF applications are also managed so they carry the same garbage collection
+and memory allocation benefits as mentioned in the Windows Runtime APIs. WPF also supports
+both C# and Visual Basic. Unlike Windows Runtime applications, WPF applications can 
+be distributed easily outside of a storefront. We would still likely have to use the 
+same method to transfer data to the game engine.
+
+##### Native APIs
+The Native APIs differ from the previous two implementations in that they do not 
+include garbage collection or memory allocation. Both of these functions have to 
+be explicitly handled by the programmer using the APIs. This can slow down implementation
+since extra code has to be written. It would also require additional diligence during 
+testing to ensure that there are no memory leaks. The benefit to using the native implementation 
+is additional performance but the majority of our computation time is likely to be 
+invested in the computer vision algorithms and processing and not the data capture itself.
+
+#### Microsoft Kinect SDK Overview
 
 ### Final Decision
 
-In addition to all of the advantages and disadvantages described above, 
-it is also important to the compare the system requirements. Our project 
-team has the computing power to use each of these devices and we feel it 
-is also reasonable to assume that game developers would also already have 
-devices of this caliber in order to run high performance games. Even so
-all the devices compared have comparable hardware requirements to one 
+In addition to all of the advantages and disadvantages of each camera device
+described above, it is also important to the compare the system requirements. 
+Our project team has the computing power to use each of these devices and 
+we feel it is also reasonable to assume that game developers would also 
+already have devices of this caliber in order to run high performance games. 
+Even so all the devices compared have comparable hardware requirements to one 
 another and are noted below.
 
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
-|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |               TODO |
+|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |        Unspecified |
 |     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
 | Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
 |       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
 
-Our main decision was choosing between the Intel® RealSense™ F200 camera and
-the Microsoft Kinect. Both sensors had many of the same advantages and
-disadvantages. The differentiating factor between the two was the size
+We took the HTC Vive and the Microsoft Hololens out of consideration because
+we did not feel that a head-mounted device fit with the way users would interact 
+with our application. Our main decision was choosing between the Intel® RealSense™ 
+F200 camera and the Microsoft Kinect. Both sensors had many of the same advantages 
+and disadvantages. The differentiating factor between the two was the size
 of the sensor, cost of the sensor, and the usability of the APIs. 
 The Intel® RealSense™ F200 Camera was marginally cheaper, costing approximately
 \$100. This reduced price helps to achieve a greater level of accessibility to our tool
@@ -471,6 +512,9 @@ a rotating platform or a primary computing device which can be easily moved,
 could be used to minimize this difficulty. The use of such solutions 
 would allow images to be captured from every angle which is necessary 
 for the computer vision algorithms that we will implement to process the data.
+Both the Kinect and the Intel® RealSense™ F200 are comparable devices and in
+the unlikely event that the Intel® RealSense™ F200 will not satisfy our requirements
+the Microsoft Kinect is a sound alternative.
 
 ## Computer Vision Research
 
