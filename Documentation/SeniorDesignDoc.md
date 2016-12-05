@@ -416,6 +416,27 @@ The amount of images passed to the computer vision interface is a crucial detail
 
 Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
 
+### Training Hardware
+Due to the demand required in the training process, our team will be using the strongest 
+computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
+specifications listed below.
+
+|               |                                                    |
+|---------------|----------------------------------------------------|
+| CPU           | Intel 6th Generation Core i7                       |
+| OS            | Windows 10 Pro                                     |
+| Display       | 15.6" FHD (1920x1080), IPS-Level                   |
+| Chipset       | Intel® HM170                                       |
+| Graphics      | GeForce® GTX 1060 with 6GB GDDR5                   |
+| Memory        | DDR4 16GB                                          |
+| Storage       | M.2 SSD 128GB and 1TB 5800rpm HDD                  |
+| Webcam        | HD type (30fps@720p)                               |
+| Keyboard      | Backlight Keyboard (Full-Color)                    |
+| Communication | Killer Gb LAN and Killer ac Wi-Fi + Bluetooth v4.1 |
+| Audio         | ImageG2x 2W Speaker                                |
+| Battery       | 3-Cell , 65 Whr                                    |
+
+
 ### Terminology Overview
 
 We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with.
