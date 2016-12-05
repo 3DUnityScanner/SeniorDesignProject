@@ -586,8 +586,8 @@ allows us to study in-depth what their method is accomplishing and how
 it functions. This allows us to accurately weigh the benefits and
 restrictions of this method in comparison to the other methods reviewed.
 
-This algorithm begins by predicting object coordinates and labels with a
-modified random forest called a joint classification regression forest.
+This algorithm predicts object coordinates and labels with a
+modified random forest called a joint classification regression forest. This forest is trained by quantizing object coordinates and choosing those that have the most information gain from the object distribution. 
 
 Then Brachmann *et al.* use a stack of forests to generate context
 information for each pixel in the input image(s).
@@ -660,25 +660,26 @@ method is called by Unity on every frame of the game.
 
 #### 3D Models
 
-Unity has two kinds of file that it can use to import 3D models. The first is exported 3D file formats
-and the second is application files from 3D Editors.
+Unity has two kinds of file that it can use to import 3D models. The first is exported 3D file formats and the second is application files from 3D Editors.
 
-The exported 3D file formats that Unity uses are: .FBx, .dxf, .obj, .3DS, and.dae. The 
+The exported 3D file formats that Unity uses are: .FBX, .dxf, .obj, .3DS, and.dae. The 
 benefit to these kinds of files are that they tend to be smaller than the application files
-and Unity can accept them no matter where they are from.
+and export only the data you will be using. These types of files are  more generalized and are more easily generated programatically due to them not being proprietary to a certain piece of premium software. 
 
-THe applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D, Lightwave,
-Maya, Max, and Modo. These kinda of files tend to be simpler for the user to use, especially
-since Unity will re-import every time the user saves the file. But they also tend to be bigger
-than necessary which can cause a slowdown of Unity, plus the software must be licensed on
-the computer in which it is being used.
+The applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D, Lightwave,
+Maya, Max, and Modo. These kinda of files tend to be simpler in terms of usability, especially
+since Unity will re-import the model every time the user saves the file. But they also tend to be larger when compared with exported files due to data bloating which is commonly found within 3D modeling software, which can cause a slowdown of Unity. The proprietary software used to create the file must also be owned and licensed on the computer in which it's being used. 
 
-Unity itself has support for simple models to be created through the editor. In the main editor screen,
-the user can go to Create -> 3D Objects and choose from a list of different simple 3D objects such as 
-cubes or cylinders. Unity will then spawn the object, typically at world coordinates (0, 0, 0), and the
-user can edit them.
+
+Unity itself has support for simple models to be created through the editor. In the main editor screen, the user can go to Create -> 3D Objects and choose from a list of different simple 3D objects such as cubes or cylinders. Unity will then spawn the object, typically at world coordinates (0, 0, 0), and the user can edit them.
 
 Unity also also has support for dynamic Mesh creation.
+
+The file format for 3D models we have chosen to use for our project in the Unity Engine is the .obj format mentioned previously. This format was chosen due to some key advantages such as the ability to generate the file programatically if it is found to be necessary. 
+
+The .obj file specification is publicly available and allows us to contruct .obj files from scratch. The four types of vertex types are geometric vertices (`v`), texture vertices (`vt`), vertex normals (`vn`), and parameter space vertices (`vp`). 
+
+The following are proper syntax examples in the .obj file format:
 
 ### Plugin types
 
@@ -794,6 +795,20 @@ disk. In this case the image would need to be read from disk and then
 returned. If the image is still in memory then the `Bitmap`.
 
 ## Computer Vision Design
+
+### Accord.NET Framework
+
+The Accord.NET framework is a machine learning framework written in C# for signal processing, statistics, computer audition, and computer vision applications. Accord.NET extends AForge.NET which is another popular C# machine learning framework, but Accord adds extra scientific computing features. 
+
+The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included. Another useful namespace is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation. The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics.
+
+Accord is made available in the NuGet package manager, making it more easy to integrate into our Visual Studio project environment.  
+
+### Random Forest Implementation
+
+### RANSAC Implementation
+
+### Pose Refinement Implementation
 
 ## Unity Design
 
