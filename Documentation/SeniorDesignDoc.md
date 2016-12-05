@@ -452,7 +452,7 @@ another and are noted below.
 
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
-|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |                    |
+|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |               TODO |
 |     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
 | Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
 |       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
