@@ -560,8 +560,10 @@ platforms, some of the biggest being PC, Xbox, Playstation, and Android/IOS.
 
 #### Scripting
 
-Unity uses an implementation of the Mono runtime for scripting. Unity mainly supports two scripting
-languages, C# (which is what this project is using) and UnityScript, which is a language that is
+Unity uses an implementation of the Mono runtime for scripting. Mono is an implementation of the 
+.NET framework. Mono is sponsored by Microsoft and it follows the ECMA standards for C#.
+
+Unity mainly supports two scripting languages, C# (which is what this project is using) and UnityScript, which is a language that is
 modelled after Javascript to use specifically for Unity. Unity can compile the source code 
 that is in the "Assets" folder of the project. For other languages, they can be used in Unity scripts
 in the form of DLLs, so as long as a language can be compiled into a Dynamically Linked Library(DLL) 
@@ -570,11 +572,36 @@ file it can be tied into Unity scripts.
 Unity's GameObjects are controlled by Components that are attached to them, and scripts allow
 the user to create these Components and manipulate them dynamically. Unity's GUI allows for 
 a simple script creation by going to Assets -> Create -> C# Script or Assets -> Create -> Javascript.
+This will create a class following your naming convention that extends MonoBehaviour and has two
+methods already created, `void Start()` and `void Update()`.
 
+The extension of MonoBehavior is necessary to allow the script to interface with Unity.
+It contains the necessary classes to allow for the created script to affect the GameObjects in Unity.
+It also gives the class access to the functions that determine when the script is called (like start and 
+update). The `Start()` method is called by Unity when the script is initialized, whereas the `Update()`
+method is called by Unity on every frame of the game.
 
 #### 3D Models
 
-#### Extending the Editor (Maybe change this part's location)
+Unity has two kinds of file that it can use to import 3D models. The first is exported 3D file formats
+and the second is application files from 3D Editors.
+
+The exported 3D file formats that Unity uses are: .FBx, .dxf, .obj, .3DS, and.dae. The 
+benefit to these kinds of files are that they tend to be smaller than the application files
+and Unity can accept them no matter where they are from.
+
+THe applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D, Lightwave,
+Maya, Max, and Modo. These kinda of files tend to be simpler for the user to use, especially
+since Unity will re-import every time the user saves the file. But they also tend to be bigger
+than necessary which can cause a slowdown of Unity, plus the software must be licensed on
+the computer in which it's being used.
+
+Unity itself has support for simple models to be created through the editor. In the main editor screen,
+the user can go to Create -> 3D Objects and choose from a list of different simple 3D objects such as 
+cubes or cylinders. Unity will then spawn the object, typically at world coordinates (0, 0, 0), and the
+user can edit them.
+
+Unity also also has support for dynamic Mesh creation.
 
 ### Plugin types
 
@@ -613,6 +640,7 @@ DLL. It should be noted that when creating Native Plugins using C++ or Objective
 steps taken to avoid name mangling issues, because plugin functions use a C-based call 
 interface.
 
+#### Extending the Editor (Maybe change this part's location)
 
 ### Version Differences
 
