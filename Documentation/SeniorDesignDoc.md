@@ -63,7 +63,7 @@ This project gives me a great chance to learn how to manipulate one of the bigge
 game engines in the market today.
 
 I was also excited by the prospect of getting to work with hardware and computer
-vision algorithms, things that I haven't had much experience with in my time at UCF.
+vision algorithms, things that I have not had much experience with in my time at UCF.
 This project gives me the opportunity to expand my knowledge in these fields, making
 it more interesting and overall beneficial for my future in and industry by helping
 me learn to adapt to different scenarios.
@@ -146,7 +146,7 @@ field and learn much more. I am already familiar with resources for
 potential previous implementations of Computer Vision systems in 3D
 scene processing and reproduction. I enjoy researching the field of computer vision and hope to write an original implementation for this project alongside Mark.
 
-I've always been enthralled with the game development process and I am excited to have a chance to contribute. My career plans are still an open book at this point in my life and I feel that this project could even open a door to future game development positions. Consisting of both computer vision systems and game development methodologies, this project combines two fields that I am passionate about and I .
+I have always been enthralled with the game development process and I am excited to have a chance to contribute. My career plans are still an open book at this point in my life and I feel that this project could even open a door to future game development positions. Consisting of both computer vision systems and game development methodologies, this project combines two fields that I am passionate about and I .
 
 # Specifications
 
@@ -173,26 +173,23 @@ I've always been enthralled with the game development process and I am excited t
 
 ## Camera Research
 
-### Available Cameras
-
 The UCF Games Research Group had several devices available to us for no
 charge. These included: Intel® RealSense™ 3D, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
 suitability of each of the devices.
 
-#### Intel® RealSense™ 3D
+### HTC Vive
 
-The Intel® RealSense™ 3D camera is a small rectangular camera that could
-easily be mounted in a variety of settings. The camera provides the
-ability the obtain both color streams and depth streams. Its SDK
-includes not only the tools to interface with the device itself, but
-also prebuilt algorithms for 3D scanning and other computer vision
-applications. The only drawback to the device is that it must be
-tethered to the computer via USB. This could make it difficult to
-capture all the necessary angles for the construction of the Unity
-scene.
+The HTC Vive is a virtual reality headset. Although it does have spatial
+scanning capabilities, it completely removes the user from the
+environment they are working in. This does not make it suitable for this
+task since it requires visual presence to place the blocks on the
+scanning surface as well as awareness of the environment to perform the
+actual scanning of the blocks. The cost of the device also makes it
+prohibitively expensive and is not congruent with the accessibility that
+we desired our tool to provide.
 
-#### Microsoft Hololens
+### Microsoft Hololens
 
 The Microsoft Hololens is an augmented reality headset that projects
 images onto the viewing lens to make it appear as if the images are
@@ -219,56 +216,27 @@ the user cannot perform any actions with their hands while capturing the
 data. This makes the hands free capability of any head mounted headset
 insignificant for our project.
 
-#### HTC Vive
+### Intel® RealSense™ 3D
 
-The HTC Vive is a virtual reality headset. Although it does have spatial
-scanning capabilities, it completely removes the user from the
-environment they are working in. This does not make it suitable for this
-task since it requires visual presence to place the blocks on the
-scanning surface as well as awareness of the environment to perform the
-actual scanning of the blocks. The cost of the device also makes it
-prohibitively expensive and is not congruent with the accessibility that
-we desired our tool to provide.
+The Intel® RealSense™ 3D camera is a small rectangular camera that could
+easily be mounted in a variety of settings. The camera provides the
+ability the obtain both color streams and depth streams. Its SDK
+includes not only the tools to interface with the device itself, but
+also prebuilt algorithms for 3D scanning and other computer vision
+applications. The only drawback to the device is that it must be
+tethered to the computer via USB. This could make it difficult to
+capture all the necessary angles for the construction of the Unity
+scene.
 
-#### Microsoft Kinect
-
-The Microsoft Kinect is a rectangular sensor that can provide both depth
-and color data. Much like the Intel® RealSense™ 3D camera, its SDK also
-includes prebuilt computer vision algorithms in addition to the standard
-camera interface functionality. It also shares the disadvantage of
-needing to be tethered via USB to the main computing device. The current
-mode of the Kinect sensor has the additional disadvantage of needing an
-adapter for use with a laptop. This increases the cost of the device as
-well as marginally increasing the complexity of the set up for the user.
-
-#### Final Decision
-
-Our main decision was choosing between the Intel® RealSense™ 3D Camera and
-the Microsoft Kinect. Both sensors had many of the same advantages and
-disadvantages. The differentiating factor between the two was the size
-of the sensor and the cost of the sensors. The Intel® RealSense™ Camera
-was marginally cheaper and we felt that its smaller size provided us
-with more flexibility as to mounting options. The primary benefits we
-saw the camera providing were the affordability of the device, the
-included API, and the handheld usability. The device costs approximately
-\$100, which achieves a greater level of accessibility that we wanted to
-provide with our tool. The handheld usability means that camera can be
-aimed easily and moved around the workspace as needed. Although the USB
-tethering of the device could make certain angles difficult, the user of
-a rotating platform or a mobile computing device could be used to
-minimize this difficulty. The use of such solutions would allow images
-to be captured from every angle which is necessary for the computer
-vision algorithms that we will implement to process the data.
-
-### Camera Module Implementation
+#### Camera Module Implementation
 
 There are four choices of implementation for the Camera module of our
 application. They are C\# .NET4, C\# Unity, C\# UWP, and C++. The C++
 implementation provides a native interface for the camera and the other
-three implementations are wrappers for the C++ implementation. The four
+three implementations are wrappers around the C++ implementation. The four
 different approaches are described and analyzed below.
 
-#### C\# .NET4
+##### C\# .NET4
 
 This implementation allows for the .NET4 Framework to interface with the
 Intel® RealSense™ camera. We would create a DLL file that provides access
@@ -289,7 +257,7 @@ is to gather data from the camera and possibly do some light
 preprocessing. Neither of these tasks are time critical so the need of a
 native implementation is not necessary.
 
-#### C\# Unity
+##### C\# Unity
 
 This implementation allows the camera module to be written directly into
 a Unity Managed Plugin. One of the benefits of implementing the camera module within
@@ -301,7 +269,7 @@ This reduces the complexity for the programmer, allows for faster
 development, and is less likely to introduce common errors such as
 memory leaks into the project.
 
-#### C\# UWP
+##### C\# UWP
 
 This implementation allows for the Universal Windows Platform to
 interface with the Intel® RealSense™ camera. This would involve creating a
@@ -313,7 +281,7 @@ code changes if necessary. Since there is no benefit to being able to
 run the camera application on a phone, the benefits are not useful to
 our project.
 
-#### C++
+##### C++
 
 This implementation does not use a wrapper and is a pure native
 implementation. This gives the advantage of a boost in performance but
@@ -324,7 +292,7 @@ processing that is done in this module is relatively light. The
 advantages of a native implementation are not as significant here as
 they would be in other applications.
 
-#### Final Decision
+##### Final Decision
 
 For this module, it makes the most sense to use the C\# Unity
 implementation. Since C\# is managed, the code required is simpler and
@@ -335,14 +303,14 @@ since the code is incorporated directly into the Unity plugin, the need
 to call an external DLL is eliminated and will make the deployment and
 maintenance of the project simpler.
 
-### Intel® RealSense™ SDK Overview
+#### Intel® RealSense™ SDK Overview
 
 The Intel® RealSense™ SDK provides access to the camera as well as access
 to some computer vision algorithms. Fundamentally the SDK is needed so that 
 we can receive the data from the camera and then pass it along to the 
 computer vision module.
 
-#### SenseManager
+##### SenseManager
 
 The `SenseManager` class is the access point for all other modules within the Intel®
 RealSense™ SDK. An instance of the `SenseManager` class cannot be created with
@@ -352,7 +320,7 @@ create `SampleReader` objects, initiate the data pipeline for processing, and to
 control execution of the pipeline. The exact methods required for these functions
 in the "Capturing Data" section below.
 
-#### SampleReader
+##### SampleReader
 
 The `SampleReader` class provides access to a stream of color samples, depth 
 samples, or both. The sample reader is obtained through a member function
@@ -361,7 +329,7 @@ provides is determined by the parameters of a member function call on the
 `SampleReader` object in question. The `SampleReader` provides properties 
 for accessing the sample that the pipeline generates.
 
-#### Capturing Data
+##### Capturing Data
 
 In order to begin capturing data 4 steps have to be executed
 
@@ -383,7 +351,7 @@ be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
 instance will be used to stream data later. Otherwise use `Dispose` to 
 free all resources associated with the instance. 
 
-#### Dispose Method
+##### Dispose Method
 
 Although C# is a managed language there are some classes in the Intel®
 RealSense™ SDK that do not benefit from automatic garbage collection.
@@ -392,6 +360,36 @@ be processed by the garbage collector, the `Dispose` method must be called
 on the `SenseManager`. In order to ensure that the `Dispose` is called,
 it is wise to place the method call inside of a class destructor or to 
 initialize the `SenseManager` in a `using` block.
+
+### Microsoft Kinect
+
+The Microsoft Kinect is a rectangular sensor that can provide both depth
+and color data. Much like the Intel® RealSense™ 3D camera, its SDK also
+includes prebuilt computer vision algorithms in addition to the standard
+camera interface functionality. It also shares the disadvantage of
+needing to be tethered via USB to the main computing device. The current
+mode of the Kinect sensor has the additional disadvantage of needing an
+adapter for use with a laptop. This increases the cost of the device as
+well as marginally increasing the complexity of the set up for the user.
+
+### Final Decision
+
+Our main decision was choosing between the Intel® RealSense™ 3D Camera and
+the Microsoft Kinect. Both sensors had many of the same advantages and
+disadvantages. The differentiating factor between the two was the size
+of the sensor and the cost of the sensors. The Intel® RealSense™ Camera
+was marginally cheaper and we felt that its smaller size provided us
+with more flexibility as to mounting options. The primary benefits we
+saw the camera providing were the affordability of the device, the
+included API, and the handheld usability. The device costs approximately
+\$100, which achieves a greater level of accessibility that we wanted to
+provide with our tool. The handheld usability means that camera can be
+aimed easily and moved around the workspace as needed. Although the USB
+tethering of the device could make certain angles difficult, the user of
+a rotating platform or a mobile computing device could be used to
+minimize this difficulty. The use of such solutions would allow images
+to be captured from every angle which is necessary for the computer
+vision algorithms that we will implement to process the data.
 
 ## Computer Vision Research
 
@@ -415,6 +413,27 @@ The amount of images passed to the computer vision interface is a crucial detail
 ### Outputs
 
 Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
+
+### Training Hardware
+Due to the demand required in the training process, our team will be using the strongest 
+computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
+specifications listed below.
+
+|               |                                                    |
+|---------------|----------------------------------------------------|
+| CPU           | Intel 6th Generation Core i7                       |
+| OS            | Windows 10 Pro                                     |
+| Display       | 15.6" FHD (1920x1080), IPS-Level                   |
+| Chipset       | Intel® HM170                                       |
+| Graphics      | GeForce® GTX 1060 with 6GB GDDR5                   |
+| Memory        | DDR4 16GB                                          |
+| Storage       | M.2 SSD 128GB and 1TB 5800rpm HDD                  |
+| Webcam        | HD type (30fps@720p)                               |
+| Keyboard      | Backlight Keyboard (Full-Color)                    |
+| Communication | Killer Gb LAN and Killer ac Wi-Fi + Bluetooth v4.1 |
+| Audio         | ImageG2x 2W Speaker                                |
+| Battery       | 3-Cell , 65 Whr                                    |
+
 
 ### Terminology Overview
 
@@ -633,6 +652,7 @@ The applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D
 Maya, Max, and Modo. These kinda of files tend to be simpler in terms of usability, especially
 since Unity will re-import the model every time the user saves the file. But they also tend to be larger when compared with exported files due to data bloating which is commonly found within 3D modeling software, which can cause a slowdown of Unity. The proprietary software used to create the file must also be owned and licensed on the computer in which it's being used. 
 
+
 Unity itself has support for simple models to be created through the editor. In the main editor screen, the user can go to Create -> 3D Objects and choose from a list of different simple 3D objects such as cubes or cylinders. Unity will then spawn the object, typically at world coordinates (0, 0, 0), and the user can edit them.
 
 Unity also also has support for dynamic Mesh creation.
@@ -662,7 +682,7 @@ there the DLLs can be used in the same way that normal C# scripts are used in Un
 
 #### Native Plugins
 
-Native plugins are libraries of native code that is written in any language that isn't directly
+Native plugins are libraries of native code that is written in any language that is not directly
 compiled by Unity, that can also be compiled into a DLL (Windows). The process of placing the 
 Native Plugin into the project is the same as Managed Plugins, you create a folder titled "plugins"
 located under the Assets folder and drop the DLLs in there.
@@ -682,7 +702,33 @@ interface.
 
 #### Extending the Editor (Maybe change this part's location)
 
-### Version Differences
+Similarly to how plugins can be made for game logic in Unity, one could also create plugins to extends
+the Unity editor itself to make game functionality easier. In fact, one might say that is the entire
+purpose of this project. To extend the editor, a script needs to be created where the class extends
+EditorWindow. This script will create a new editor window  
+
+### Version Differences and Pricing
+
+| Features      | Personal      | Plus      | Pro       | Enterprise        |
+|:-------------:|:-------------:|:---------:|:---------:|:-----------------:|
+| All Engine Features | Y       |     Y     |     Y     |        Y          |
+| All Platforms |       Y       |     Y     |     Y     |        Y          |
+| Continuous Updates|   Y       |     Y     |     Y     |        Y          |
+| Royalty Free  |       Y       |     Y     |     Y     |        Y          |
+| Splash Screen |       Y       | Custom    |   Custom  |     Custom        |
+| Revenue Capacity |    $100k   |   $200k   | Unlimited |    Unlimited      |
+| Unity Cloud Build| Standard Queue | Priority Queue | Concurrent Builds | Dedicated Build Agents|
+| Unity Analytics | Personal Analytics | Plus Analytics | Pro Analytics | Custom Analytics|
+| Unity Multiplayer | 20 Concurrent Users | 50 Concurrent Users | 200 Concurrent Users | Custom Multiplayer|
+| Unity Ads     |       Y       |     Y     |     Y     |        Y          |
+| Beta Access   |       Y       |     Y     |     Y     |        Y          |
+| Pro Editor UI Skin | N |Y | Y | Y|
+| Performance Reporting | N | Y | Y | Y |
+| Flexible Seat Management | N | Y | Y | Y |
+| Asset Kits | N | 20% Off | 40% off | 40% off |
+| Unity Certification Courseware | N | 1 Month Access | 3 Month Access | 3 Month Access|
+| Source Code Access | N | N | $ | $ |
+| Premium Support | N | N | $ | $ |
 
 #### Unity free
 
@@ -772,8 +818,8 @@ in different circumstances. The parameters of each test are as follows:
 
 * **Input** - The explicit parameters passed into each function. The value "N/A" will be used if the function takes no parameters.
 * **Output** - The value which the function returns. The value "N/A" will be used if the function is void
-* **Starting Conditions** - Any significant state values that should be set before the start of the test. The value "N/A" will be used if there aren't any consequential initial state values.
-* **Ending Conditions** - Any significant state values that should be present as a result of the method being tested. The value "N/A" will be used if there aren't any consequential state values.
+* **Starting Conditions** - Any significant state values that should be set before the start of the test. The value "N/A" will be used if there are not any consequential initial state values.
+* **Ending Conditions** - Any significant state values that should be present as a result of the method being tested. The value "N/A" will be used if there are not any consequential state values.
 
 #### StartCapture
 
@@ -797,7 +843,7 @@ to the capture loop to terminate execution.
 
 #### ConvertImage
 
-The only way to objectively test the ConvertImage method is to procedurally
+The only way to objectively test the `ConvertImage` method is to procedurally
 generate `Image` objects from the Intel® RealSense™ SDK as input for the 
 `ConvertImage` method. A brief description of the attributes are below:
 
@@ -871,8 +917,33 @@ access to the following:
 # Challenges
 
 ## Computer Vision Algorithmic Complexities
+The Computer Vision problem that our team is working through is still part of a very 
+active field of research. With this in mind, the members of our team who will be focusing on the 
+Computer Vision interface will need to at least partially catch up to this active field in order 
+to successfully implement a useful algorithm. Our team will be using utilizing an already 
+established paper to implement a proven algorithm so we don't use a large amount of our time 
+becoming experts at computer vision rather than completing the project.
 
 ## Realistic Goals and Requirements
+The project sponsors had a broad idea for a project, in which a user imports real-life blocks 
+into Unity. That being said, the actual requirements of the project were left up to our team to 
+figure out. This is a difficult challenge for our whole team because it is not trivial to decide our 
+limitations, such as:
+
+*  Deadline to completion
+
+*  Amount of time available per week due to other responsibilities
+
+*  Problem complexity and possibility
+
+A priority goal this semester was seeking a means to mitigate this challenge by extensive planning.
+
+## Inexperience with Necessary Tools and Libraries
+There are many technologies that we must use and interface with in order to complete this project. 
+With regards to these technologies, our teams experience is generally very low. In the first half 
+of development with this project, our team has sought to gain experience with these technologies 
+so that implementation from this point on can go smoothly.
+
 
 # Milestones
 
@@ -882,17 +953,18 @@ Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo
 
 Status: Completed Successfully
 
+
+### November 2016 - Train Bachmann implementation on 'Dummy Data' and test on test set
+
+Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
+
+Status: Completed Successfully
+
 ### December 2016 - Final Documentation
 
 Complete the final documentation for the planning of this project
 
 Status: Completely Successfully
-
-### November 2017 - Train Bachmann implementation on 'Dummy Data' and test on test set
-
-Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
-
-Status: Completed Successfully
 
 ### January 2017 - Set up Accord Framework
 
