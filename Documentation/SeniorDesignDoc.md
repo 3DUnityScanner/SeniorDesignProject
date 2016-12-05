@@ -174,7 +174,7 @@ I have always been enthralled with the game development process and I am excited
 ## Camera Research
 
 The UCF Games Research Group had several devices available to us for no
-charge. These included: Intel® RealSense™ 3D, Microsoft Hololens, HTC
+charge. These included: Intel® RealSense™ F200, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
 suitability of each of the devices.
 
@@ -187,7 +187,7 @@ task since it requires visual presence to place the blocks on the
 scanning surface as well as awareness of the environment to perform the
 actual scanning of the blocks. The cost of the device also makes it
 prohibitively expensive and is not congruent with the accessibility that
-we desired our tool to provide.
+we desired our tool to provide. TODO: Players can see
 
 ### Microsoft Hololens
 
@@ -216,9 +216,9 @@ the user cannot perform any actions with their hands while capturing the
 data. This makes the hands free capability of any head mounted headset
 insignificant for our project.
 
-### Intel® RealSense™ 3D
+### Intel® RealSense™ F200
 
-The Intel® RealSense™ 3D camera is a small rectangular camera that could
+The Intel® RealSense™ F200 camera is a small rectangular camera that could
 easily be mounted in a variety of settings. The camera provides the
 ability the obtain both color streams and depth streams. Its SDK
 includes not only the tools to interface with the device itself, but
@@ -228,7 +228,7 @@ tethered to the computer via USB. This could make it difficult to
 capture all the necessary angles for the construction of the Unity
 scene.
 
-#### Camera Module Implementation
+#### Possible Implementations
 
 There are four choices of implementation for the Camera module of our
 application. They are C\# .NET4, C\# Unity, C\# UWP, and C++. The C++
@@ -239,7 +239,7 @@ different approaches are described and analyzed below.
 ##### C\# .NET4
 
 This implementation allows for the .NET4 Framework to interface with the
-Intel® RealSense™ camera. We would create a DLL file that provides access
+Intel® RealSense™ F200 camera. We would create a DLL file that provides access
 to the data that we wish to retrieve from the camera. This
 implementation provides the benefit of allowing me to draw on my
 previous .NET development experience. The implementation provides the
@@ -293,6 +293,13 @@ advantages of a native implementation are not as significant here as
 they would be in other applications.
 
 ##### Final Decision
+
+|                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
+|------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
+|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |                    |
+|     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
+| Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |             TODO |               TODO |
+|       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
 
 For this module, it makes the most sense to use the C\# Unity
 implementation. Since C\# is managed, the code required is simpler and
@@ -364,7 +371,7 @@ initialize the `SenseManager` in a `using` block.
 ### Microsoft Kinect
 
 The Microsoft Kinect is a rectangular sensor that can provide both depth
-and color data. Much like the Intel® RealSense™ 3D camera, its SDK also
+and color data. Much like the Intel® RealSense™ F200 camera, its SDK also
 includes prebuilt computer vision algorithms in addition to the standard
 camera interface functionality. It also shares the disadvantage of
 needing to be tethered via USB to the main computing device. The current
@@ -372,12 +379,16 @@ mode of the Kinect sensor has the additional disadvantage of needing an
 adapter for use with a laptop. This increases the cost of the device as
 well as marginally increasing the complexity of the set up for the user.
 
+#### Possible Implementations
+
+
+
 ### Final Decision
 
-Our main decision was choosing between the Intel® RealSense™ 3D Camera and
+Our main decision was choosing between the Intel® RealSense™ F200 camera and
 the Microsoft Kinect. Both sensors had many of the same advantages and
 disadvantages. The differentiating factor between the two was the size
-of the sensor and the cost of the sensors. The Intel® RealSense™ Camera
+of the sensor and the cost of the sensors. The Intel® RealSense™ F200 Camera
 was marginally cheaper and we felt that its smaller size provided us
 with more flexibility as to mounting options. The primary benefits we
 saw the camera providing were the affordability of the device, the
@@ -405,7 +416,7 @@ RGB-D image pairs would contain an RGB image alongside a depth image per
 frame. This provides a faster runtime more similar to image processing
 tasks, but it still provides depth information to make sufficiently
 accurate processing results for our purposes. For these reasons we have
-chosen to utilize the ability of the Intel® RealSense™ camera to capture
+chosen to utilize the ability of the Intel® RealSense™ F200 camera to capture
 RGB-D image pairs for our application.
 
 The amount of images passed to the computer vision interface is a crucial detail and will take testing to determine the optimal amount of images, angles of view, and capture rate. 
@@ -584,13 +595,13 @@ distribution of object coordinates in the input image(s). Then the
 uncertainty levels previously predicted are used to predict camera and
 object positions when depth data is not available.
 
-Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
+Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ F200 camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
 ### Datasets
 
 #### The RGB-D Object Dataset
 
-This dataset contains 300 objects placed into 51 different categories. It was created with a Kinect camera which is very similar to the Intel® RealSense™ camera we plan to use for our application. The RGB frames are captured with width of 640 pixels and height of 480 pixels. The corresponding depth frames are captured at a rate of 30 Hz. The data was captured by recording objects rotating 360 degrees on a spinning table. There is pose-based ground truth data for every object in this dataset. 
+This dataset contains 300 objects placed into 51 different categories. It was created with a Kinect camera which is very similar to the Intel® RealSense™ F200 camera we plan to use for our application. The RGB frames are captured with width of 640 pixels and height of 480 pixels. The corresponding depth frames are captured at a rate of 30 Hz. The data was captured by recording objects rotating 360 degrees on a spinning table. There is pose-based ground truth data for every object in this dataset. 
 
 This dataset also includes 22 videos of indoor scenes including the objects in the dataset with sufficient cluttering and occlusion for our training purposes. The varying distances in the scenes can help with robust training for different camera setups as well.
 
@@ -756,7 +767,7 @@ Each of these public members are described below.
 
 #### StartCapture
 The `StartCapture` method of the `RealSenseCamera` signals the class 
-to start capturing images from the Intel® RealSense™ Camera. This updates
+to start capturing images from the Intel® RealSense™ F200 Camera. This updates
 the camera's state variable to the `CameraState.RUNNING` state. The method
 will engage the camera capture loop which will continually capture images 
 until otherwise notified. This notification is created by calling the 
@@ -764,7 +775,7 @@ until otherwise notified. This notification is created by calling the
 
 #### StopCapture
 The `StopCapture` method of the `RealSenseCamera` signals the class
-to stop capturing images from the Intel® RealSense™ Camera. The `State`
+to stop capturing images from the Intel® RealSense™ F200 Camera. The `State`
 member variable will be changed in order to signal to the capture loop
 to terminate. The camera module will then finish converting and saving
 all images that have been captured. Image capture will not resume again 
@@ -891,10 +902,10 @@ many resources available for our team to utilize for this project.
 All possible costs or necessary resources are described below.
 
 ## Cameras
-The Intel® RealSense™ was already available to the UCF Games
+The Intel® RealSense™ F200 was already available to the UCF Games
 Research Group. Therefore the use of the camera will not carry a cost
 to our group. The only potential cost the camera could pose is if we
-find the Intel® RealSense™ camera to be unusable and we have to use a
+find the Intel® RealSense™ F200 camera to be unusable and we have to use a
 camera that the UCF Games Research Group does not already have in their
 possession. They also have a Microsoft Kinect, Microsoft Hololens, and an HTC Vive.
 
