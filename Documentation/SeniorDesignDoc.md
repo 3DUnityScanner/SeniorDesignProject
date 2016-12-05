@@ -425,6 +425,27 @@ The amount of images passed to the computer vision interface is a crucial detail
 
 Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
 
+### Training Hardware
+Due to the demand required in the training process, our team will be using the strongest 
+computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
+specifications listed below.
+
+|               |                                                    |
+|---------------|----------------------------------------------------|
+| CPU           | Intel 6th Generation Core i7                       |
+| OS            | Windows 10 Pro                                     |
+| Display       | 15.6" FHD (1920x1080), IPS-Level                   |
+| Chipset       | Intel® HM170                                       |
+| Graphics      | GeForce® GTX 1060 with 6GB GDDR5                   |
+| Memory        | DDR4 16GB                                          |
+| Storage       | M.2 SSD 128GB and 1TB 5800rpm HDD                  |
+| Webcam        | HD type (30fps@720p)                               |
+| Keyboard      | Backlight Keyboard (Full-Color)                    |
+| Communication | Killer Gb LAN and Killer ac Wi-Fi + Bluetooth v4.1 |
+| Audio         | ImageG2x 2W Speaker                                |
+| Battery       | 3-Cell , 65 Whr                                    |
+
+
 ### Terminology Overview
 
 We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with.
@@ -691,7 +712,33 @@ interface.
 
 #### Extending the Editor (Maybe change this part's location)
 
-### Version Differences
+Similarly to how plugins can be made for game logic in Unity, one could also create plugins to extends
+the Unity editor itself to make game functionality easier. In fact, one might say that is the entire
+purpose of this project. To extend the editor, a script needs to be created where the class extends
+EditorWindow. This script will create a new editor window  
+
+### Version Differences and Pricing
+
+| Features      | Personal      | Plus      | Pro       | Enterprise        |
+|:-------------:|:-------------:|:---------:|:---------:|:-----------------:|
+| All Engine Features | Y       |     Y     |     Y     |        Y          |
+| All Platforms |       Y       |     Y     |     Y     |        Y          |
+| Continuous Updates|   Y       |     Y     |     Y     |        Y          |
+| Royalty Free  |       Y       |     Y     |     Y     |        Y          |
+| Splash Screen |       Y       | Custom    |   Custom  |     Custom        |
+| Revenue Capacity |    $100k   |   $200k   | Unlimited |    Unlimited      |
+| Unity Cloud Build| Standard Queue | Priority Queue | Concurrent Builds | Dedicated Build Agents|
+| Unity Analytics | Personal Analytics | Plus Analytics | Pro Analytics | Custom Analytics|
+| Unity Multiplayer | 20 Concurrent Users | 50 Concurrent Users | 200 Concurrent Users | Custom Multiplayer|
+| Unity Ads     |       Y       |     Y     |     Y     |        Y          |
+| Beta Access   |       Y       |     Y     |     Y     |        Y          |
+| Pro Editor UI Skin | N |Y | Y | Y|
+| Performance Reporting | N | Y | Y | Y |
+| Flexible Seat Management | N | Y | Y | Y |
+| Asset Kits | N | 20% Off | 40% off | 40% off |
+| Unity Certification Courseware | N | 1 Month Access | 3 Month Access | 3 Month Access|
+| Source Code Access | N | N | $ | $ |
+| Premium Support | N | N | $ | $ |
 
 #### Unity free
 
