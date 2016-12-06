@@ -1067,20 +1067,32 @@ The Unity Analytics feature is also upgraded in the Enterprise tier to a level t
 business. It has all the features of Pro with a custom raw data export size and a custom analysis.
 
 
-## Unreal Engine Research
-
-### Platform Viability
+## Unreal Engine 4 Research
 
 Unity is the primary target of our project, but the Unreal Engine is similar target 
 that may serve as an additional implementation path.
+The Unreal Engine has recently changed into a free-to-use model, with a royalty needed if 
+the profits exceed three thousand dollars per quarter. This is important to note for our 
+project because of the implications for educational use. With that in mind, we will 
+describe the process of creating a similar implementation of our project in 
+the Unreal Engine.
 
 ### Plugin System
+Unlike Unity, Unreal plugins operate on a relatively separate layer of engine itself. The 
+support documentation for the system is also sparse, due to the relatively new implementation 
+of the system (2015).
 
-##### Descriptors
+Unreal uses C++ within its environment to do programming, and the same goes for the plugin system.
+For the most part, plugin source file layout is the same as any other C++ module in Unreal Engine. 
+The Primary addition is a *.uplugin file that acts as a descriptor for the plugin. 
 
-Plugin descriptors are files that end in a .uplugin extension.
+#### Descriptors
+
+Plugin descriptors are files that end in a *.uplugin extension that are formatted like JSON. one should 
+refer to the following two tables to create a proper plugin description couple with a proper proper module description.
 
 Descriptor File Format
+
 | Field name | Info | Description |
 |-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | FileVersion | Required | Version of this plugin descriptor file itself. It is used for backwards compatibility as new features are added to the plugin system. You should usually set this to the latest version that is allowed by the version of the engine you are using. The latest version is currently 3, and is the version of format that is documented here. We do not expect this version to change very frequently. In source code, you can look at EProjectDescriptorVersion to see the actual value. If you require maximum compatibility with older versions of the engine, then you can use an older version of the format, but it is not recommended. |
@@ -1099,8 +1111,6 @@ Descriptor File Format
 
 Module Descriptors
 
-For plugins that contain code, the descriptor file will contain at least one module descriptor.
-
 | Field name | Info | Description |
 |--------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Name | Required | Unique name of this plugin module that will be loaded with the plugin. At runtime, the engine will expect appropriate plugin binaries to exist in the plugin's Binaries folder with the module name as specified here. For modules that have a Source directory, a matching *.Build.cs file is expected to exist within the module's subfolder tree. |
@@ -1109,6 +1119,36 @@ For plugins that contain code, the descriptor file will contain at least one mod
 | WhitelistPlatforms | Optional | If specified, gives a list of platforms which this module will be compiled for. If not specified, the module will be compiled for all platforms. |
 | BlacklistPlatforms | Optional | If specified, gives a list of platforms which this this module will not be compiled for. If not specified, the module will be compiled for all platforms. |
 
+#### Plugin Code
+
+The process for developing our plugin in Unreal will be very similar to the process in Unity, because we will 
+be linking a DLL from within the plugin to provide the necessary functions to access hardware and do the 
+computation algorithms. To start the process, every plugin will start with the following two steps:
+
+1. Duplicate the template plugin folder structure given by Unreal.
+2. Modify the Plugin and Module Descriptors to match the new plugin.
+
+#### DLL Import
+With a blank plugin set up, it is pertinent to note the means by which one loads a DLL into the plugin.
+You will need a minimum of three things:
+
+1.  The DLL itself
+2.  The .h header file that declares all the functions of the DLL that you can call
+3.  The .lib file or import library which contains address of the header file functions in the DLL
+
+Once those files are collected and placed in the project, once has to follow the next three steps to use the functions in 
+the DLL:
+
+1.  In the build.cs, add the following lines:
+
+    `PublicDelayLoadDLLs.Add("FreeImage.dll");`
+    `PublicAdditionalLibraries.Add(Path.Combine(FreeImageDirectory, "FreeImage.lib"));`
+
+2.  In the main cpp file for the plugin, add the following:
+
+    `DLLHandle = FPlatformProcess::GetDllHandle(*Path);`
+
+After all that, just include the header in any file in the plugin and call any of the DLL functions.
 
 # Detailed Design
 
