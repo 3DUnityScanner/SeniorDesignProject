@@ -192,13 +192,14 @@ suitability of each of the devices.
 ### HTC Vive
 
 The HTC Vive is a virtual reality headset. Although it does have spatial
-scanning capabilities, it completely removes the user from the
-environment they are working in. This does not make it suitable for this
-task since it requires visual presence to place the blocks on the
+scanning capabilities, its primary purpose is to immerse the user into 
+another reality. This does not make it an ideal device for this task 
+since it requires visual presence at all times to place the blocks on the
 scanning surface as well as awareness of the environment to perform the
-actual scanning of the blocks. The cost of the device also makes it
-prohibitively expensive and is not congruent with the accessibility that
-we desired our tool to provide. TODO: Players can see
+actual scanning of the blocks. The head-mounted nature of the device
+is not as easy to aim as a hand-held device. The cost of the device also makes it
+prohibitively expensive which is not congruent with the accessibility that
+we desired our tool to provide. 
 
 ### Microsoft Hololens
 
@@ -372,9 +373,9 @@ of image representation if the need arises.
 `FileFormat` is used to specify the file type used by `Scan3D` in the
 `Reconstruct` method. There are three supported file types.
   
-  * OBJ - .obj file type
-  * PLY - .ply file type
-  * STL - .stl file type
+  * OBJ
+  * PLY
+  * STL
 
 `ImageAccess` is used to as an argument to specify the access permissions 
 when acquiring an `ImageData` object with `AcquireAccess` method. 
@@ -384,7 +385,9 @@ when acquiring an `ImageData` object with `AcquireAccess` method.
   * ACCESS_READ_WRITE
 
 `PixelFormat` is used as an argument to specify the format to be 
-returned by the `AcquireAccess` method. There are several file formats.
+returned by the `AcquireAccess` method. Some of the formats are
+exclusive to a certain type of data such as color, depth, or infrared.
+There are several pixel formats.
   
   * PIXEL_FORMAT_YUY2
   * PIXEL_FORMAT_NV12
@@ -408,8 +411,6 @@ by all Intel® RealSense™ cameras.
   * STREAM_TYPE_IR
   * STREAM_TYPE_LEFT
   * STREAM_TYPE_RIGHT
-
-TODO: Add Descriptions
 
 ##### Capturing Color and Depth Data
 
@@ -478,10 +479,6 @@ In order for the object to be processed by the garbage collector, the
 is called, it is wise to place the method call inside of a class 
 destructor or to initialize the `SenseManager` in a `using` block.
 
-##### Intel® RealSense™ Limitations
-
-TODO: Add limitations
-
 ### Microsoft Kinect
 
 The Microsoft Kinect is a rectangular sensor that can provide both depth
@@ -536,13 +533,31 @@ invested in the computer vision algorithms and processing and not the data captu
 
 ##### KinectSensor
 
+The `KinectSensor` class is used as the primary interface to 
+the Microsoft Kinect. The `KinectSensor` adopts a singleton pattern
+by using a static method to return. Once an instance has been obtained
+all other access to the sensor is handled through member
+
 ##### DepthFrameSource
+
+TODO: DepthFrameSource Description
 
 ##### DepthFrame
 
+The `DepthFrame` class is an image where the pixels represent the distance of
+the given pixel area from the camera
+
 ##### ColorFrameSource
 
+TODO: ColorFrameSource Description
+
 ##### ColorFrame
+
+TODO: ColorFrame Description
+
+##### Capturing Color and Depth Data
+
+TODO: Detail steps to capture color data
 
 ### Final Decision
 
@@ -1060,10 +1075,10 @@ Unity's Enterprise edition is somewhat of a mix of the previous versions. It all
 a customized plan for all of their workers that need Unity to give those who need specific versions 
 exactly what they need. This also gives the business access to special Enterprise features.
 
-In the Enterprise tier, Unity will build a custom Unity Cloud infastructure to give the business a 
+In the Enterprise tier, Unity will build a custom Unity Cloud infrastructure to give the business a 
 queue time that only includes the users in that business.
 
-The Unity Analytics feature is also upgraded in the Enterprise tier to a level that is customizable by the
+The Unity Analytics feature is also upgraded in the Enterprise tier to a level that is configurable by the
 business. It has all the features of Pro with a custom raw data export size and a custom analysis.
 
 # Detailed Design
@@ -1185,9 +1200,9 @@ The only way to objectively test the `ConvertImage` method is to procedurally
 generate `Image` objects from the Intel® RealSense™ SDK as input for the 
 `ConvertImage` method. A brief description of the attributes are below:
 
-* **TestRSImage1** - TODO: Image Description
-* **TestRSImage2** - TODO: Image Description
-* **TestRSImage3** - TODO: Image Description
+* **TestRSImage1** - All pixels are set to black
+* **TestRSImage2** - Simple white background with black text in the foreground
+* **TestRSImage3** - Picture of the table with blocks
 
 The test would make sure that the `Bitmap` (denoted as ImageGeneratingBitmap#)
 that was used to produce the Intel® RealSense™ SDK `Image` objects (denoted as TestRSImage#) 
@@ -1322,6 +1337,11 @@ Status: Completely Successfully
 Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing, Accord.Math namespace testing and Random Forest testing. We must ensure the framework integrity before continuing.
 
 Status: Pending
+
+### January 2017 - Camera Module Implemented
+
+The camera module should be written and functional. All unit tests should have passed and the public
+interface should be returning correct values.
 
 ### January 2017 - Run Accord Samples
 
