@@ -154,6 +154,12 @@ I have always been enthralled with the game development process and I am excited
 
 ## Requirements
 
+We have divided up the requirements into two categories: Necessary Features
+and Possible Features. Necessary Features contains what is required for our minimal
+viable product. Without these, our product is incomplete. Possible Features contains
+capabilities we would like for our product to have but are not mandatory for the 
+final deliverable.
+
 ### Necessary Features
 
 1. The system functions on the Windows platform
@@ -171,10 +177,15 @@ I have always been enthralled with the game development process and I am excited
 
 # Research
 
+The following section contains the entirety of the research we have conducted thus far.
+It includes our research into all of our camera options, multiple computer vision
+algorithms for object recognition, and our research into industry standard game engine
+plugin models and capabilities.
+
 ## Camera Research
 
 The UCF Games Research Group had several devices available to us for no
-charge. These included: Intel® RealSense™ 3D, Microsoft Hololens, HTC
+charge. These included: Intel® RealSense™ F200, Microsoft Hololens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
 suitability of each of the devices.
 
@@ -187,7 +198,7 @@ task since it requires visual presence to place the blocks on the
 scanning surface as well as awareness of the environment to perform the
 actual scanning of the blocks. The cost of the device also makes it
 prohibitively expensive and is not congruent with the accessibility that
-we desired our tool to provide.
+we desired our tool to provide. TODO: Players can see
 
 ### Microsoft Hololens
 
@@ -216,9 +227,9 @@ the user cannot perform any actions with their hands while capturing the
 data. This makes the hands free capability of any head mounted headset
 insignificant for our project.
 
-### Intel® RealSense™ 3D
+### Intel® RealSense™ F200
 
-The Intel® RealSense™ 3D camera is a small rectangular camera that could
+The Intel® RealSense™ F200 camera is a small rectangular camera that could
 easily be mounted in a variety of settings. The camera provides the
 ability the obtain both color streams and depth streams. Its SDK
 includes not only the tools to interface with the device itself, but
@@ -228,7 +239,7 @@ tethered to the computer via USB. This could make it difficult to
 capture all the necessary angles for the construction of the Unity
 scene.
 
-#### Camera Module Implementation
+#### Possible Implementations
 
 There are four choices of implementation for the Camera module of our
 application. They are C\# .NET4, C\# Unity, C\# UWP, and C++. The C++
@@ -239,7 +250,7 @@ different approaches are described and analyzed below.
 ##### C\# .NET4
 
 This implementation allows for the .NET4 Framework to interface with the
-Intel® RealSense™ camera. We would create a DLL file that provides access
+Intel® RealSense™ F200 camera. We would create a DLL file that provides access
 to the data that we wish to retrieve from the camera. This
 implementation provides the benefit of allowing me to draw on my
 previous .NET development experience. The implementation provides the
@@ -326,45 +337,112 @@ The `SampleReader` class provides access to a stream of color samples, depth
 samples, or both. The sample reader is obtained through a member function
 contained within a `SenseManager` object. The type of data that the `SampleReader`
 provides is determined by the parameters of a member function call on the
-`SampleReader` object in question. The `SampleReader` provides properties 
+`SampleReader` in question. The `SampleReader` provides properties 
 for accessing the sample that the pipeline generates.
 
-##### Capturing Data
+##### Scan3D
 
-In order to begin capturing data 4 steps have to be executed
+The `Scan3D` class provides high level access to the 3D Scanning algorithms. 
+It acts as an interface to the `PreviewImage` property which displays the current
+captured image, as well as the `Reconstruct` method which builds the three 
+dimensional object from the acquired frames.
 
-1. Acquire the `SenseManager`
-2. Acquire a `SampleReader` using the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
-3. Call `EnableStream` on the acquired `SampleReader` and pass it the type of desired stream
-4. Call `Init` on the `SenseManager` with no arguments
+##### Image
+
+The `Image` class provides a means to acquire access to the pixel data of an image as
+well as the Image's metadata such as height and width. Its primary elements of interest 
+within the `Image` class are the `AcquireAccess` method, `ReleaseAccess` method, and the
+`Info` property. The `AcquireAccess` method gives the caller a reference to the underlying 
+image data through the use of an `ImageData` object reference. Additional parameters of the
+`AcquireAccess` method can also be used to convert the format of the pixel data received. 
+The `AcquireAccess` method must be followed by a `ReleaseAccess` method call. The 
+`ReleaseAccess` method  allows other callers to acquire access to the image's data. 
+The `Info` property of the `Image` is also of importance as it contains the height, 
+width, and format of the `Image`.
+
+##### ImageData
+
+The `ImageData` class is comprised of the actual pixel data. It contains several methods
+for converting to and from various array types as well as some Unity specific and .NET specific
+types. The array types are general enough that they can be used to convert to another type
+of image representation if the need arises.
+
+##### Important Enumerations
+
+##### Capturing Color and Depth Data
+
+The basis of computer vision algorithms is the capture and analysis of 
+depth and color data In order to begin capturing depth and/or color data, 
+4 steps have to be executed.
+
+1. Acquire the `SenseManager` object by calling the static `SenseManager.CreateInstance` method
+2. Acquire a `SampleReader` object by calling the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
+3. Call the `EnableStream` method on the acquired `SampleReader` and pass it the type of desired stream TODO: Type of stream
+4. Call the `Init` method on the `SenseManager` with no arguments
 
 Once these steps have been completed it is possible to acquire data from
-the video pipeline. Acquire data can be achieved in 3 easy steps
+the video pipeline. Acquiring data can be achieved in 3 easy steps
 
 1. Call `AcquireFrame` on the acquired `SenseManager`
 2. Retrieve the `Sample` Property from the acquired `SampleReader`
 3. Call `ReleaseFrame` on the acquired `SenseManager` when frame processing is complete
 
-The above three steps may be repeated as many times as desired. Upon 
-completion of data capture. The `Close` method or `Dispose` method must
-be called the acquired `SenseManager`. Use `Close` if the `SenseManager`
-instance will be used to stream data later. Otherwise use `Dispose` to 
-free all resources associated with the instance. 
+The above three steps may be repeated as many times as desired for each frame of 
+data to be captured. Upon completion of data capture. The `Close` method 
+or `Dispose` method must be called on the acquired `SenseManager`. Use `Close` 
+if the `SenseManager` instance will be used to stream data later. 
+Otherwise use `Dispose` to free all resources associated with the instance. 
+
+TODO: Intel SDK Example
+
+##### 3D Scanning
+
+The Intel® RealSense™ SDK also provides algorithms for scanning 3D objects into
+common 3D file formats including: OBJ, STL, and PLY. The use of these algorithms
+is made easy through the Intel® RealSense™ SDK and does not require much more
+effort than it does to capture raw color and depth. The process is very similar 
+to process detailed in the Capturing Color and Depth Data section above. In order 
+to scan objects the following steps have to be performed.
+
+1. Acquire the `SenseManager` by calling the static `SenseManager.CreateInstance` method
+2. Acquire a `Scan3D` object by calling the static `Scan3D.Activate` method and passing the acquired `SenseManager` as an argument
+3. Call the `Init` method on the `SenseManager` with no arguments
+
+This initializes the pipeline for constructing a 3D object. Once the pipeline has 
+been initialized the data can begin to be captured. Follow the following steps to 
+capture an image.
+
+1. Call `AcquireFrame` on the acquired `SenseManager`
+2. Capture the result of the `Scan3D` object's `PreviewImage` method as an `Image` object
+3. Call `ReleaseFrame` on the acquired `SenseManager` in order to capture the next frame
+
+The above three steps may be repeated as many times as desired for each frame of 
+data to be captured. After all desired frames have been captured. The `Reconstruct` 
+method can be called which will save the object with the specified file format and 
+file location. Upon completion of data capture and exporting the data to a file, the 
+`Close` method  or `Dispose` method must be called on the acquired `SenseManager`. 
+Use `Close` if the `SenseManager` instance will be used to stream data later. 
+Otherwise use `Dispose` to free all resources associated with the instance. 
+
+TODO: Intel SDK Example
 
 ##### Dispose Method
 
-Although C# is a managed language there are some classes in the Intel®
+Although C\# is a managed language there are some classes in the Intel®
 RealSense™ SDK that do not benefit from automatic garbage collection.
-One of these objects is the `SenseManager`. In order for the object to 
-be processed by the garbage collector, the `Dispose` method must be called
-on the `SenseManager`. In order to ensure that the `Dispose` is called,
-it is wise to place the method call inside of a class destructor or to 
-initialize the `SenseManager` in a `using` block.
+These objects include the `SenseManager` class and the `Image` class. 
+In order for the object to be processed by the garbage collector, the 
+`Dispose` method must be called. In order to ensure that the `Dispose` 
+is called, it is wise to place the method call inside of a class 
+destructor or to initialize the `SenseManager` in a `using` block.
+
+##### Intel® RealSense™ Limitations
+
 
 ### Microsoft Kinect
 
 The Microsoft Kinect is a rectangular sensor that can provide both depth
-and color data. Much like the Intel® RealSense™ 3D camera, its SDK also
+and color data. Much like the Intel® RealSense™ F200 camera, its SDK also
 includes prebuilt computer vision algorithms in addition to the standard
 camera interface functionality. It also shares the disadvantage of
 needing to be tethered via USB to the main computing device. The current
@@ -372,24 +450,95 @@ mode of the Kinect sensor has the additional disadvantage of needing an
 adapter for use with a laptop. This increases the cost of the device as
 well as marginally increasing the complexity of the set up for the user.
 
+#### Possible Implementations
+
+The Kinect API provides three different types of APIs. It provides 
+APIs for the Windows Runtime, .NET Framework, and Native APIs. All three 
+APIs use similar naming conventions and therefore skills learned with one 
+API should be able to easily transfer to another. The advantages, disadvantages, 
+and types of applications that can be written with these APIs are detailed below. 
+
+##### Windows Runtime
+
+The Windows Runtime APIs allow Windows Store Apps that interface with 
+the Kinect to be written. These APIs can be accessed by any language that
+supports the Windows Runtime including C# and Visual Basic. The APIs are 
+managed which allow for automatic garbage collection and memory allocation.
+Since Windows Store apps have to be distributed through the Windows Store,
+we are not interested in this implementation. We want to be able to package 
+and distribute our plugin together so having to download one component from
+the store and another component from another location is not ideal. We would
+also have to communicate the data captured by the Microsoft Kinect to the game 
+engine using a localhost loopback or saved file. 
+
+##### .NET Framework
+
+The .NET Framework APIs allow WPF applications to interface with the Microsoft
+Kinect. WPF applications are also managed so they carry the same garbage collection
+and memory allocation benefits as mentioned in the Windows Runtime APIs. WPF also supports
+both C# and Visual Basic. Unlike Windows Runtime applications, WPF applications can 
+be distributed easily outside of a storefront. We would still likely have to use the 
+same method to transfer data to the game engine.
+
+##### Native APIs
+The Native APIs differ from the previous two implementations in that they do not 
+include garbage collection or memory allocation. Both of these functions have to 
+be explicitly handled by the programmer using the APIs. This can slow down implementation
+since extra code has to be written. It would also require additional diligence during 
+testing to ensure that there are no memory leaks. The benefit to using the native implementation 
+is additional performance but the majority of our computation time is likely to be 
+invested in the computer vision algorithms and processing and not the data capture itself.
+
+#### Microsoft Kinect SDK Overview
+
 ### Final Decision
 
-Our main decision was choosing between the Intel® RealSense™ 3D Camera and
-the Microsoft Kinect. Both sensors had many of the same advantages and
-disadvantages. The differentiating factor between the two was the size
-of the sensor and the cost of the sensors. The Intel® RealSense™ Camera
-was marginally cheaper and we felt that its smaller size provided us
-with more flexibility as to mounting options. The primary benefits we
-saw the camera providing were the affordability of the device, the
-included API, and the handheld usability. The device costs approximately
-\$100, which achieves a greater level of accessibility that we wanted to
-provide with our tool. The handheld usability means that camera can be
-aimed easily and moved around the workspace as needed. Although the USB
-tethering of the device could make certain angles difficult, the user of
-a rotating platform or a mobile computing device could be used to
-minimize this difficulty. The use of such solutions would allow images
-to be captured from every angle which is necessary for the computer
-vision algorithms that we will implement to process the data.
+In addition to all of the advantages and disadvantages of each camera device
+described above, it is also important to the compare the system requirements. 
+Our project team has the computing power to use each of these devices and 
+we feel it is also reasonable to assume that game developers would also 
+already have devices of this caliber in order to run high performance games. 
+Even so all the devices compared have comparable hardware requirements to one 
+another and are noted below.
+
+|                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
+|------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
+|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |        Unspecified |
+|     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
+| Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
+|       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
+
+We took the HTC Vive and the Microsoft Hololens out of consideration because
+we did not feel that a head-mounted device fit with the way users would interact 
+with our application. Our main decision was choosing between the Intel® RealSense™ 
+F200 camera and the Microsoft Kinect. Both sensors had many of the same advantages 
+and disadvantages. The differentiating factors between the two was the size
+of the sensor, cost of the sensor, and the usability of the APIs. It was in these
+areas that the aspects of the devices differed enough for us to make our decision.
+
+The Intel® RealSense™ F200 Camera was marginally cheaper, costing approximately
+\$100. This reduced price helps to achieve a greater level of accessibility for our tool
+which is an overall goal of our project. By reducing the costs allows for smaller
+development teams to expedite their design workflow. The Intel® RealSense™ F200 
+also did not require the additional purchase of an adapter for the sensor which 
+simplifies the integration for the end user of our tool. 
+
+The handheld usability means that camera can be aimed easily and moved around the 
+workspace as needed. Although the USB tethering of the device could make certain 
+angles difficult, the use of a rotating platform or a primary computing device 
+which can be easily moved, could be used to minimize this difficulty. The use 
+of such solutions would allow images to be captured from every angle which is 
+necessary for the computer vision algorithms that we will implement to process 
+the data. 
+
+Finally, although the APIs were similar we felt that the documentation and 
+overall pattern of use found in the Intel® RealSense™ SDK were much more
+straightforward and easier to understand. There were also several simple 
+code examples to help get programmers who were unfamiliar with the API.
+
+Both the Kinect and the Intel® RealSense™ F200 are comparable devices 
+and in the unlikely event that the Intel® RealSense™ F200 will not satisfy our 
+requirements, the Microsoft Kinect is a sound alternative.
 
 ## Computer Vision Research
 
@@ -405,7 +554,7 @@ RGB-D image pairs would contain an RGB image alongside a depth image per
 frame. This provides a faster runtime more similar to image processing
 tasks, but it still provides depth information to make sufficiently
 accurate processing results for our purposes. For these reasons we have
-chosen to utilize the ability of the Intel® RealSense™ camera to capture
+chosen to utilize the ability of the Intel® RealSense™ F200 camera to capture
 RGB-D image pairs for our application.
 
 The amount of images passed to the computer vision interface is a crucial detail and will take testing to determine the optimal amount of images, angles of view, and capture rate. 
@@ -419,7 +568,7 @@ Due to the demand required in the training process, our team will be using the s
 computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
 specifications listed below.
 
-|               |                                                    |
+|    Component  |          Specification                             |
 |---------------|----------------------------------------------------|
 | CPU           | Intel 6th Generation Core i7                       |
 | OS            | Windows 10 Pro                                     |
@@ -435,9 +584,9 @@ specifications listed below.
 | Battery       | 3-Cell , 65 Whr                                    |
 
 
-### Terminology Overview
+### Computer Vision Terminology Overview
 
-We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with.
+We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with. Please refer back to this sections if you encounter unfamiliar terms in the following section.
 
 * 6D or 6DOF - The six degrees of freedom typically used for pose estimation algorithms. These include the x translation, y translation, z translation, x rotation, y rotation, and z rotation. 
 
@@ -474,6 +623,10 @@ We will present brief definitions for most of the terms related to computer visi
 * Decision tree - A decision tree is a tree structure where each node acts as a test of an attribute and every branch is a representation of the outcome of that test. The leaf nodes are labels that indicate which outcome is chosen as the final decision for the tree. These trees can be used as predictive models for machine learning tasks.
 
 * Random forest - A random forest is an ensemble method of machine learning using multiple decision trees usually for classification purposes.
+
+* Gaussian Mixture Model (GMM) - A GMM is a weighted sum of Gaussian statistical distributions. This creates a parameterized probability model of more continous raw values.  
+
+* Perspective-n-Point - This is a camera localization and pose estimation problem. There are many popular methods for solving this problem using points in a 3D space with their corresponding projections, usually with extended refinement using RANSAC.
 
 ### Previous Methods
 
@@ -568,29 +721,25 @@ allows us to study in-depth what their method is accomplishing and how
 it functions. This allows us to accurately weigh the benefits and
 restrictions of this method in comparison to the other methods reviewed.
 
-This algorithm begins by predicting object coordinates and labels with a
-modified random forest called a joint classification regression forest.
+This algorithm predicts object coordinates and labels with a
+modified random forest called a joint classification regression forest. This forest is trained by mapping object coordinates to a smaller set of discrete values using nearest neighbor assignment to the training data's object coordinates randomly.Then those with the most information gain when compared with the object distribution are chosen and these are stored as a Gaussian Mixture Model. When testing an image, a pixel is fed through a tree in the forest and when it gets to a leaf it will store the distribution of object coordinates and predictions for that pixel. Then all of that tree's object predictions are merged to form an overall prediction for that pixel. The coordinate distribution for the tree is then averaged [].  
 
-Then Brachmann *et al.* use a stack of forests to generate context
-information for each pixel in the input image(s).
+Then Brachmann *et al.* use a stack of these forests to generate context
+information for each pixel in the input image. The first level of this stack of forests is trained normally, but all the following trees have access to the outputted information of the previous tree. To smooth the object probability distribution they use a median filter on the pixels surrounding each pixel. This median filter optimizes loss, specifically the least absolute deviations that minimize the difference between hypothesized values and target values, which allows it to be effective when dealing with outlier pixels that would otherwise negatively impact the result []. The object coordinates are also regularized using a similar method which optimizes loss(reprinted equations 3 and 4 provided with explicit permission []).
 
-The object poses are then estimated using RANSAC. This method is able to perform multi-object 
-detections by obtaining pose estimations for multiple objects and deciding which
-object the estimations belong to during processing. This is done with
-the initial predicted values on the input image.
+The object poses are then estimated using RANSAC. When RANSAC is mentioned in this paper it is actually a specific paradigm of RANSAC called preemptive RANSAC which  For a single object the forest values of object predictions, pixel positions, and object coordinates are used to estimate the 2D-3D correspondences. Then the reprojection error is calculated and subsequently minimized with the help of a camera matrix. This error is acceptable if it is under a predefined threshold, meaning that this data point is an inlier. The best pose hypothesis is the one in which the largest amount of inliers are found. Hypotheses are drawn by solving the perspective-n-point problem for four correspondences. The first of four pixels is drawn according to a random tree's mean probability distribution then the other three are drawn within a certain distance of the first pixel depending on the size of the object in question, but if the reprojection error calculated for the pixels is found to be above the threshold then this hypothesis is discarded and a new one is drawn. These hypotheses are sorted by their number of included inliers and the lower half is discarded. The hypotheses left after this process are then further refined by repeating the process of solving the perspective-n-point problem on the new set of inlier value points until only one hypothesis is left. This remaining hypothesis is the estimated pose for the object in question []. 
 
-The poses gathered from the use of RANSAC are refined by calculating the
-distribution of object coordinates in the input image(s). Then the
-uncertainty levels previously predicted are used to predict camera and
-object positions when depth data is not available.
+ When this algorithm is detecting multiple objects at once the above method of detection does not maintain efficiency when a large number of objects are to be detected. Multi-object detections are performed by drawing a shared set of hypotheses instead of individual sets for each object. These hypotheses are chosen by analyzing the object probability distributions at the first pixel of the current hypothesis when performing the same actions as a single-object RANSAC pose estimation. These chosen hypotheses still have to pass the same validity check as in single-object detections. Using this method allows the algorithm to decide if a hypothesis belongs to multiple objects during the hypothesis sampling process instead of having a separate process for each object. This allows their RANSAC pose estimation to scale more easily with a large number of object detections in the same image [].
 
-Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.*. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
+During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood and projection volume using the following equationns [].
+
+Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code (dubbed the 'Dummy Data') to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.* []. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ F200 camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
 ### Datasets
 
 #### The RGB-D Object Dataset
 
-This dataset contains 300 objects placed into 51 different categories. It was created with a Kinect camera which is very similar to the Intel® RealSense™ camera we plan to use for our application. The RGB frames are captured with width of 640 pixels and height of 480 pixels. The corresponding depth frames are captured at a rate of 30 Hz. The data was captured by recording objects rotating 360 degrees on a spinning table. There is pose-based ground truth data for every object in this dataset. 
+This dataset contains 300 objects placed into 51 different categories. It was created with a Kinect camera which is very similar to the Intel® RealSense™ F200 camera we plan to use for our application. The RGB frames are captured with width of 640 pixels and height of 480 pixels. The corresponding depth frames are captured at a rate of 30 Hz. The data was captured by recording objects rotating 360 degrees on a spinning table. There is pose-based ground truth data for every object in this dataset. 
 
 This dataset also includes 22 videos of indoor scenes including the objects in the dataset with sufficient cluttering and occlusion for our training purposes. The varying distances in the scenes can help with robust training for different camera setups as well.
 
@@ -606,7 +755,7 @@ The Challenge dataset is available alongside the Willow dataset. It includes 39 
 
 ####  Big Berkeley Instance Recognition Dataset (Big BIRD)
 
-This dataset includes 600 images, 600 RGB-D-based point clouds, pose information for every image and point cloud, segmentation masks for all images, and meshes created from merged point clouds. This dataset is extensive but utilizes point clouds which would not be applicable for our purposes. if extra data is needed, this could be a potentially useful resource.
+This dataset includes 600 images, 600 RGB-D-based point clouds, pose information for every image and point cloud, segmentation masks for all images, and meshes created from merged point clouds. This dataset is extensive but utilizes point clouds which would not be applicable for our purposes. Although, if extra data is needed, this could be a potentially useful resource.
 
 ## Unity Game Engine Research
 
@@ -646,25 +795,46 @@ method is called by Unity on every frame of the game.
 
 #### 3D Models
 
-Unity has two kinds of file that it can use to import 3D models. The first is exported 3D file formats
-and the second is application files from 3D Editors.
+Unity has two kinds of file that it can use to import 3D models. The first is exported 3D file formats and the second is application files from 3D Editors.
 
-The exported 3D file formats that Unity uses are: .FBx, .dxf, .obj, .3DS, and.dae. The 
+The exported 3D file formats that Unity uses are: .FBX, .dxf, .obj, .3DS, and.dae. The 
 benefit to these kinds of files are that they tend to be smaller than the application files
-and Unity can accept them no matter where they are from.
+and export only the data you will be using. These types of files are  more generalized and are more easily generated programatically due to them not being proprietary to a certain piece of premium software. 
 
-THe applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D, Lightwave,
-Maya, Max, and Modo. These kinda of files tend to be simpler for the user to use, especially
-since Unity will re-import every time the user saves the file. But they also tend to be bigger
-than necessary which can cause a slowdown of Unity, plus the software must be licensed on
-the computer in which it is being used.
+The applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D, Lightwave,
+Maya, Max, and Modo. These kinda of files tend to be simpler in terms of usability, especially
+since Unity will re-import the model every time the user saves the file. But they also tend to be larger when compared with exported files due to data bloating which is commonly found within 3D modeling software, which can cause a slowdown of Unity. The proprietary software used to create the file must also be owned and licensed on the computer in which it's being used. 
 
-Unity itself has support for simple models to be created through the editor. In the main editor screen,
-the user can go to Create -> 3D Objects and choose from a list of different simple 3D objects such as 
-cubes or cylinders. Unity will then spawn the object, typically at world coordinates (0, 0, 0), and the
-user can edit them.
+
+Unity itself has support for simple models to be created through the editor. In the main editor screen, the user can go to Create -> 3D Objects and choose from a list of different simple 3D objects such as cubes or cylinders. Unity will then spawn the object, typically at world coordinates (0, 0, 0), and the user can edit them.
 
 Unity also also has support for dynamic Mesh creation.
+
+The file format for 3D models we have chosen to use for our project in the Unity Engine is the .obj format mentioned previously. This format was chosen due to some key advantages such as the ability to generate the file programatically if it is found to be necessary. The .obj file specification is also publicly available and allows us to construct .obj files from scratch. The four types of vertex types are geometric vertices (`v`), texture vertices (`vt`), vertex normals (`vn`), and parameter space vertices (`vp`). 
+
+The following are proper syntax examples in the .obj file format:
+
+`v x y z w`  for a geometric vertex, where `x`, `y`, and `z` are coordinates of a vertex and `w` is a weight for curves defaulted to one.
+
+`vp u v w` for a freeform geometry, where `u` is either a coordinate of a curve or the first coordinate of a surface. `v` is the second coordinate of a surface. `w` is a curve trimming weight defaulted to one.
+
+`vn i j k` for a normal vertex, where `i`, `j`, and `k` are the normal vector components.
+
+`vt u v w` for a texture vertex, where `u` is the horizontal direction, `v` is the vertical direction , and `w` is the depth. Depending on the dimensionality of the texture, `u` and `v` may be 0.
+
+Syntax for different geometric elements are as follows:
+
+`p v1 v2 ... vn` for a point, where `vn` represents the nth vertex which will create the nth point.
+
+`l v1/vt1 v2/vt2 ... vn/vtn` for a line, where `vn/vtn` represents the nth vertex on the line separated from the texture vertex with a `/`.
+
+`f v1/vt1/vn1 v2/vt2/vn2 ... vn/vtn/vnn` for a face, where `vn/vtn/vnn` represents the nth vertex, texture vertex, and normal vertex respectively.
+
+`curv u0 u1 v1 v2 ... vn` for a curve, where `u0` is a float representing the starting parameter value for the curve, `u1` is a float representing the ending parameter value for the curve, and `vn` represents the nth control point parameter vertex for the curve (there must be at least two).
+
+`curv2 vp1 ... vpn` for a 2D curve, where `vpn` is the nth control point parameter vertices.
+
+`surf s0 s1 t0 t1 v1/vt1/vn1 ... vn/vtn/vnn` for a surface, where `s0` is the start parameter value for the u direction, `s1` is the end parameter value for the u direction, `t0` is the start parameter value for the v direction, `t1` is the end parameter value for the v direction and `vn/vtn/vnn` is the nth control vertex with the nth texture vertex and normal vertex separated by a `/`.
 
 ### Plugin types
 
@@ -760,7 +930,7 @@ should unforeseeable events occur. All these changes can happen within
 the camera module without the unity plugin needing to change its method
 calls at all.
 
-### Public Members
+### ICamera Public Members
 The `RealSenseCamera` has three public members. All three of its public 
 members are implementations of the `ICamera` interface's public members 
 They include: `StartCapture()`, `StopCapture()`, and `GetImages()`. 
@@ -768,7 +938,7 @@ Each of these public members are described below.
 
 #### StartCapture
 The `StartCapture` method of the `RealSenseCamera` signals the class 
-to start capturing images from the Intel® RealSense™ Camera. This updates
+to start capturing images from the Intel® RealSense™ F200 Camera. This updates
 the camera's state variable to the `CameraState.RUNNING` state. The method
 will engage the camera capture loop which will continually capture images 
 until otherwise notified. This notification is created by calling the 
@@ -776,7 +946,7 @@ until otherwise notified. This notification is created by calling the
 
 #### StopCapture
 The `StopCapture` method of the `RealSenseCamera` signals the class
-to stop capturing images from the Intel® RealSense™ Camera. The `State`
+to stop capturing images from the Intel® RealSense™ F200 Camera. The `State`
 member variable will be changed in order to signal to the capture loop
 to terminate. The camera module will then finish converting and saving
 all images that have been captured. Image capture will not resume again 
@@ -789,6 +959,20 @@ disk. In this case the image would need to be read from disk and then
 returned. If the image is still in memory then the `Bitmap`.
 
 ## Computer Vision Design
+
+### Accord.NET Framework
+
+The Accord.NET framework is a machine learning framework written in C# for signal processing, statistics, computer audition, and computer vision applications. Accord.NET extends AForge.NET which is another popular C# machine learning framework, but Accord adds extra scientific computing features. 
+
+The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included. Another useful namespace is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation. The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics.
+
+Accord is made available in the NuGet package manager, making it more easy to integrate into our Visual Studio project environment.  
+
+### Random Forest Implementation
+
+### RANSAC Implementation
+
+### Pose Refinement Implementation
 
 ## Unity Design
 
@@ -889,10 +1073,10 @@ many resources available for our team to utilize for this project.
 All possible costs or necessary resources are described below.
 
 ## Cameras
-The Intel® RealSense™ was already available to the UCF Games
+The Intel® RealSense™ F200 was already available to the UCF Games
 Research Group. Therefore the use of the camera will not carry a cost
 to our group. The only potential cost the camera could pose is if we
-find the Intel® RealSense™ camera to be unusable and we have to use a
+find the Intel® RealSense™ F200 camera to be unusable and we have to use a
 camera that the UCF Games Research Group does not already have in their
 possession. They also have a Microsoft Kinect, Microsoft Hololens, and an HTC Vive.
 
