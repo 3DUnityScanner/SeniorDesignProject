@@ -569,6 +569,8 @@ The amount of images passed to the computer vision interface is a crucial detail
 
 Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
 
+We plan on importing this data directly into the Unity Game Engine through our plugin interface. The data will include four values in a data structure: a translation matrix, rotation matrix, scale, and object type based on the models we have been provided for the block types.
+
 ### Training Hardware
 Due to the demand required in the training process, our team will be using the strongest 
 computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
@@ -1073,7 +1075,7 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected.
 
 |Test|Namespace|
-|:----:|:---------:|
+|:----|:---------|
 |Validate full namespace| Accord.Tests.MachineLearning|
 |Test Decision Tree|Accord.Tests.MachineLearning|
 |Test Decision Tree Rules|Accord.Tests.MachineLearning|
@@ -1088,7 +1090,10 @@ The Accord.NET framework includes some unit tests for each major namespace to al
 ### Unit Testing
 
 
+
 ### Integration Testing
+
+
 
 ## Unity Testing
 
