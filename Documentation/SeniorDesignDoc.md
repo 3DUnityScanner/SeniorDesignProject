@@ -369,6 +369,8 @@ of image representation if the need arises.
 
 ##### Important Enumerations
 
+TODO: Add Enumerations
+
 ##### Capturing Color and Depth Data
 
 The basis of computer vision algorithms is the capture and analysis of 
@@ -377,7 +379,7 @@ depth and color data In order to begin capturing depth and/or color data,
 
 1. Acquire the `SenseManager` object by calling the static `SenseManager.CreateInstance` method
 2. Acquire a `SampleReader` object by calling the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
-3. Call the `EnableStream` method on the acquired `SampleReader` and pass it the type of desired stream TODO: Type of stream
+3. Call the `EnableStream` method on the acquired `SampleReader` and pass it the type of desired stream
 4. Call the `Init` method on the `SenseManager` with no arguments
 
 Once these steps have been completed it is possible to acquire data from
@@ -1161,3 +1163,5 @@ Perform unit tests for the Accord framework in Visual Studio. All necessary test
 Status: Pending
 
 # Summary
+
+TODO: Add Summary
