@@ -447,13 +447,13 @@ and color data. Much like the Intel® RealSense™ F200 camera, its SDK also
 includes prebuilt computer vision algorithms in addition to the standard
 camera interface functionality. It also shares the disadvantage of
 needing to be tethered via USB to the main computing device. The current
-mode of the Kinect sensor has the additional disadvantage of needing an
+mode of the Microsoft Kinect sensor has the additional disadvantage of needing an
 adapter for use with a laptop. This increases the cost of the device as
 well as marginally increasing the complexity of the set up for the user.
 
 #### Possible Implementations
 
-The Kinect API provides three different types of APIs. It provides 
+The Microsoft Kinect API provides three different types of APIs. It provides 
 APIs for the Windows Runtime, .NET Framework, and Native APIs. All three 
 APIs use similar naming conventions and therefore skills learned with one 
 API should be able to easily transfer to another. The advantages, disadvantages, 
@@ -462,7 +462,7 @@ and types of applications that can be written with these APIs are detailed below
 ##### Windows Runtime
 
 The Windows Runtime APIs allow Windows Store Apps that interface with 
-the Kinect to be written. These APIs can be accessed by any language that
+the Microsoft Kinect to be written. These APIs can be accessed by any language that
 supports the Windows Runtime including C# and Visual Basic. The APIs are 
 managed which allow for automatic garbage collection and memory allocation.
 Since Windows Store apps have to be distributed through the Windows Store,
@@ -491,6 +491,11 @@ is additional performance but the majority of our computation time is likely to 
 invested in the computer vision algorithms and processing and not the data capture itself.
 
 #### Microsoft Kinect SDK Overview
+
+##### KinectSensor
+
+##### DepthFrame
+
 
 ### Final Decision
 
@@ -537,7 +542,7 @@ overall pattern of use found in the Intel® RealSense™ SDK were much more
 straightforward and easier to understand. There were also several simple 
 code examples to help get programmers who were unfamiliar with the API.
 
-Both the Kinect and the Intel® RealSense™ F200 are comparable devices 
+Both the Microsoft Kinect and the Intel® RealSense™ F200 are comparable devices 
 and in the unlikely event that the Intel® RealSense™ F200 will not satisfy our 
 requirements, the Microsoft Kinect is a sound alternative.
 
@@ -740,7 +745,7 @@ Since source code and documentation were included with this paper we have decide
 
 #### The RGB-D Object Dataset
 
-This dataset contains 300 objects placed into 51 different categories. It was created with a Kinect camera which is very similar to the Intel® RealSense™ F200 camera we plan to use for our application. The RGB frames are captured with width of 640 pixels and height of 480 pixels. The corresponding depth frames are captured at a rate of 30 Hz. The data was captured by recording objects rotating 360 degrees on a spinning table. There is pose-based ground truth data for every object in this dataset. 
+This dataset contains 300 objects placed into 51 different categories. It was created with a Microsoft Kinect camera which is very similar to the Intel® RealSense™ F200 camera we plan to use for our application. The RGB frames are captured with width of 640 pixels and height of 480 pixels. The corresponding depth frames are captured at a rate of 30 Hz. The data was captured by recording objects rotating 360 degrees on a spinning table. There is pose-based ground truth data for every object in this dataset. 
 
 This dataset also includes 22 videos of indoor scenes including the objects in the dataset with sufficient cluttering and occlusion for our training purposes. The varying distances in the scenes can help with robust training for different camera setups as well.
 
