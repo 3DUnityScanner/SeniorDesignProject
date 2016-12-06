@@ -631,6 +631,8 @@ The amount of images passed to the computer vision interface is a crucial detail
 
 Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
 
+We plan on importing this data directly into the Unity Game Engine through our plugin interface. The data will include four values in a data structure: a translation matrix, rotation matrix, scale, and object type based on the models we have been provided for the block types.
+
 ### Training Hardware
 Due to the demand required in the training process, our team will be using the strongest 
 computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
@@ -799,7 +801,7 @@ The object poses are then estimated using RANSAC. When RANSAC is mentioned in th
 
  When this algorithm is detecting multiple objects at once the above method of detection does not maintain efficiency when a large number of objects are to be detected. Multi-object detections are performed by drawing a shared set of hypotheses instead of individual sets for each object. These hypotheses are chosen by analyzing the object probability distributions at the first pixel of the current hypothesis when performing the same actions as a single-object RANSAC pose estimation. These chosen hypotheses still have to pass the same validity check as in single-object detections. Using this method allows the algorithm to decide if a hypothesis belongs to multiple objects during the hypothesis sampling process instead of having a separate process for each object. This allows their RANSAC pose estimation to scale more easily with a large number of object detections in the same image [].
 
-During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood and projection volume using the following equationns [].
+During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood and projection volume using the following equations [].
 
 Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code (dubbed the 'Dummy Data') to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.* []. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ F200 camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
@@ -1139,11 +1141,13 @@ Our implementation of the auto-context random forest suggested in "Uncertainty-D
 
 ### RANSAC Implementation
 
-Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" []. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation. This implementation will be modified to run parallel hypothesis checks to follow the structure of preemptive RANSAC.
+Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" []. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation. This implementation will be modified to run parallel hypothesis checks to follow the structure of preemptive RANSAC. 
+
+Our instance of RANSAC will have a set of Hypotheses which have the pose information stored. During processing these will be culled, refined, and added to as necessary.
 
 ### Pose Refinement Implementation
 
-
+We would like to implement a similar method to Brachmann *et al.* to refine the poses gathered by RANSAC. Each Hypothesis in the RANSAC instance will have a refinement method called `refine()` which will be able to improve the pose estimation if that hypothesis is chosen for refinement. The poses chosen for refinement will be handled within our RANSAC implementation.
 
 ## Unity Design
 
@@ -1229,7 +1233,7 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected.
 
 |Test|Namespace|
-|:----:|:---------:|
+|:----|:---------|
 |Validate full namespace| Accord.Tests.MachineLearning|
 |Test Decision Tree|Accord.Tests.MachineLearning|
 |Test Decision Tree Rules|Accord.Tests.MachineLearning|
@@ -1244,7 +1248,10 @@ The Accord.NET framework includes some unit tests for each major namespace to al
 ### Unit Testing
 
 
+
 ### Integration Testing
+
+
 
 ## Unity Testing
 
