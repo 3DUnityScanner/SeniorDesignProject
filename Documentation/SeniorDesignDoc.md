@@ -1301,6 +1301,15 @@ We would like to implement a similar method to Brachmann *et al.* to refine the 
 
 ## IDE
 
+We are using Microsoft Visual Studio 2015 Community Edition in order to
+develop our project. We chose Microsoft Visual Studio 2015 Community Edition
+because, it offers support for Unity Plugin development as well as excellent
+support for C# development. All the members on our team also have substantial 
+experience with the IDE. Microsoft Visual Studio also helps to simplify the
+build process for multiple dependent projects. Finally Microsoft Visual Studio
+also has excellent integration with the Git version control system which will 
+help facilitate rapid development by multiple authors on our team.
+
 ## Version Control System
 
 We chose to use Git as our version control system. We decided on Git due
