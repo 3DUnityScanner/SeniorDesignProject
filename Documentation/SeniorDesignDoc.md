@@ -438,6 +438,7 @@ destructor or to initialize the `SenseManager` in a `using` block.
 
 ##### Intel® RealSense™ Limitations
 
+TODO: Add limitations
 
 ### Microsoft Kinect
 
