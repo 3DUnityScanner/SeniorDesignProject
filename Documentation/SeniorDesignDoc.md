@@ -887,13 +887,19 @@ The Accord.NET framework is a machine learning framework written in C# for signa
 
 The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included. Another useful namespace is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation. The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics.
 
-Accord is made available in the NuGet package manager, making it more easy to integrate into our Visual Studio project environment.  
+Accord is made available in the NuGet package manager, making it easily integrated into our Visual Studio project environment.  
 
 ### Random Forest Implementation
 
+Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning.DecisionTrees` namespace []. 
+
 ### RANSAC Implementation
 
+Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" []. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation.
+
 ### Pose Refinement Implementation
+
+
 
 ## Unity Design
 
@@ -968,7 +974,7 @@ are what the `ConvertImage` method produces.
 
 ### Benchmark Testing
 
-We will be using "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" as a benchmark for our computer vision interface. We would like to track metrics on our training and detection processes to attempt to get as close as possible to the results of Bachmann *et al.*. 
+We will be using the CVPR 2016 code included with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" as a benchmark for our computer vision interface. We would like to track metrics on our training and detection processes to attempt to get as close as possible to the results of Bachmann *et al.*. 
 
 On the Hintersoisser dataset Bachmann *et al.* achieved 82.1% accuracy when estimating 3D 6-DOF pose with a maximum re-projection error for all vertices of 5cm and a maximum rotation error of 5°.  Processing time was calculated at a maximum of 1 second for 13 objects, nearly 2 seconds for 25 objects and nearly 4 seconds for 50 images. The issue with utilizing processing time is that the authors mention that processing time can broadly vary with hypothesis acceptance. If it is more difficult to accept a hypothesis the processing time increases. We will mitigate this risk by testing both their implementation and our implementation on the same data after being trained on the same dataset and compare those recorded processing times.
 
