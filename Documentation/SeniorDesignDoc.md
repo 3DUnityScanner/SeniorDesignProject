@@ -369,7 +369,47 @@ of image representation if the need arises.
 
 ##### Important Enumerations
 
-TODO: Add Enumerations
+`FileFormat` is used to specify the file type used by `Scan3D` in the
+`Reconstruct` method. There are three supported file types.
+  
+  * OBJ - .obj file type
+  * PLY - .ply file type
+  * STL - .stl file type
+
+`ImageAccess` is used to as an argument to specify the access permissions 
+when acquiring an `ImageData` object with `AcquireAccess` method. 
+  
+  * ACCESS_READ
+  * ACCESS_WRITE
+  * ACCESS_READ_WRITE
+
+`PixelFormat` is used as an argument to specify the format to be 
+returned by the `AcquireAccess` method. There are several file formats.
+  
+  * PIXEL_FORMAT_YUY2
+  * PIXEL_FORMAT_NV12
+  * PIXEL_FORMAT_RGB32
+  * PIXEL_FORMAT_RGB24
+  * PIXEL_FORMAT_Y8
+  * PIXEL_FORMAT_Y8_IR_RELATIVE
+  * PIXEL_FORMAT_Y16
+  * PIXEL_FORMAT_DEPTH
+  * PIXEL_FORMAT_DEPTH_RAW
+  * PIXEL_FORMAT_DEPTH_F32
+  * PIXEL_FORMAT_DEPTH_CONFIDENCE
+
+`StreamType` is used as an argument to specify the type of stream to
+a `SampleReader` receives. Some of the stream types are not supported
+by all Intel® RealSense™ cameras.
+
+  * STREAM_TYPE_ANY
+  * STREAM_TYPE_COLOR
+  * STREAM_TYPE_DEPTH
+  * STREAM_TYPE_IR
+  * STREAM_TYPE_LEFT
+  * STREAM_TYPE_RIGHT
+
+TODO: Add Descriptions
 
 ##### Capturing Color and Depth Data
 
@@ -496,8 +536,13 @@ invested in the computer vision algorithms and processing and not the data captu
 
 ##### KinectSensor
 
+##### DepthFrameSource
+
 ##### DepthFrame
 
+##### ColorFrameSource
+
+##### ColorFrame
 
 ### Final Decision
 
