@@ -1066,6 +1066,50 @@ queue time that only includes the users in that business.
 The Unity Analytics feature is also upgraded in the Enterprise tier to a level that is customizable by the
 business. It has all the features of Pro with a custom raw data export size and a custom analysis.
 
+
+## Unreal Engine Research
+
+### Platform Viability
+
+Unity is the primary target of our project, but the Unreal Engine is similar target 
+that may serve as an additional implementation path.
+
+### Plugin System
+
+##### Descriptors
+
+Plugin descriptors are files that end in a .uplugin extension.
+
+Descriptor File Format
+| Field name | Info | Description |
+|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| FileVersion | Required | Version of this plugin descriptor file itself. It is used for backwards compatibility as new features are added to the plugin system. You should usually set this to the latest version that is allowed by the version of the engine you are using. The latest version is currently 3, and is the version of format that is documented here. We do not expect this version to change very frequently. In source code, you can look at EProjectDescriptorVersion to see the actual value. If you require maximum compatibility with older versions of the engine, then you can use an older version of the format, but it is not recommended. |
+| Version | Optional | Current version number of this build of your plugin. This value should always increase with future versions. This version number is not usually displayed to end-users. |
+| VersionName | Optional | Version of the plugin displayed in the editor UI. This is never used for any versioning checks and can be in whatever format you would like, however we suggest a simple Major.Minor format. You should always update the VersionName whenever the Version number has increased. |
+| FriendlyName | Optional | Name of the plugin displayed in the editor UI. If not specified, the name will default to the .uplugin file name. |
+| Description | Optional | A paragraph of text that describes what this plugin is used for. This will be displayed in the editor's plugin window. |
+| Category | Optional | This is a special dot-separated path string that allows you to assign your plugin to a category in the editor UI. It is purely for organizational purposes. An example of a category path is "Editor Features.Level Editing.Mesh Painting". Each category is separated by a period character and represents a deeper level in the tree. |
+| CreatedBy | Optional | The individual or company name that created this plugin. This may be displayed in the plugin UI or in other locations. |
+| CreatedByURL | Optional | A web link to the individual or company that created this plugin. If specified, the editor UI may display a hyperlink that allows the user to browse to this web page. |
+| DocsURL | Optional | A web link to the plugin's documentation. If specified, the editor's plugin browser will display a hyperlink that allows the user to browse to this web page. |
+| SupportURL | Optional | Link to the support page for the plugin. Will be shown on the editor's plugin browser if specified. |
+| CanContainContent | Optional | When specified and set to true, enables Content support for this plugin. The default setting is false. See the section on Content in Plugins for more info. |
+| Modules | Optional | For plugins that contain source code (and binaries), this is the list of modules that should be loaded at startup. See below for more info. |
+
+
+Module Descriptors
+
+For plugins that contain code, the descriptor file will contain at least one module descriptor.
+
+| Field name | Info | Description |
+|--------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Name | Required | Unique name of this plugin module that will be loaded with the plugin. At runtime, the engine will expect appropriate plugin binaries to exist in the plugin's Binaries folder with the module name as specified here. For modules that have a Source directory, a matching *.Build.cs file is expected to exist within the module's subfolder tree. |
+| Type | Required | Sets the type of module. Valid options are Runtime, RuntimeNoCommandlet, Developer, Editor, EditorNoCommandlet, and Program. This type determines which types of applications this plugin's module is suitable for loading in. For example, some plugins may include modules that are only designed to be loaded when the editor is running. Runtime modules will be loaded in all cases, even in shipped games. Developer modules will only be loaded in development runtime or editor builds, but never in shipping builds. Editor modules will only be loaded when the editor is starting up. Your plugin can use a combination of modules of different types. |
+| LoadingPhase | Optional | If specified, controls when the plugin is loaded at startup. This is an advanced option that should not normally be required. The valid options are Default (which is used when no LoadingPhase is specified), PreDefault, and PostConfigInit. PostConfigInit allows the module to be loaded before the engine has finished starting up key subsystems. PreDefault loads just before the normal phase. Typically, this is only needed if you expect game modules to depend directly on content within your plugin, or types declared within your plugin's code. |
+| WhitelistPlatforms | Optional | If specified, gives a list of platforms which this module will be compiled for. If not specified, the module will be compiled for all platforms. |
+| BlacklistPlatforms | Optional | If specified, gives a list of platforms which this this module will not be compiled for. If not specified, the module will be compiled for all platforms. |
+
+
 # Detailed Design
 
 ## Camera Design
