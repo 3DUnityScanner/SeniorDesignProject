@@ -594,7 +594,7 @@ specifications listed below.
 
 ### Computer Vision Terminology Overview
 
-We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with. Please refer back to this sections if you encounter unfamiliar terms in the following section.
+We will present brief definitions for most of the terms related to computer vision  the average reader may not be familiar with. Please refer back to this section if you encounter unfamiliar terms in the following section.
 
 * 6D or 6DOF - The six degrees of freedom typically used for pose estimation algorithms. These include the x translation, y translation, z translation, x rotation, y rotation, and z rotation. 
 
@@ -632,7 +632,7 @@ We will present brief definitions for most of the terms related to computer visi
 
 * Random forest - A random forest is an ensemble method of machine learning using multiple decision trees usually for classification purposes.
 
-* Gaussian Mixture Model (GMM) - A GMM is a weighted sum of Gaussian statistical distributions. This creates a parameterized probability model of more continous raw values.  
+* Gaussian Mixture Model (GMM) - A GMM is a weighted sum of Gaussian statistical distributions. This creates a parameterized probability model of more continuous raw values.  
 
 * Perspective-n-Point - This is a camera localization and pose estimation problem. There are many popular methods for solving this problem using points in a 3D space with their corresponding projections, usually with extended refinement using RANSAC.
 
@@ -735,7 +735,7 @@ modified random forest called a joint classification regression forest. This for
 Then Brachmann *et al.* use a stack of these forests to generate context
 information for each pixel in the input image. The first level of this stack of forests is trained normally, but all the following trees have access to the outputted information of the previous tree. To smooth the object probability distribution they use a median filter on the pixels surrounding each pixel. This median filter optimizes loss, specifically the least absolute deviations that minimize the difference between hypothesized values and target values, which allows it to be effective when dealing with outlier pixels that would otherwise negatively impact the result []. The object coordinates are also regularized using a similar method which optimizes loss(reprinted equations 3 and 4 provided with explicit permission []).
 
-The object poses are then estimated using RANSAC. When RANSAC is mentioned in this paper it is actually a specific paradigm of RANSAC called preemptive RANSAC which  For a single object the forest values of object predictions, pixel positions, and object coordinates are used to estimate the 2D-3D correspondences. Then the reprojection error is calculated and subsequently minimized with the help of a camera matrix. This error is acceptable if it is under a predefined threshold, meaning that this data point is an inlier. The best pose hypothesis is the one in which the largest amount of inliers are found. Hypotheses are drawn by solving the perspective-n-point problem for four correspondences. The first of four pixels is drawn according to a random tree's mean probability distribution then the other three are drawn within a certain distance of the first pixel depending on the size of the object in question, but if the reprojection error calculated for the pixels is found to be above the threshold then this hypothesis is discarded and a new one is drawn. These hypotheses are sorted by their number of included inliers and the lower half is discarded. The hypotheses left after this process are then further refined by repeating the process of solving the perspective-n-point problem on the new set of inlier value points until only one hypothesis is left. This remaining hypothesis is the estimated pose for the object in question []. 
+The object poses are then estimated using RANSAC. When RANSAC is mentioned in this paper it is actually a specific paradigm of RANSAC called preemptive RANSAC which estimates a certain number of hypotheses at once. This paradigm speeds up the normal RANSAC calculation when there are less inliers and many more outliers. Preemptive RANSAC is better for this case since there are always a large amount of outliers, but not too many to find a valid hypothesis. To perform this operation for a single object the forest values of object predictions, pixel positions, and object coordinates are used to estimate the 2D-3D correspondences. Then the reprojection error is calculated and subsequently minimized with the help of a camera matrix. This error is acceptable if it is under a predefined threshold, meaning that this data point is an inlier. The best pose hypothesis is the one in which the largest amount of inliers are found. Hypotheses are drawn by solving the perspective-n-point problem for four correspondences. The first of four pixels is drawn according to a random tree's mean probability distribution then the other three are drawn within a certain distance of the first pixel depending on the size of the object in question, but if the reprojection error calculated for the pixels is found to be above the threshold then this hypothesis is discarded and a new one is drawn. These hypotheses are sorted by their number of included inliers and the lower half is discarded. The hypotheses left after this process are then further refined by repeating the process of solving the perspective-n-point problem on the new set of inlier value points until only one hypothesis is left. This remaining hypothesis is the estimated pose for the object in question []. 
 
  When this algorithm is detecting multiple objects at once the above method of detection does not maintain efficiency when a large number of objects are to be detected. Multi-object detections are performed by drawing a shared set of hypotheses instead of individual sets for each object. These hypotheses are chosen by analyzing the object probability distributions at the first pixel of the current hypothesis when performing the same actions as a single-object RANSAC pose estimation. These chosen hypotheses still have to pass the same validity check as in single-object detections. Using this method allows the algorithm to decide if a hypothesis belongs to multiple objects during the hypothesis sampling process instead of having a separate process for each object. This allows their RANSAC pose estimation to scale more easily with a large number of object detections in the same image [].
 
@@ -764,6 +764,9 @@ The Challenge dataset is available alongside the Willow dataset. It includes 39 
 ####  Big Berkeley Instance Recognition Dataset (Big BIRD)
 
 This dataset includes 600 images, 600 RGB-D-based point clouds, pose information for every image and point cloud, segmentation masks for all images, and meshes created from merged point clouds. This dataset is extensive but utilizes point clouds which would not be applicable for our purposes. Although, if extra data is needed, this could be a potentially useful resource.
+
+#### Hinterstoisser *et al.* ACCV Dataset
+This dataset was created for a paper presented at the Asian Conference for Computer Vision (ACCV) by Hinterstoisser *et al.*. This dataset contains 15 videos of 15 different objects with texture-less models for matching. There are corresponding ground truth poses for all scenes and objects. There is sufficient variation in clutter, camera angle, camera tilt, scene scale, and object rotation in the scenes for robust pose estimation testing. Every video is comprised of over 1100 images from varying angles []. This dataset is used to test the method presented in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" and we would like to test our implementation on this dataset to benchmark test our implementation against the one presented by Brachmann *et al* []. 
 
 ## Unity Game Engine Research
 
@@ -974,13 +977,19 @@ The Accord.NET framework is a machine learning framework written in C# for signa
 
 The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included. Another useful namespace is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation. The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics.
 
-Accord is made available in the NuGet package manager, making it more easy to integrate into our Visual Studio project environment.  
+Accord is made available in the NuGet package manager, making it easily integrated into our Visual Studio project environment.  
 
 ### Random Forest Implementation
 
+Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning funtions for training and later be modified to more closely resemble the training of Brachmann *et al.* [,]. 
+
 ### RANSAC Implementation
 
+Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" []. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation. This implementation will be modified to run parallel hypothesis checks to follow the structure of preemptive RANSAC.
+
 ### Pose Refinement Implementation
+
+
 
 ## Unity Design
 
@@ -1055,15 +1064,28 @@ are what the `ConvertImage` method produces.
 
 ### Benchmark Testing
 
-We will be using "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" as a benchmark for our computer vision interface. We would like to track metrics on our training and detection processes to attempt to get as close as possible to the results of Bachmann *et al.*. 
+We will be using the CVPR 2016 code included with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" as a benchmark for our computer vision interface. We would like to track metrics on our training and detection processes to attempt to get as close as possible to the results of Bachmann *et al.*. 
 
-On the Hintersoisser dataset Bachmann *et al.* achieved 82.1% accuracy when estimating 3D 6-DOF pose with a maximum re-projection error for all vertices of 5cm and a maximum rotation error of 5°.  Processing time was calculated at a maximum of 1 second for 13 objects, nearly 2 seconds for 25 objects and nearly 4 seconds for 50 images. The issue with utilizing processing time is that the authors mention that processing time can broadly vary with hypothesis acceptance. If it is more difficult to accept a hypothesis the processing time increases. We will mitigate this risk by testing both their implementation and our implementation on the same data after being trained on the same dataset and compare those recorded processing times.
+On the Hinterstoisser dataset Bachmann *et al.* achieved 82.1% accuracy when estimating 3D 6-DOF pose with a maximum re-projection error for all vertices of 5cm and a maximum rotation error of 5°.  Processing time was calculated at a maximum of 1 second for 13 objects, nearly 2 seconds for 25 objects and nearly 4 seconds for 50 images. The issue with utilizing processing time is that the authors mention that processing time can broadly vary with hypothesis acceptance. If it is more difficult to accept a hypothesis the processing time increases. We will mitigate this risk by testing both their implementation and our implementation on the same data after being trained on the same dataset and compare those recorded processing times.
 
-The primary classes for benchmark testing in the CVPR 2016 implementation of "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" are `train_trees` and `test_pose_estimation`. `train_trees` monitors training time by using the `stopWatch` and in `test_pose_estimation` the average RANSAC runtime, the average auto-context random forest runtime, and the evaluation results are given in `avgRansacTime`,`avgForestTime`, and `objEval` respectively.
+The primary classes for benchmark testing in the CVPR 2016 implementation of "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" are `train_trees` and `test_pose_estimation`. `train_trees` monitors training time by using the `stopWatch` function for accurate time tracking and in `test_pose_estimation` the average RANSAC runtime, the average auto-context random forest runtime, and the evaluation results are given in `avgRansacTime`,`avgForestTime`, and `objEval` respectively. We will use these recorded measures on different datasets, beginning with the Hinerstoisser dataset, as targets for our implementation running on the same datasets.
 
 ### Accord Framework Unit Tests
 
+The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected.
 
+|Test|Namespace|
+|:----:|:---------:|
+|Validate full namespace| Accord.Tests.MachineLearning|
+|Test Decision Tree|Accord.Tests.MachineLearning|
+|Test Decision Tree Rules|Accord.Tests.MachineLearning|
+|Test Random Forest|Accord.Tests.MachineLearning|
+|Test Decision Tree C45 Learning|Accord.Tests.MachineLearning|
+|Test RANSAC|Accord.Tests.MachineLearning|
+|Test Matrix Math|Accord.Tests.Math|
+|Test Point3|Accord.Tests.Math|
+|Test Integrals|Accord.Tests.Math|
+|Test Monte Carlo Integration|Accord.Tests.Math|
 
 ### Unit Testing
 
@@ -1158,9 +1180,32 @@ Status: Completely Successfully
 
 ### January 2017 - Set up Accord Framework
 
-Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing and Random Forest testing. We must ensure the framework integrity before continuing.
+Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing, Accord.Math namespace testing and Random Forest testing. We must ensure the framework integrity before continuing.
 
 Status: Pending
+
+### January 2017 - Run Accord Samples
+
+Compile, run, and test the included samples of both RANSAC and the random forest implementation. Ensure that there are no errors and both of these run as expected. There are known issues with the latest NuGet package containing a bug that greatly decreases the accuracy of the forest. Rollback to the 3.3.0 NuGet build if necessary.
+
+Status: Pending
+
+### February 2017 - Computer Vision Progress
+
+The progress of our computer vision system in February should include a basic implementation of a trainable Random Forest structure as well as a testable RANSAC implementation.
+
+Status: Pending
+
+### March 2017 - Computer Vision System
+
+Our computer vision system should function and make predictions by March. The system will need tweaking to approach our benchmark measurements.
+
+Status: Pending
+
+### April 2017 - Computer Vision Finalized
+
+The computer vision system will be in its final state in April. The system should make predictions reasonably with measurements close to those of our benchmark. 
+
 
 # Summary
 
