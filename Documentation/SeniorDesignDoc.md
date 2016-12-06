@@ -1273,7 +1273,7 @@ Accord is made available in the NuGet package manager, making it easily integrat
 
 ### Random Forest Implementation
 
-Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning funtions for training and later be modified to more closely resemble the training of Brachmann *et al.* [,]. 
+Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [,]. 
 
 ### RANSAC Implementation
 
@@ -1297,12 +1297,55 @@ We would like to implement a similar method to Brachmann *et al.* to refine the 
 
 ## Overview UML
 
+# Development Environment
+
+## IDE
+
+## Version Control System
+
+We chose to use Git as our version control system. We decided on Git due
+to our group members' familiarity with the system as well as its cost. All 
+of our team members have worked with Git in the past, therefore we were able
+to incorporate the tool into our developer operations without any further 
+training needed. Also since Git is free, it will not carry a cost to our 
+sponsors or our team members. We are hosting our Git repository on GitHub.
+Hosting on GitHub is also free for public repositories, which we are able
+to use since we are not covered by an nondisclosure agreement.
+
+## Documentation
+
+In order to safely document our project using multiple authors, special technology
+was incorporated into our development environment. We used the Markdown mark up language
+in combination with Pandoc to facilitate our authoring and presentation of our documentation
+content.
+
+### Markdown
+
+We are using Markdown for documenting purposes. Markdown is a simple plaintext format
+with allows for writing documents with common features such as: headers, lists, and tables. 
+We chose to use Markdown because it is easy to version control as well as being a widespread 
+format. Because Markdown is a plaintext format, multiple group members can work on it at 
+the same time and Git is able to easily merge their changes. This is in contrast to a binary format
+such as *.docx whose line changes Git cannot merge. Also since Markdown has become 
+such a widespread format there is plenty of tooling to support its authoring and 
+conversion. We chose Markdown over similar formats such as LaTex and HTML because its
+syntax is much simpler. This makes Markdown easy to learn as well as quick to write. 
+Without Markdown, our documentation process would be slower and more prone to data loss. 
+
+### Pandoc
+
+We used to Pandoc to convert our Markdown to more presentation oriented formats. This tool
+allows us to easily develop, merge, and version control our documentation while also being
+able to support visually appealing presentation file formats such as *.docx and *.pdf. Without
+Pandoc we would be forced to use binary formats which would make it difficult to version control
+our documentation.
+
 # Testing Plan
 
 ## CameraModule Testing
 
 The primary aspects of the camera module that need to be tested are: 
-the public interface, the image conversion capabilities, and the ability to write the images to disk.
+the public interface and the image conversion capabilities.
 
 ### Unit Tests
 
