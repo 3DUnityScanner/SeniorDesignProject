@@ -192,13 +192,14 @@ suitability of each of the devices.
 ### HTC Vive
 
 The HTC Vive is a virtual reality headset. Although it does have spatial
-scanning capabilities, it completely removes the user from the
-environment they are working in. This does not make it suitable for this
-task since it requires visual presence to place the blocks on the
+scanning capabilities, its primary purpose is to immerse the user into 
+another reality. This does not make it an ideal device for this task 
+since it requires visual presence at all times to place the blocks on the
 scanning surface as well as awareness of the environment to perform the
-actual scanning of the blocks. The cost of the device also makes it
-prohibitively expensive and is not congruent with the accessibility that
-we desired our tool to provide. TODO: Players can see
+actual scanning of the blocks. The head-mounted nature of the device
+is not as easy to aim as a hand-held device. The cost of the device also makes it
+prohibitively expensive which is not congruent with the accessibility that
+we desired our tool to provide. 
 
 ### Microsoft Hololens
 
@@ -319,7 +320,8 @@ maintenance of the project simpler.
 The Intel® RealSense™ SDK provides access to the camera as well as access
 to some computer vision algorithms. Fundamentally the SDK is needed so that 
 we can receive the data from the camera and then pass it along to the 
-computer vision module.
+computer vision module. All the following information is available from the
+Intel® RealSense™ SDK [TODO]
 
 ##### SenseManager
 
@@ -372,9 +374,9 @@ of image representation if the need arises.
 `FileFormat` is used to specify the file type used by `Scan3D` in the
 `Reconstruct` method. There are three supported file types.
   
-  * OBJ - .obj file type
-  * PLY - .ply file type
-  * STL - .stl file type
+  * OBJ
+  * PLY
+  * STL
 
 `ImageAccess` is used to as an argument to specify the access permissions 
 when acquiring an `ImageData` object with `AcquireAccess` method. 
@@ -384,7 +386,9 @@ when acquiring an `ImageData` object with `AcquireAccess` method.
   * ACCESS_READ_WRITE
 
 `PixelFormat` is used as an argument to specify the format to be 
-returned by the `AcquireAccess` method. There are several file formats.
+returned by the `AcquireAccess` method. Some of the formats are
+exclusive to a certain type of data such as color, depth, or infrared.
+There are several pixel formats.
   
   * PIXEL_FORMAT_YUY2
   * PIXEL_FORMAT_NV12
@@ -408,8 +412,6 @@ by all Intel® RealSense™ cameras.
   * STREAM_TYPE_IR
   * STREAM_TYPE_LEFT
   * STREAM_TYPE_RIGHT
-
-TODO: Add Descriptions
 
 ##### Capturing Color and Depth Data
 
@@ -478,10 +480,6 @@ In order for the object to be processed by the garbage collector, the
 is called, it is wise to place the method call inside of a class 
 destructor or to initialize the `SenseManager` in a `using` block.
 
-##### Intel® RealSense™ Limitations
-
-TODO: Add limitations
-
 ### Microsoft Kinect
 
 The Microsoft Kinect is a rectangular sensor that can provide both depth
@@ -534,15 +532,78 @@ invested in the computer vision algorithms and processing and not the data captu
 
 #### Microsoft Kinect SDK Overview
 
+The following is a brief description of classes from the SDK as they would be useful to 
+our project. All the information is available in the Microsoft Kinect SDK Documentation in
+Appendix TODO.
+
 ##### KinectSensor
+
+The `KinectSensor` class is used as the primary interface to 
+the Microsoft Kinect. The `KinectSensor` adopts a singleton pattern
+by using a static method to return an instance of the `KinectSensor` 
+class. Once an instance has been obtained all other access to the 
+sensor is handled through the instance.
 
 ##### DepthFrameSource
 
+The `DepthFrameSource` class gives access to `DepthFrameReader` objects 
+through a simple `OpenReader` method. Also includes properties representing
+the reliable distances that the Microsoft Kinect can read data.
+
+##### DepthFrameReader
+
+The `DepthFrameReader` class is used to capture `DepthFrame` objects which
+represent actual data. The frames can be captured by subscribing an event
+handler to the `FrameArrived` member event or by making a call to the `AcquireLatestFrame`
+method.
+
 ##### DepthFrame
+
+The `DepthFrame` class represents a single moment of depth data capture. The data is represented
+as an image where the pixels represent the distance of the given pixel area from the camera. 
+It provides methods for accessing the underlying pixel data in both buffer and array forms. 
 
 ##### ColorFrameSource
 
+The `ColorFrameSource` class gives access to `ColorFrameReader` objects 
+through a simple `OpenReader` method. Also includes properties representing
+the reliable distances that the Microsoft Kinect can read data.
+
+##### ColorFrameReader
+
+The `ColorFrameReader` class is used to capture `ColorFrame` objects which
+represent actual data. The frames can be captured by subscribing an event
+handler to the `FrameArrived` member event or by making a call to the `AcquireLatestFrame`
+method.
+
 ##### ColorFrame
+
+The `ColorFrame` class represents a single moment of color data capture. The data is represented
+as an image where the pixels represent the color of the given pixel area as recorded by the
+camera. It provides methods for accessing the underlying pixel data as either a buffer or an
+array.
+
+##### Capturing Color and Depth Data
+
+The following steps should be followed in order to initialize the Microsoft Kinect
+camera sensor for data collection.
+
+1. Acquire an instance of the `KinectSensor` class by calling `KinectSensor.GetDefault()`
+2. Call the `Open()` member method on the acquired `KinectSensor` object
+3. Call the `OpenReader()` member method on the acquired `KinectSensor` object's `ColorFrameSource` property to acquire a `ColorFrameReader`
+4. Call the `OpenReader()` member method on the acquired `KinectSensor` object's `DepthFrameSource` property to acquire a `DepthFrameReader`
+
+Once the previous steps have been completed the data can begin to be captured from the sensor. Perform
+the following steps in order to acquire color and depth data.
+
+1. Call the `AcquireLatestFrame` method on the acquired `ColorFrameReader` to obtain a `ColorFrame`
+2. Call the `AcquireLatestFrame` method on the acquired `DepthFrameReader` to obtain a `DepthFrame`
+
+Once the previous steps have been performed the data can be read from the two acquired frames.
+Once the processing is complete be sure to call the `Close()` member method on the two acquired frames
+to release the system resources. Repeat the previous step as many times as desired. If no more data needs
+to be collected, then call the `Close()` member method on both the acquired `ColorFrameReader` and the 
+acquired `DepthFrameReader` as well as the acquired `KinectSensor` instance.
 
 ### Final Decision
 
@@ -556,7 +617,7 @@ another and are noted below.
 
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
-|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |        Unspecified |
+|               HTC Vive |     Win 7 SP1; Win 8.1; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |        Unspecified |
 |     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
 | Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
 |       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
@@ -615,6 +676,8 @@ The amount of images passed to the computer vision interface is a crucial detail
 ### Outputs
 
 Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
+
+We plan on importing this data directly into the Unity Game Engine through our plugin interface. The data will include four values in a data structure: a translation matrix, rotation matrix, scale, and object type based on the models we have been provided for the block types.
 
 ### Training Hardware
 Due to the demand required in the training process, our team will be using the strongest 
@@ -784,7 +847,7 @@ The object poses are then estimated using RANSAC. When RANSAC is mentioned in th
 
  When this algorithm is detecting multiple objects at once the above method of detection does not maintain efficiency when a large number of objects are to be detected. Multi-object detections are performed by drawing a shared set of hypotheses instead of individual sets for each object. These hypotheses are chosen by analyzing the object probability distributions at the first pixel of the current hypothesis when performing the same actions as a single-object RANSAC pose estimation. These chosen hypotheses still have to pass the same validity check as in single-object detections. Using this method allows the algorithm to decide if a hypothesis belongs to multiple objects during the hypothesis sampling process instead of having a separate process for each object. This allows their RANSAC pose estimation to scale more easily with a large number of object detections in the same image [].
 
-During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood and projection volume using the following equationns [].
+During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood and projection volume using the following equations [].
 
 Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code (dubbed the 'Dummy Data') to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.* []. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ F200 camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
@@ -1060,10 +1123,10 @@ Unity's Enterprise edition is somewhat of a mix of the previous versions. It all
 a customized plan for all of their workers that need Unity to give those who need specific versions 
 exactly what they need. This also gives the business access to special Enterprise features.
 
-In the Enterprise tier, Unity will build a custom Unity Cloud infastructure to give the business a 
+In the Enterprise tier, Unity will build a custom Unity Cloud infrastructure to give the business a 
 queue time that only includes the users in that business.
 
-The Unity Analytics feature is also upgraded in the Enterprise tier to a level that is customizable by the
+The Unity Analytics feature is also upgraded in the Enterprise tier to a level that is configurable by the
 business. It has all the features of Pro with a custom raw data export size and a custom analysis.
 
 
@@ -1208,11 +1271,13 @@ Our implementation of the auto-context random forest suggested in "Uncertainty-D
 
 ### RANSAC Implementation
 
-Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" []. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation. This implementation will be modified to run parallel hypothesis checks to follow the structure of preemptive RANSAC.
+Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" []. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation. This implementation will be modified to run parallel hypothesis checks to follow the structure of preemptive RANSAC. 
+
+Our instance of RANSAC will have a set of Hypotheses which have the pose information stored. During processing these will be culled, refined, and added to as necessary.
 
 ### Pose Refinement Implementation
 
-
+We would like to implement a similar method to Brachmann *et al.* to refine the poses gathered by RANSAC. Each Hypothesis in the RANSAC instance will have a refinement method called `refine()` which will be able to improve the pose estimation if that hypothesis is chosen for refinement. The poses chosen for refinement will be handled within our RANSAC implementation.
 
 ## Unity Design
 
@@ -1269,9 +1334,9 @@ The only way to objectively test the `ConvertImage` method is to procedurally
 generate `Image` objects from the Intel® RealSense™ SDK as input for the 
 `ConvertImage` method. A brief description of the attributes are below:
 
-* **TestRSImage1** - TODO: Image Description
-* **TestRSImage2** - TODO: Image Description
-* **TestRSImage3** - TODO: Image Description
+* **TestRSImage1** - All pixels are set to black
+* **TestRSImage2** - Simple white background with black text in the foreground
+* **TestRSImage3** - Picture of the table with blocks
 
 The test would make sure that the `Bitmap` (denoted as ImageGeneratingBitmap#)
 that was used to produce the Intel® RealSense™ SDK `Image` objects (denoted as TestRSImage#) 
@@ -1298,7 +1363,7 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected.
 
 |Test|Namespace|
-|:----:|:---------:|
+|:----|:---------|
 |Validate full namespace| Accord.Tests.MachineLearning|
 |Test Decision Tree|Accord.Tests.MachineLearning|
 |Test Decision Tree Rules|Accord.Tests.MachineLearning|
@@ -1313,7 +1378,10 @@ The Accord.NET framework includes some unit tests for each major namespace to al
 ### Unit Testing
 
 
+
 ### Integration Testing
+
+
 
 ## Unity Testing
 
@@ -1406,6 +1474,11 @@ Status: Completely Successfully
 Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing, Accord.Math namespace testing and Random Forest testing. We must ensure the framework integrity before continuing.
 
 Status: Pending
+
+### January 2017 - Camera Module Implemented
+
+The camera module should be written and functional. All unit tests should have passed and the public
+interface should be returning correct values.
 
 ### January 2017 - Run Accord Samples
 
