@@ -1508,6 +1508,7 @@ Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo
 
 Status: Completed Successfully
 
+---
 
 ### November 2016 - Train Bachmann implementation on 'Dummy Data' and test on test set
 
@@ -1515,22 +1516,32 @@ Run `train_trees` on the data included in the 'dummy_data' folder. If training i
 
 Status: Completed Successfully
 
+---
+
 ### December 2016 - Final Documentation
 
 Complete the final documentation for the planning of this project
 
 Status: Completely Successfully
 
+---
+
 ### January 2017 - Set up Accord Framework
 
 Perform unit tests for the Accord framework in Visual Studio. All necessary tests include Gaussian Mixture Model sample testing, RANSAC sample testing, Accord.Math namespace testing and Random Forest testing. We must ensure the framework integrity before continuing.
 
-Status: Pending
+Status: In Progress
+
+---
 
 ### January 2017 - Camera Module Implemented
 
 The camera module should be written and functional. All unit tests should have passed and the public
 interface should be returning correct values.
+
+Status: In Progress
+
+---
 
 ### January 2017 - Run Accord Samples
 
@@ -1538,11 +1549,15 @@ Compile, run, and test the included samples of both RANSAC and the random forest
 
 Status: Pending
 
+---
+
 ### February 2017 - Computer Vision Progress
 
 The progress of our computer vision system in February should include a basic implementation of a trainable Random Forest structure as well as a testable RANSAC implementation.
 
 Status: Pending
+
+---
 
 ### March 2017 - Computer Vision System
 
@@ -1550,10 +1565,15 @@ Our computer vision system should function and make predictions by March. The sy
 
 Status: Pending
 
+---
+
 ### April 2017 - Computer Vision Finalized
 
 The computer vision system will be in its final state in April. The system should make predictions reasonably with measurements close to those of our benchmark. 
 
+Status: Pending
+
+---
 
 # Summary
 
