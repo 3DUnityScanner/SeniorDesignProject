@@ -1296,7 +1296,7 @@ We would like to implement a similar method to Brachmann *et al.* to refine the 
 ## CameraModule Testing
 
 The primary aspects of the camera module that need to be tested are: 
-the public interface, the image conversion capabilities, and the ability to write the images to disk.
+the public interface and the image conversion capabilities.
 
 ### Unit Tests
 
