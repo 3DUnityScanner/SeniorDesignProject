@@ -615,7 +615,11 @@ This dataset includes 600 images, 600 RGB-D-based point clouds, pose information
 #### Overview
 
 Unity is a game development engine that permits users to create a variety of games for different
-platforms, some of the biggest being PC, Xbox, Playstation, and Android/IOS. 
+platforms, some of the biggest being PC, Xbox, Playstation, and Android/IOS.  
+The base requirements for Unity version 5.5.0 are:
+
+OS: Windows 7 SP1+, 8, 10; Mac OSX 10.8+
+GPU: Graphics card with DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities
 
 #### Scripting
 
@@ -730,6 +734,15 @@ EditorWindow. This script will create a new editor window
 | Premium Support | N | N | $ | $ |
 
 #### Unity free
+
+Unity Free is the base version of Unity that anyone can download from their website at
+www.unity3d.com. The base requirements for Unity version 5.5.0 are:
+
+OS: Windows 7 SP1+, 8, 10; Mac OSX 10.8+
+GPU: Graphics card with DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities
+
+Unity's base edition is different from the other editions in that any game created in it automatically
+has a short splash screen video play at the beginning of the 
 
 #### Unity Pro
 
