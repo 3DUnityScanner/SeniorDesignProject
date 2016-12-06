@@ -154,6 +154,12 @@ I have always been enthralled with the game development process and I am excited
 
 ## Requirements
 
+We have divided up the requirements into two categories: Necessary Features
+and Possible Features. Necessary Features contains what is required for our minimal
+viable product. Without these, our product is incomplete. Possible Features contains
+capabilities we would like for our product to have but are not mandatory for the 
+final deliverable.
+
 ### Necessary Features
 
 1. The system functions on the Windows platform
@@ -170,6 +176,11 @@ I have always been enthralled with the game development process and I am excited
 3. The system can interpret multiple vertical layers of blocks on a flat surface
 
 # Research
+
+The following section contains the entirety of the research we have conducted thus far.
+It includes our research into all of our camera options, multiple computer vision
+algorithms for object recognition, and our research into industry standard game engine
+plugin models and capabilities.
 
 ## Camera Research
 
@@ -501,20 +512,33 @@ We took the HTC Vive and the Microsoft Hololens out of consideration because
 we did not feel that a head-mounted device fit with the way users would interact 
 with our application. Our main decision was choosing between the Intel® RealSense™ 
 F200 camera and the Microsoft Kinect. Both sensors had many of the same advantages 
-and disadvantages. The differentiating factor between the two was the size
-of the sensor, cost of the sensor, and the usability of the APIs. 
+and disadvantages. The differentiating factors between the two was the size
+of the sensor, cost of the sensor, and the usability of the APIs. It was in these
+areas that the aspects of the devices differed enough for us to make our decision.
+
 The Intel® RealSense™ F200 Camera was marginally cheaper, costing approximately
-\$100. This reduced price helps to achieve a greater level of accessibility to our tool
-that is an overall goal of our project. The handheld usability means that camera can be
-aimed easily and moved around the workspace as needed. Although the USB
-tethering of the device could make certain angles difficult, the use of
-a rotating platform or a primary computing device which can be easily moved,
-could be used to minimize this difficulty. The use of such solutions 
-would allow images to be captured from every angle which is necessary 
-for the computer vision algorithms that we will implement to process the data.
-Both the Kinect and the Intel® RealSense™ F200 are comparable devices and in
-the unlikely event that the Intel® RealSense™ F200 will not satisfy our requirements
-the Microsoft Kinect is a sound alternative.
+\$100. This reduced price helps to achieve a greater level of accessibility for our tool
+which is an overall goal of our project. By reducing the costs allows for smaller
+development teams to expedite their design workflow. The Intel® RealSense™ F200 
+also did not require the additional purchase of an adapter for the sensor which 
+simplifies the integration for the end user of our tool. 
+
+The handheld usability means that camera can be aimed easily and moved around the 
+workspace as needed. Although the USB tethering of the device could make certain 
+angles difficult, the use of a rotating platform or a primary computing device 
+which can be easily moved, could be used to minimize this difficulty. The use 
+of such solutions would allow images to be captured from every angle which is 
+necessary for the computer vision algorithms that we will implement to process 
+the data. 
+
+Finally, although the APIs were similar we felt that the documentation and 
+overall pattern of use found in the Intel® RealSense™ SDK were much more
+straightforward and easier to understand. There were also several simple 
+code examples to help get programmers who were unfamiliar with the API.
+
+Both the Kinect and the Intel® RealSense™ F200 are comparable devices 
+and in the unlikely event that the Intel® RealSense™ F200 will not satisfy our 
+requirements, the Microsoft Kinect is a sound alternative.
 
 ## Computer Vision Research
 
