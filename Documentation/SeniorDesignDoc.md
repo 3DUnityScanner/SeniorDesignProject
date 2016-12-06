@@ -210,9 +210,9 @@ user to stay visually engaged in the environment and move about safely.
 The Hololens also has the added ability of being untethered which allows
 for easy movement independent of the location of the device running the
 rest of the application. The primary drawbacks to the use of the
-Microsoft Hololens are: battery life, cost, and usability. While in use
-the battery only lasts for approximately two hours. Returning the device
-to full charge requires approximately five hours. This does not coincide
+Microsoft Hololens are: battery life, cost, and usability. According to our
+sponsors while in use the battery only lasts for approximately two hours and
+returning the device to full charge requires approximately five hours. This does not coincide
 with our desire to create a tool for rapid prototyping. While the
 untethered design is desirable, it does not justify the sacrifice to be
 made for battery life. The cost of the device is also prohibitively
