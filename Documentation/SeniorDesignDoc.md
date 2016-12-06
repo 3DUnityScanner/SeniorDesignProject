@@ -1376,9 +1376,9 @@ The job of the `StopCapture` method is simply to signal to the rest of the
 `RealSenseCamera` class that the capture should halt. This is used to signal
 to the capture loop to terminate execution. 
 
-| Input | Output |          Starting Conditions |           Ending Conditions |
-|-------|--------|------------------------------|-----------------------------|
-|   N/A |    N/A | State == CameraState.RUNNING | State = CameraState.STOPPED |
+| Input | Output |          Starting Conditions |            Ending Conditions |
+|-------|--------|------------------------------|------------------------------|
+|   N/A |    N/A | State == CameraState.RUNNING | State == CameraState.STOPPED |
 
 #### ConvertImage
 
