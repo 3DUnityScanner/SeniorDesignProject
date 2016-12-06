@@ -1297,7 +1297,7 @@ We would like to implement a similar method to Brachmann *et al.* to refine the 
 
 ## Overview UML
 
-# Development Environment
+# Development Environment and Operations
 
 ## IDE
 
@@ -1310,7 +1310,10 @@ to incorporate the tool into our developer operations without any further
 training needed. Also since Git is free, it will not carry a cost to our 
 sponsors or our team members. We are hosting our Git repository on GitHub.
 Hosting on GitHub is also free for public repositories, which we are able
-to use since we are not covered by an nondisclosure agreement.
+to use since we are not subject to an nondisclosure agreement. In addition
+to repository hosting, GitHub also offers some valuable tools to assist in
+developer coordination. We are making use of the issue tracking system within
+GitHub in order to coordinate the status of various features and bug fixes.
 
 ## Documentation
 
