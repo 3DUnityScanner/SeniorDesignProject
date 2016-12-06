@@ -320,7 +320,8 @@ maintenance of the project simpler.
 The Intel® RealSense™ SDK provides access to the camera as well as access
 to some computer vision algorithms. Fundamentally the SDK is needed so that 
 we can receive the data from the camera and then pass it along to the 
-computer vision module.
+computer vision module. All the following information is available from the
+Intel® RealSense™ SDK [TODO]
 
 ##### SenseManager
 
@@ -531,33 +532,78 @@ invested in the computer vision algorithms and processing and not the data captu
 
 #### Microsoft Kinect SDK Overview
 
+The following is a brief description of classes from the SDK as they would be useful to 
+our project. All the information is available in the Microsoft Kinect SDK Documentation in
+Appendix TODO.
+
 ##### KinectSensor
 
 The `KinectSensor` class is used as the primary interface to 
 the Microsoft Kinect. The `KinectSensor` adopts a singleton pattern
-by using a static method to return. Once an instance has been obtained
-all other access to the sensor is handled through member
+by using a static method to return an instance of the `KinectSensor` 
+class. Once an instance has been obtained all other access to the 
+sensor is handled through the instance.
 
 ##### DepthFrameSource
 
-TODO: DepthFrameSource Description
+The `DepthFrameSource` class gives access to `DepthFrameReader` objects 
+through a simple `OpenReader` method. Also includes properties representing
+the reliable distances that the Microsoft Kinect can read data.
+
+##### DepthFrameReader
+
+The `DepthFrameReader` class is used to capture `DepthFrame` objects which
+represent actual data. The frames can be captured by subscribing an event
+handler to the `FrameArrived` member event or by making a call to the `AcquireLatestFrame`
+method.
 
 ##### DepthFrame
 
-The `DepthFrame` class is an image where the pixels represent the distance of
-the given pixel area from the camera
+The `DepthFrame` class represents a single moment of depth data capture. The data is represented
+as an image where the pixels represent the distance of the given pixel area from the camera. 
+It provides methods for accessing the underlying pixel data in both buffer and array forms. 
 
 ##### ColorFrameSource
 
-TODO: ColorFrameSource Description
+The `ColorFrameSource` class gives access to `ColorFrameReader` objects 
+through a simple `OpenReader` method. Also includes properties representing
+the reliable distances that the Microsoft Kinect can read data.
+
+##### ColorFrameReader
+
+The `ColorFrameReader` class is used to capture `ColorFrame` objects which
+represent actual data. The frames can be captured by subscribing an event
+handler to the `FrameArrived` member event or by making a call to the `AcquireLatestFrame`
+method.
 
 ##### ColorFrame
 
-TODO: ColorFrame Description
+The `ColorFrame` class represents a single moment of color data capture. The data is represented
+as an image where the pixels represent the color of the given pixel area as recorded by the
+camera. It provides methods for accessing the underlying pixel data as either a buffer or an
+array.
 
 ##### Capturing Color and Depth Data
 
-TODO: Detail steps to capture color data
+The following steps should be followed in order to initialize the Microsoft Kinect
+camera sensor for data collection.
+
+1. Acquire an instance of the `KinectSensor` class by calling `KinectSensor.GetDefault()`
+2. Call the `Open()` member method on the acquired `KinectSensor` object
+3. Call the `OpenReader()` member method on the acquired `KinectSensor` object's `ColorFrameSource` property to acquire a `ColorFrameReader`
+4. Call the `OpenReader()` member method on the acquired `KinectSensor` object's `DepthFrameSource` property to acquire a `DepthFrameReader`
+
+Once the previous steps have been completed the data can begin to be captured from the sensor. Perform
+the following steps in order to acquire color and depth data.
+
+1. Call the `AcquireLatestFrame` method on the acquired `ColorFrameReader` to obtain a `ColorFrame`
+2. Call the `AcquireLatestFrame` method on the acquired `DepthFrameReader` to obtain a `DepthFrame`
+
+Once the previous steps have been performed the data can be read from the two acquired frames.
+Once the processing is complete be sure to call the `Close()` member method on the two acquired frames
+to release the system resources. Repeat the previous step as many times as desired. If no more data needs
+to be collected, then call the `Close()` member method on both the acquired `ColorFrameReader` and the 
+acquired `DepthFrameReader` as well as the acquired `KinectSensor` instance.
 
 ### Final Decision
 
@@ -571,7 +617,7 @@ another and are noted below.
 
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
-|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |        Unspecified |
+|               HTC Vive |     Win 7 SP1; Win 8.1; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |        Unspecified |
 |     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
 | Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
 |       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
