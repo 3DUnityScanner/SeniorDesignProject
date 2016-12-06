@@ -152,6 +152,12 @@ I have always been enthralled with the game development process and I am excited
 
 ## Goals
 
+Users of Unity will be able to utilize our system turn blocks laid out on a flat surface into untextured unity models, 
+each of which are positioned, scaled, and oriented analogous to their real-life counterparts relative to a current Unity scene.
+While in Unity, users may initiate a plugin interface to start capturing their proper camera and consequently 
+capture images of the real-life block scene. The untextured objects will appear in the scene when the plugin 
+concludes its execution.
+
 ## Requirements
 
 We have divided up the requirements into two categories: Necessary Features
