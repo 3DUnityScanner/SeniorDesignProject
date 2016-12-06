@@ -369,6 +369,48 @@ of image representation if the need arises.
 
 ##### Important Enumerations
 
+`FileFormat` is used to specify the file type used by `Scan3D` in the
+`Reconstruct` method. There are three supported file types.
+  
+  * OBJ - .obj file type
+  * PLY - .ply file type
+  * STL - .stl file type
+
+`ImageAccess` is used to as an argument to specify the access permissions 
+when acquiring an `ImageData` object with `AcquireAccess` method. 
+  
+  * ACCESS_READ
+  * ACCESS_WRITE
+  * ACCESS_READ_WRITE
+
+`PixelFormat` is used as an argument to specify the format to be 
+returned by the `AcquireAccess` method. There are several file formats.
+  
+  * PIXEL_FORMAT_YUY2
+  * PIXEL_FORMAT_NV12
+  * PIXEL_FORMAT_RGB32
+  * PIXEL_FORMAT_RGB24
+  * PIXEL_FORMAT_Y8
+  * PIXEL_FORMAT_Y8_IR_RELATIVE
+  * PIXEL_FORMAT_Y16
+  * PIXEL_FORMAT_DEPTH
+  * PIXEL_FORMAT_DEPTH_RAW
+  * PIXEL_FORMAT_DEPTH_F32
+  * PIXEL_FORMAT_DEPTH_CONFIDENCE
+
+`StreamType` is used as an argument to specify the type of stream to
+a `SampleReader` receives. Some of the stream types are not supported
+by all Intel® RealSense™ cameras.
+
+  * STREAM_TYPE_ANY
+  * STREAM_TYPE_COLOR
+  * STREAM_TYPE_DEPTH
+  * STREAM_TYPE_IR
+  * STREAM_TYPE_LEFT
+  * STREAM_TYPE_RIGHT
+
+TODO: Add Descriptions
+
 ##### Capturing Color and Depth Data
 
 The basis of computer vision algorithms is the capture and analysis of 
@@ -377,7 +419,7 @@ depth and color data In order to begin capturing depth and/or color data,
 
 1. Acquire the `SenseManager` object by calling the static `SenseManager.CreateInstance` method
 2. Acquire a `SampleReader` object by calling the static `SampleReader.Activate` method and passing the acquired `SenseManager` as an argument
-3. Call the `EnableStream` method on the acquired `SampleReader` and pass it the type of desired stream TODO: Type of stream
+3. Call the `EnableStream` method on the acquired `SampleReader` and pass it the type of desired stream
 4. Call the `Init` method on the `SenseManager` with no arguments
 
 Once these steps have been completed it is possible to acquire data from
@@ -494,8 +536,13 @@ invested in the computer vision algorithms and processing and not the data captu
 
 ##### KinectSensor
 
+##### DepthFrameSource
+
 ##### DepthFrame
 
+##### ColorFrameSource
+
+##### ColorFrame
 
 ### Final Decision
 
@@ -847,6 +894,14 @@ Syntax for different geometric elements are as follows:
 
 `surf s0 s1 t0 t1 v1/vt1/vn1 ... vn/vtn/vnn` for a surface, where `s0` is the start parameter value for the u direction, `s1` is the end parameter value for the u direction, `t0` is the start parameter value for the v direction, `t1` is the end parameter value for the v direction and `vn/vtn/vnn` is the nth control vertex with the nth texture vertex and normal vertex separated by a `/`.
 
+#### Asset Store
+
+Unity has an Asset Store where users can put any plugins that they create to be sold to other Unity users.
+It contains thousands of plugins and other assets created by thousands of users for use in a large amount of game types.
+From 3D to 2D, controls, sprites, models, and more it can all be found on the Unity asset store. some
+of these assets are free for anyone's use and others have to be paid for. Any Unity user with an account
+can have their assets looked at by a Unity Assets Store team and then placed on the asset store for purchase.
+
 ### Plugin types
 
 #### Managed Plugins
@@ -854,7 +909,10 @@ Syntax for different geometric elements are as follows:
 Managed plugins are a type of plugin that Unity supports which allows
 Unity to use C# code that has been created by a third party to supplement
 created code. It allows for a community to form around Unity that continuously
-builds additional functionality allowing users to create better products.
+builds additional functionality allowing users to create better products. Many Unity users eventually
+will place their managed plugins on the Unity Asset store for others to buy and then use/improve on for
+their needs.
+
 Unity allows for any C# files in a folder labeled "plugins" under the Assets folder
 to be considered a plugin, the files in that folder will be included with every C# script that the user creates, allowing
 access to the methods.
@@ -883,6 +941,10 @@ The user can then use the declared method to make a call to the native method/fu
 DLL. It should be noted that when creating Native Plugins using C++ or Objective-C, there must be
 steps taken to avoid name mangling issues, because plugin functions use a C-based call 
 interface.
+
+Any version of Unity that is below 5 requires either a Unity Pro License or a Unity Enterprise License
+to be able to use Native Plugins. Unity 5, however, allows all versions to use Native Plugins, from
+the Personal version to the Enterprise Version.
 
 #### Extending the Editor (Maybe change this part's location)
 
@@ -922,10 +984,89 @@ www.unity3d.com. The base requirements for Unity version 5.5.0 are:
 OS: Windows 7 SP1+, 8, 10; Mac OSX 10.8+
 GPU: Graphics card with DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities
 
-Unity's base edition is different from the other editions in that any game created in it automatically
-has a short splash screen video play at the beginning of the 
+Unity's base edition is different from the other editions in a variety of ways. 
+Any game created in it automatically has a short splash screen video play at the beginning 
+of any game when it is launched depicting the Unity logo with the words "Personal Edition" under
+the logo.
+
+Unity personal comes with a $100k revenue capacity. What that means is that if an entity uses Unity
+personal to create their game and then sells it, if the game makes more than $100,000 dollars in annual 
+gross revenue, that entity must sign up for either the Plus, Pro, or Enterprise edition of Unity. If they do not, then
+they are not allowed to use Unity anymore. They may still sell the game which made them that money, but
+they are no longer allowed to update or expand that game at all, or make any new games using Unity.
+
+The personal edition also comes with the Unity Cloud Build feature, it allows developers to instantly
+compile, test, and deploy the game builds to everyone that needs it. The standard queue processes the
+builds in FIFO form across all Unity customers.
+
+Unity Analytics is a feature that allows game developers seamlessly view information about their game
+like how it's being used, general gameplay behaviors, and it comes with a money optimization feature.
+It comes with Unity IAP, which allows users to set up In-App Purchases within their game and keep track
+of it across all platforms.
+
+#### Unity Plus
+
+Unity Plus is the version of Unity that is one level above the personal edition. It costs $35 per
+person per month and comes with upgraded features.
+
+The first upgraded feature is the splash screen. The Plus edition allows users to either use the normal
+Unity splash screen, create their own splash screen and insert it into where the Unity splash screen
+would be, or elect to not use a splash screen at all.
+
+The Plus edition also upgrades the revenue capacity by $100k extra, allowing users to make an annual
+gross revenue of $200k before they are required to either subscribe for Unity Pro Edition or Unity
+Enterprise Edition.
+
+The Unity Cloud Build feature is also improved in the plus version, it gives the user a Priority Queue
+allowing their builds to be compiled, tested, and deployed faster than the personal version queue.
+
+Unity Plus gives users access to all the features in Unity Analytics that the personal version users have,
+but also gives Priority Analytics, livestream support, and more specific analysis of the game data.
+
+Unity Plus also comes with a dark theme called the Pro Editor UI theme which is not available for the
+personal version.
+
+Performance reporting is a feature that is only available in Unity Plus and above. It allows users to
+view bugs and errors in all of their Unity builds across all platforms, it prioritizes issues as they
+are reported in realtime.
+
+Another feature that Unity Plus has is Flexible Seat Management, this allows a moderator/manager of the
+entity or team that uses Unity to control what person on the team uses Unity and how they use it.
+
+Another thing that having a Plus subscription gives users is a 20% discount in the Unity Assets Store, 
+plus one months access to Unity's Certification Program. 
 
 #### Unity Pro
+
+Unity Pro edition is the next tier of Unity above the Unity Plus Edition. It costs $125 per person per month
+and upgrades the features even more than Unity Plus does. Unity pro contains all of the features that the
+previous two have, with some upgrades.
+
+Unity Pro edition has no limit on revenue like the previous versions. Anyone who is subscribed to the pro
+version can make any Unity game and does not have to change their subscription based on how much they make.
+This is most likely because Unity Pro is the highest tier of Unity that a single person can buy.
+
+The Unity Cloud feature is upgraded further from the Plus Unity Cloud feature. It still contains the 
+Priority Queue allowing th user to have a faster build time than the Personal users, but it also allows
+for creating multiple parallel builds for any project.
+
+Unity Analytics comes with the Unity Pro Analytics feature. It has all that plus has with 50 gigabytes of
+raw data export. It also has even more game data analysis than the plus version.
+
+The Assets Store discount is upped in Pro to 40% from the 20% that is discounted in Plus. The Unity
+Certification Course access is extended to 3 months.
+
+#### Unity Enterprise
+
+Unity's Enterprise edition is somewhat of a mix of the previous versions. It allows businesses to make
+a customized plan for all of their workers that need Unity to give those who need specific versions 
+exactly what they need. This also gives the business access to special Enterprise features.
+
+In the Enterprise tier, Unity will build a custom Unity Cloud infastructure to give the business a 
+queue time that only includes the users in that business.
+
+The Unity Analytics feature is also upgraded in the Enterprise tier to a level that is customizable by the
+business. It has all the features of Pro with a custom raw data export size and a custom analysis.
 
 # Detailed Design
 
@@ -1211,3 +1352,5 @@ The computer vision system will be in its final state in April. The system shoul
 
 
 # Summary
+
+TODO: Add Summary
