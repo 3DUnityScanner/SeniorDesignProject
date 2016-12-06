@@ -154,6 +154,12 @@ I have always been enthralled with the game development process and I am excited
 
 ## Requirements
 
+We have divided up the requirements into two categories: Necessary Features
+and Possible Features. Necessary Features contains what is required for our minimal
+viable product. Without these, our product is incomplete. Possible Features contains
+capabilities we would like for our product to have but are not mandatory for the 
+final deliverable.
+
 ### Necessary Features
 
 1. The system functions on the Windows platform
@@ -170,6 +176,11 @@ I have always been enthralled with the game development process and I am excited
 3. The system can interpret multiple vertical layers of blocks on a flat surface
 
 # Research
+
+The following section contains the entirety of the research we have conducted thus far.
+It includes our research into all of our camera options, multiple computer vision
+algorithms for object recognition, and our research into industry standard game engine
+plugin models and capabilities.
 
 ## Camera Research
 
@@ -199,9 +210,9 @@ user to stay visually engaged in the environment and move about safely.
 The Hololens also has the added ability of being untethered which allows
 for easy movement independent of the location of the device running the
 rest of the application. The primary drawbacks to the use of the
-Microsoft Hololens are: battery life, cost, and usability. While in use
-the battery only lasts for approximately two hours. Returning the device
-to full charge requires approximately five hours. This does not coincide
+Microsoft Hololens are: battery life, cost, and usability. According to our
+sponsors while in use the battery only lasts for approximately two hours and
+returning the device to full charge requires approximately five hours. This does not coincide
 with our desire to create a tool for rapid prototyping. While the
 untethered design is desirable, it does not justify the sacrifice to be
 made for battery life. The cost of the device is also prohibitively
@@ -342,11 +353,12 @@ The `Image` class provides a means to acquire access to the pixel data of an ima
 well as the Image's metadata such as height and width. Its primary elements of interest 
 within the `Image` class are the `AcquireAccess` method, `ReleaseAccess` method, and the
 `Info` property. The `AcquireAccess` method gives the caller a reference to the underlying 
-image data through the use of an `ImageData` object reference. The `AcquireAccess` 
-method must be followed by a `ReleaseAccess` method call. The `ReleaseAccess` method 
-allows other callers to acquire access to the image's data. The `Info` property
-of the `Image` is also of importance as it contains the height, width, and format of
-the `Image`.
+image data through the use of an `ImageData` object reference. Additional parameters of the
+`AcquireAccess` method can also be used to convert the format of the pixel data received. 
+The `AcquireAccess` method must be followed by a `ReleaseAccess` method call. The 
+`ReleaseAccess` method  allows other callers to acquire access to the image's data. 
+The `Info` property of the `Image` is also of importance as it contains the height, 
+width, and format of the `Image`.
 
 ##### ImageData
 
@@ -354,6 +366,8 @@ The `ImageData` class is comprised of the actual pixel data. It contains several
 for converting to and from various array types as well as some Unity specific and .NET specific
 types. The array types are general enough that they can be used to convert to another type
 of image representation if the need arises.
+
+##### Important Enumerations
 
 ##### Capturing Color and Depth Data
 
@@ -424,6 +438,7 @@ destructor or to initialize the `SenseManager` in a `using` block.
 
 ##### Intel® RealSense™ Limitations
 
+TODO: Add limitations
 
 ### Microsoft Kinect
 
@@ -438,41 +453,93 @@ well as marginally increasing the complexity of the set up for the user.
 
 #### Possible Implementations
 
+The Kinect API provides three different types of APIs. It provides 
+APIs for the Windows Runtime, .NET Framework, and Native APIs. All three 
+APIs use similar naming conventions and therefore skills learned with one 
+API should be able to easily transfer to another. The advantages, disadvantages, 
+and types of applications that can be written with these APIs are detailed below. 
 
+##### Windows Runtime
+
+The Windows Runtime APIs allow Windows Store Apps that interface with 
+the Kinect to be written. These APIs can be accessed by any language that
+supports the Windows Runtime including C# and Visual Basic. The APIs are 
+managed which allow for automatic garbage collection and memory allocation.
+Since Windows Store apps have to be distributed through the Windows Store,
+we are not interested in this implementation. We want to be able to package 
+and distribute our plugin together so having to download one component from
+the store and another component from another location is not ideal. We would
+also have to communicate the data captured by the Microsoft Kinect to the game 
+engine using a localhost loopback or saved file. 
+
+##### .NET Framework
+
+The .NET Framework APIs allow WPF applications to interface with the Microsoft
+Kinect. WPF applications are also managed so they carry the same garbage collection
+and memory allocation benefits as mentioned in the Windows Runtime APIs. WPF also supports
+both C# and Visual Basic. Unlike Windows Runtime applications, WPF applications can 
+be distributed easily outside of a storefront. We would still likely have to use the 
+same method to transfer data to the game engine.
+
+##### Native APIs
+The Native APIs differ from the previous two implementations in that they do not 
+include garbage collection or memory allocation. Both of these functions have to 
+be explicitly handled by the programmer using the APIs. This can slow down implementation
+since extra code has to be written. It would also require additional diligence during 
+testing to ensure that there are no memory leaks. The benefit to using the native implementation 
+is additional performance but the majority of our computation time is likely to be 
+invested in the computer vision algorithms and processing and not the data capture itself.
+
+#### Microsoft Kinect SDK Overview
 
 ### Final Decision
 
-In addition to all of the advantages and disadvantages described above, 
-it is also important to the compare the system requirements. Our project 
-team has the computing power to use each of these devices and we feel it 
-is also reasonable to assume that game developers would also already have 
-devices of this caliber in order to run high performance games. Even so
-all the devices compared have comparable hardware requirements to one 
+In addition to all of the advantages and disadvantages of each camera device
+described above, it is also important to the compare the system requirements. 
+Our project team has the computing power to use each of these devices and 
+we feel it is also reasonable to assume that game developers would also 
+already have devices of this caliber in order to run high performance games. 
+Even so all the devices compared have comparable hardware requirements to one 
 another and are noted below.
 
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
-|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |               TODO |
+|               HTC Vive |    Win 7 SP1; Win 8.1 ; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |        Unspecified |
 |     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
 | Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
 |       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
 
-Our main decision was choosing between the Intel® RealSense™ F200 camera and
-the Microsoft Kinect. Both sensors had many of the same advantages and
-disadvantages. The differentiating factor between the two was the size
-of the sensor and the cost of the sensors. The Intel® RealSense™ F200 Camera
-was marginally cheaper and we felt that its smaller size provided us
-with more flexibility as to mounting options. The primary benefits we
-saw the camera providing were the affordability of the device, the
-included API, and the handheld usability. The device costs approximately
-\$100, which achieves a greater level of accessibility that we wanted to
-provide with our tool. The handheld usability means that camera can be
-aimed easily and moved around the workspace as needed. Although the USB
-tethering of the device could make certain angles difficult, the user of
-a rotating platform or a mobile computing device could be used to
-minimize this difficulty. The use of such solutions would allow images
-to be captured from every angle which is necessary for the computer
-vision algorithms that we will implement to process the data.
+We took the HTC Vive and the Microsoft Hololens out of consideration because
+we did not feel that a head-mounted device fit with the way users would interact 
+with our application. Our main decision was choosing between the Intel® RealSense™ 
+F200 camera and the Microsoft Kinect. Both sensors had many of the same advantages 
+and disadvantages. The differentiating factors between the two was the size
+of the sensor, cost of the sensor, and the usability of the APIs. It was in these
+areas that the aspects of the devices differed enough for us to make our decision.
+
+The Intel® RealSense™ F200 Camera was marginally cheaper, costing approximately
+\$100. This reduced price helps to achieve a greater level of accessibility for our tool
+which is an overall goal of our project. By reducing the costs allows for smaller
+development teams to expedite their design workflow. The Intel® RealSense™ F200 
+also did not require the additional purchase of an adapter for the sensor which 
+simplifies the integration for the end user of our tool. 
+
+The handheld usability means that camera can be aimed easily and moved around the 
+workspace as needed. Although the USB tethering of the device could make certain 
+angles difficult, the use of a rotating platform or a primary computing device 
+which can be easily moved, could be used to minimize this difficulty. The use 
+of such solutions would allow images to be captured from every angle which is 
+necessary for the computer vision algorithms that we will implement to process 
+the data. 
+
+Finally, although the APIs were similar we felt that the documentation and 
+overall pattern of use found in the Intel® RealSense™ SDK were much more
+straightforward and easier to understand. There were also several simple 
+code examples to help get programmers who were unfamiliar with the API.
+
+Both the Kinect and the Intel® RealSense™ F200 are comparable devices 
+and in the unlikely event that the Intel® RealSense™ F200 will not satisfy our 
+requirements, the Microsoft Kinect is a sound alternative.
 
 ## Computer Vision Research
 
@@ -698,7 +765,11 @@ This dataset includes 600 images, 600 RGB-D-based point clouds, pose information
 #### Overview
 
 Unity is a game development engine that permits users to create a variety of games for different
-platforms, some of the biggest being PC, Xbox, Playstation, and Android/IOS. 
+platforms, some of the biggest being PC, Xbox, Playstation, and Android/IOS.  
+The base requirements for Unity version 5.5.0 are:
+
+OS: Windows 7 SP1+, 8, 10; Mac OSX 10.8+
+GPU: Graphics card with DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities
 
 #### Scripting
 
@@ -835,6 +906,15 @@ EditorWindow. This script will create a new editor window
 
 #### Unity free
 
+Unity Free is the base version of Unity that anyone can download from their website at
+www.unity3d.com. The base requirements for Unity version 5.5.0 are:
+
+OS: Windows 7 SP1+, 8, 10; Mac OSX 10.8+
+GPU: Graphics card with DX9 (shader model 3.0) or DX11 with feature level 9.3 capabilities
+
+Unity's base edition is different from the other editions in that any game created in it automatically
+has a short splash screen video play at the beginning of the 
+
 #### Unity Pro
 
 # Detailed Design
@@ -851,7 +931,7 @@ should unforeseeable events occur. All these changes can happen within
 the camera module without the unity plugin needing to change its method
 calls at all.
 
-### Public Members
+### ICamera Public Members
 The `RealSenseCamera` has three public members. All three of its public 
 members are implementations of the `ICamera` interface's public members 
 They include: `StartCapture()`, `StopCapture()`, and `GetImages()`. 
