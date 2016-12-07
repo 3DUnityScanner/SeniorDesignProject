@@ -146,7 +146,7 @@ field and learn much more. I am already familiar with resources for
 potential previous implementations of Computer Vision systems in 3D
 scene processing and reproduction. I enjoy researching the field of computer vision and hope to write an original implementation for this project alongside Mark.
 
-I have always been enthralled with the game development process and I am excited to have a chance to contribute. My career plans are still an open book at this point in my life and I feel that this project could even open a door to future game development positions. Consisting of both computer vision systems and game development methodologies, this project combines two fields that I am passionate about.
+I have always been enthralled by the game development process and I am excited to have a chance to contribute. My career plans are still an open book at this point in my life and I feel that this project could even open a door to future game development positions. Consisting of both computer vision systems and game development methodologies, this project combines two fields that I am passionate about.
 
 # Specifications
 
