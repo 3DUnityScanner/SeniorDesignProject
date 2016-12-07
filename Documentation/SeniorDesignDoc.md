@@ -1527,9 +1527,9 @@ are what the `ConvertImage` method produces.
 
 ### Benchmark Testing
 
-We will be using the CVPR 2016 code included with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" as a benchmark for our computer vision interface. We would like to track metrics on our training and detection processes to attempt to get as close as possible to the results of Bachmann *et al.*. 
+We will be using the CVPR 2016 code included with "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" as a benchmark for our computer vision interface. We would like to track metrics on our training and detection processes to attempt to get as close as possible to the results of Brachmann *et al.*. 
 
-On the Hinterstoisser dataset Bachmann *et al.* achieved 82.1% accuracy when estimating 3D 6-DOF pose with a maximum re-projection error for all vertices of 5cm and a maximum rotation error of 5°.  Processing time was calculated at a maximum of 1 second for 13 objects, nearly 2 seconds for 25 objects and nearly 4 seconds for 50 images []. The issue with utilizing processing time is that the authors mention that processing time can broadly vary with hypothesis acceptance. If it is more difficult to accept a hypothesis, the processing time increases. We will mitigate this risk by testing both their implementation and our implementation on the same data after being trained on the same dataset and compare those recorded processing times. Their processing times and prediction-recall graph are pictured below in figure 5 from [].
+On the Hinterstoisser dataset Brachmann *et al.* achieved 82.1% accuracy when estimating 3D 6-DOF pose with a maximum re-projection error for all vertices of 5cm and a maximum rotation error of 5°.  Processing time was calculated at a maximum of 1 second for 13 objects, nearly 2 seconds for 25 objects and nearly 4 seconds for 50 images []. The issue with utilizing processing time is that the authors mention that processing time can broadly vary with hypothesis acceptance. If it is more difficult to accept a hypothesis, the processing time increases. We will mitigate this risk by testing both their implementation and our implementation on the same data after being trained on the same dataset and compare those recorded processing times. Their processing times and prediction-recall graph are pictured below in figure 5 from [].
 
 ![Experiment Results from Brachmann *et al.*](Pictures/figure5.png "Experiment Results from Brachmann *et al.*")
 
@@ -1666,7 +1666,7 @@ so that implementation from this point on can go smoothly.
 
 # Milestones
 
-### October 2016 - Run and test Bachmann implementation
+### October 2016 - Run and test Brachmann implementation
 
 Compile on Ubuntu 14.04 and run the source code provided with the CVPR 2016 demo for "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image"[]. Resolve any dependency issues involved with nlopt, PNG++, or OpenCV.
 
@@ -1674,7 +1674,7 @@ Status: Completed Successfully
 
 ---
 
-### November 2016 - Train Bachmann implementation on 'Dummy Data' and test on test set
+### November 2016 - Train Brachmann implementation on 'Dummy Data' and test on test set
 
 Run `train_trees` on the data included in the 'dummy_data' folder. If training is successful test on the included test sets. 
 
@@ -1707,7 +1707,7 @@ Status: In Progress
 
 ---
 
-### January 2017 - Train Bachmann implementation on real data and test
+### January 2017 - Train Brachmann implementation on real data and test
 
 Run `train_trees` on either the Hinterstoisser dataset or the Object Segmentation Database to set a benchmark to test against.
 
@@ -1779,7 +1779,7 @@ to the Object Creator class which is a normal Unity C# Script. That script will 
 direction.
 
 #Appendices
-![Correspondence with Eric Brachmann of [@bachmann]](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann")
+![Correspondence with Eric Brachmann of [@brachmann]](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann")
 
 ![Correspondence with Stefan Hinterstoisser of [@hinterstoisser]](Pictures/hinterstoisserPermission.png "Correspondence with Stefan Hinterstoisser")
 
