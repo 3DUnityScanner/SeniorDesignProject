@@ -1401,7 +1401,7 @@ the `ICamera` interface.
 
 ## Computer Vision UML
 
-The following UML diagrams give a general overview of the planned computer vision implementation for this project. The more fine-grained details such as parameters, methods, and types are still subject to change as development continues, but the general structure and ideas will remain the same. 
+The following UML diagram gives a general overview of the planned computer vision implementation for this project. The more fine-grained details such as parameters, methods, and types are still subject to change as development continues, but the general structure and ideas will remain the same. 
 
 ![](Figures/CV_class.png "Computer Vision Class Diagram")
 
@@ -1438,8 +1438,7 @@ GitHub in order to coordinate the status of various features and bug fixes.
 
 ## Documentation
 
-In order to safely document our project using multiple authors, special technology
-was incorporated into our development environment. We used the Markdown mark up language
+In order to safely document our project using multiple authors, we needed to incorporate version-control-compatible formatting into this documentation's development environment. We used the Markdown mark up language
 in combination with Pandoc to facilitate our authoring and presentation of our documentation
 content.
 
