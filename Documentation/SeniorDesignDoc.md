@@ -1533,8 +1533,6 @@ The Accord.NET framework includes some unit tests for each major namespace to al
 
 |Test|Namespace|
 |:----|:---------|
-
-
 |Validate full namespace| Accord.Tests.MachineLearning|
 |Test Decision Tree|Accord.Tests.MachineLearning|
 |Test Decision Tree Rules|Accord.Tests.MachineLearning|
