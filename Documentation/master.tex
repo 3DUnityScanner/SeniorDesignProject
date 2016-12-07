@@ -2,13 +2,11 @@
 \usepackage{titlesec}
 \newcommand{\sectionbreak}{\clearpage}
 
-\usepackage[pdfencoding=auto]{hyperref}
 \usepackage{fontspec}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{multirow}
 \usepackage[autocite=inline,backend=bibtex,sorting=none]{biblatex}
-\usepackage{xcolor,colortbl,tabularx}
 \usepackage{pdfpages}
 
 \addbibresource{test.bib}
@@ -33,6 +31,10 @@
 \usepackage{fancyhdr}
 
 \usepackage{graphicx,grffile}
+
+\usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
 
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}

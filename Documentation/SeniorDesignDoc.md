@@ -841,7 +841,7 @@ it functions. This allows us to accurately weigh the benefits and
 restrictions of this method in contrast to the other methods reviewed. 
 An overview of the method is shown in figure 2, shown below with permission from the author [@brachmann]. 
 
-![](Pictures/figure2.png "Overview of the Brachmann *et al.* Method")
+![Overview of the Brachmann *et al.* Method](Pictures/figure2.png "Overview of the Brachmann *et al.* Method")
 
 This algorithm predicts object coordinates and labels with a
 modified random forest called a joint classification regression forest. This forest is trained by mapping object coordinates to a smaller set of discrete values using nearest neighbor assignment to the training data's object coordinates randomly.Then those with the most information gain when compared with the object distribution are chosen and these are stored as a Gaussian Mixture Model. When testing an image, a pixel is fed through a tree in the forest and when it gets to a leaf it will store the distribution of object coordinates and predictions for that pixel. Then all of that tree's object predictions are merged to form an overall prediction for that pixel. The coordinate distribution for the tree is then averaged [@brachmann].  
@@ -851,7 +851,7 @@ information for each pixel in the input image. The first level of this stack of 
 
 The object poses are then estimated using RANSAC. When RANSAC is mentioned in this paper it is actually a specific paradigm of RANSAC called preemptive RANSAC which estimates a certain number of hypotheses at once. This paradigm speeds up the normal RANSAC calculation when there are less inliers and many more outliers. Preemptive RANSAC is better for this case since there are always a large amount of outliers, but not too many to find a valid hypothesis. To perform this operation for a single object the forest values of object predictions, pixel positions, and object coordinates are used to estimate the 2D-3D correspondences. Then the reprojection error is calculated and subsequently minimized with the help of a camera matrix. This error is acceptable if it is under a predefined threshold, meaning that this data point is an inlier. The best pose hypothesis is the one in which the largest amount of inliers are found [@brachmann]. The equation from the paper that accomplishes this task is reprinted below with the permission of the author.
 
-![](Pictures/eq5.png "The RANSAC formula to maximize inlier count of a given pose")
+![The RANSAC formula to maximize inlier count of a given pose](Pictures/eq5.png "The RANSAC formula to maximize inlier count of a given pose")
 
 Hypotheses are drawn by solving the perspective-n-point problem for four correspondences. The first of four pixels is drawn according to a random tree's mean probability distribution then the other three are drawn within a certain distance of the first pixel depending on the size of the object in question, but if the reprojection error calculated for the pixels is found to be above the threshold then this hypothesis is discarded and a new one is drawn. These hypotheses are sorted by their number of included inliers and the lower half is discarded. The hypotheses left after this process are then further refined by repeating the process of solving the perspective-n-point problem on the new set of inlier value points until only one hypothesis is left. This remaining hypothesis is the estimated pose for the object in question [@brachmann]. 
 
@@ -859,9 +859,9 @@ Hypotheses are drawn by solving the perspective-n-point problem for four corresp
 
 During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log-likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood of the projection volume, as seen in the equation seen below which was reprinted with the author's permission, and take the log-likelihood of that [@brachmann]. Results of some final poses from the Hinterstoisser *et al.* dataset are shown in the paper's figure 4 pictured below, with permission from both Hinterstoisser and Brachmann [@brachmann;@hinterstoisser].
 
-![](Pictures/eq8.png "Equation for projection volume approximation")
+![Equation for projection volume approximation](Pictures/eq8.png "Equation for projection volume approximation")
 
-![](Pictures/figure4.png "Pose Overlays")
+![Pose Overlays](Pictures/figure4.png "Pose Overlays")
 
 Since source code and documentation were included with this paper we have decided to use it to test the speed and accuracy of this type of pose estimation algorithm. We will test on the smaller dataset included with the source code (dubbed the 'Dummy Data') to ensure that the implementation is functioning correctly. Then it will be trained on the full Asian Conference for Computer Vision (ACCV) object dataset provided by Hinterstoisser *et al.* [@hinterstoisser]. Finally, we will test this algorithm on data we collect with the Intel® RealSense™ F200 camera. We will try to match the performance metrics gathered in this step as closely as possible when we implement a similar algorithm in C#.
 
@@ -1170,11 +1170,11 @@ refer to the following two tables to create a proper plugin description couple w
 
 Descriptor File Format [@unreal:plugins]
 
-![](Pictures/Descriptor.PNG "Descriptor File Format")
+![Descriptor File Format](Pictures/Descriptor.PNG "Descriptor File Format")
 
 Module Descriptors [@unreal:plugins]
 
-![](Pictures/ModuleD.PNG "Module Descriptors")
+![Module Descriptors](Pictures/ModuleD.PNG "Module Descriptors")
 
 #### Plugin Code
 
@@ -1274,7 +1274,7 @@ The libraries available in the Accord.NET framework are divided into three secti
 
  Another useful namespace for this project is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation [@accord]. 
 
-![](Pictures/Accord.Math.Integration.png "Accord.Math.Integration Classes Provided under the Creative Commons Attribution/Share-Alike License")
+![Accord.Math.Integration Classes Provided under the Creative Commons Attribution/Share-Alike License](Pictures/Accord.Math.Integration.png "Accord.Math.Integration Classes Provided under the Creative Commons Attribution/Share-Alike License")
 
  The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics [@accord].
 
@@ -1307,7 +1307,7 @@ The metadata associated with each detected object will be exported to Unity in a
 When the user starts up Unity, they will be directed to the base Unity Editor screen which is shown right under. From there, they will have the
 option to go into the Window tab and select our custom screen.
 
-![](Pictures/UnityHomeScreen.png "Unity Editor Home Screen")
+![Unity Editor Home Screen](Pictures/UnityHomeScreen.png "Unity Editor Home Screen")
 
 ### Custom Window
 
@@ -1317,7 +1317,7 @@ plugins function. On initial press of the button, the UI will call on the camera
 to send images back, which it will then feed to the computer vision interface so that the computer vision module can process
 the images. An example of a simple custom screen and the script in the assets is shown below, without any of the functionality described above.
 
-![](Pictures/editorwindow.png "Unity Test Custom Window")
+![Unity Test Custom Window](Pictures/editorwindow.png "Unity Test Custom Window")
 
 #### UI Features
 
@@ -1383,7 +1383,7 @@ module is handled through the ICamera interface. This allows the commands
 called by the Unity Module to stay constant while the implementation
 of the Camera Module is free to change. The
 
-![](Figures/CameraModuleClass.png "Camera Module Class Diagram")
+![Camera Module Class Diagram](Figures/CameraModuleClass.png "Camera Module Class Diagram")
 
 ### Camera Module Activity Diagram
 The following is the flow of activity within the class diagram. Once 
@@ -1392,19 +1392,19 @@ and will continually capture data frames until the caller has called
 stop. These captured frames are available via the `GetImage` method of
 the `ICamera` interface.
 
-![](Figures/CameraModuleActivity.png "Camera Module Activity Diagram")
+![Camera Module Activity Diagram](Figures/CameraModuleActivity.png "Camera Module Activity Diagram")
 
 ## Computer Vision UML
 
 The following UML diagram gives a general overview of the planned computer vision implementation for this project. The more fine-grained details such as parameters, methods, and types are still subject to change as development continues, but the general structure and ideas will remain the same. 
 
-![](Figures/CV_class.png "Computer Vision Class Diagram")
+![Computer Vision Class Diagram](Figures/CV_class.png "Computer Vision Class Diagram")
 
 ## Unity UML
 
 The following Activity Diagram gives a general high-level description of how the Unity module will work when called.
 
-![](Figures/unityActivityDiagram.png "Unity Activity Diagram")
+![Unity Activity Diagram](Figures/unityActivityDiagram.png "Unity Activity Diagram")
 
 ## Overview UML
 
@@ -1527,7 +1527,7 @@ We will be using the CVPR 2016 code included with "Uncertainty-Driven 6D Pose Es
 
 On the Hinterstoisser dataset Bachmann *et al.* achieved 82.1% accuracy when estimating 3D 6-DOF pose with a maximum re-projection error for all vertices of 5cm and a maximum rotation error of 5°.  Processing time was calculated at a maximum of 1 second for 13 objects, nearly 2 seconds for 25 objects and nearly 4 seconds for 50 images []. The issue with utilizing processing time is that the authors mention that processing time can broadly vary with hypothesis acceptance. If it is more difficult to accept a hypothesis, the processing time increases. We will mitigate this risk by testing both their implementation and our implementation on the same data after being trained on the same dataset and compare those recorded processing times. Their processing times and prediction-recall graph are pictured below in figure 5 from [].
 
-![](Pictures/figure5.png "Experiment Results from Brachmann *et al.*")
+![Experiment Results from Brachmann *et al.*](Pictures/figure5.png "Experiment Results from Brachmann *et al.*")
 
 The primary classes for benchmark testing in the CVPR 2016 implementation of "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" are `train_trees` and `test_pose_estimation`. `train_trees` monitors training time by using the `stopWatch` function for accurate time tracking and in `test_pose_estimation` the average RANSAC runtime, the average auto-context random forest runtime, and the evaluation results are given in `avgRansacTime`,`avgForestTime`, and `objEval` respectively. We will use these recorded measures on different datasets, beginning with the Hinerstoisser dataset, as targets for our implementation running on the same datasets.
 
@@ -1772,9 +1772,12 @@ The computer vision interface will be based on a state-of-the-art method called 
 The Unity interface itself will be created as a plugin. This interface will control the data flow of our project and create the final product in a Unity scene.
 
 #Appendices
-![](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann of []")
-![](Pictures/hinterstoisserPermission.png "Correspondence with Stefan Hinterstoisser of []")
-![](Pictures/accordLicense.png "Proof of Accord.NET License")
-![](Pictures/unityCorrespondence.png "Correspondence with David Della Rocca of Unity")
+![Correspondence with Eric Brachmann of []](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann of []")
+
+![Correspondence with Stefan Hinterstoisser of []](Pictures/hinterstoisserPermission.png "Correspondence with Stefan Hinterstoisser of []")
+
+![Proof of Accord.NET License](Pictures/accordLicense.png "Proof of Accord.NET License")
+
+![Correspondence with David Della Rocca of Unity](Pictures/unityCorrespondence.png "Correspondence with David Della Rocca of Unity")
 
 \includepdf[pages=-, pagecommand={}]{Appendix/AppendixB.pdf}
