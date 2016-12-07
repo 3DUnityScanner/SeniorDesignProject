@@ -1522,7 +1522,7 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 
 ### Accord Framework Unit Tests
 
-The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected.
+The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected [@accord].
 
 |Test|Namespace|
 |:----|:---------|
