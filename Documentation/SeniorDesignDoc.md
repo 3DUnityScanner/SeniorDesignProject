@@ -1763,7 +1763,13 @@ Status: Pending
 
 # Summary
 
-TODO: Add Summary
+For our senior design project we are creating a 3D scanning tool for the Unity Game Engine. This tool will be a useful tool for game design students and developers alike. Our tool will be packaged as a Unity plugin that will interact with two other main components: a camera interface for the Intel® RealSense™ F200 and a computer vision implementation of a state-of-the-art algorithm. These three major modules will work together to provide a prototyping tool for level designers using the Unity Engine. Users will be able to build a physical level layout in the real world using basic wooden blocks and import their level layout directly into Unity. This will cut out time-consuming block layout creation in the engine interface and replace it with a novel process that will help students and designers make real connections with their game levels.
+
+The camera module of our project will heavily implement the Intel® RealSense™ SDK. This interface will capture images from the camera and send this data to the Unity interface in the appropriate format.
+
+The computer vision interface will be based on a state-of-the-art method called "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" by Bachmann *et al.* [@bachmann]. The primary resource being used to build this interface will be the Accord.NET framework, which will provide the necessary structures and methods to perform RANSAC pose estimation, build random forests for training and predictions, and compute the mathematic formulas necessary during these processes [@accord]. This interface will take image data as input, process this data, make predictions about the objects in the scene, estimate their poses, and output this data back to the Unity interface.
+
+The Unity interface itself will be created as a plugin. This interface will control the data flow of our project and create the final product in a Unity scene.
 
 #Appendices
 ![](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann of []")
