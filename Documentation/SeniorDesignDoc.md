@@ -924,7 +924,7 @@ The extension of MonoBehavior is necessary to allow the script to interface with
 It contains the necessary classes to allow for the created script to affect the GameObjects in Unity.
 It also gives the class access to the functions that determine when the script is called (like start and 
 update). The `Start()` method is called by Unity when the script is initialized, whereas the `Update()`
-method is called by Unity on every frame of the game.
+method is called by Unity on every frame of the game. [@unityScripts]
 
 #### 3D Models
 
@@ -995,7 +995,7 @@ access to the methods.
 Managed plugins can also be implemented through the usage of Dynamically Linked Libraries (DLLs).
 This allows a user to take C# code and compile it through a different compiler into a DLL,
 then the user can place the DLL into a unity plugin folder to be used in their scripts. from
-there the DLLs can be used in the same way that normal C# scripts are used in Unity.
+there the DLLs can be used in the same way that normal C# scripts are used in Unity. [@unityManaged]
 
 #### Native Plugins
 
@@ -1019,7 +1019,7 @@ interface.
 
 Any version of Unity that is below 5 requires either a Unity Pro License or a Unity Enterprise License
 to be able to use Native Plugins. Unity 5, however, allows all versions to use Native Plugins, from
-the Personal version to the Enterprise Version.
+the Personal version to the Enterprise Version. [@unityNative]
 
 #### Extending the Editor (Maybe change this part's location)
 
@@ -1051,6 +1051,8 @@ EditorWindow. This script will create a new editor window
 | Source Code Access | N | N | $ | $ |
 | Premium Support | N | N | $ | $ |
 
+[@unityTable]
+
 #### Unity free
 
 Unity Free is the base version of Unity that anyone can download from their website at
@@ -1077,7 +1079,7 @@ builds in FIFO form across all Unity customers.
 Unity Analytics is a feature that allows game developers seamlessly view information about their game
 like how it's being used, general gameplay behaviors, and it comes with a money optimization feature.
 It comes with Unity IAP, which allows users to set up In-App Purchases within their game and keep track
-of it across all platforms.
+of it across all platforms. [@unityTable]
 
 #### Unity Plus
 
@@ -1109,7 +1111,7 @@ Another feature that Unity Plus has is Flexible Seat Management, this allows a m
 entity or team that uses Unity to control what person on the team uses Unity and how they use it.
 
 Another thing that having a Plus subscription gives users is a 20% discount in the Unity Assets Store, 
-plus one months access to Unity's Certification Program. 
+plus one months access to Unity's Certification Program. [@unityTable]
 
 #### Unity Pro
 
@@ -1129,7 +1131,7 @@ Unity Analytics comes with the Unity Pro Analytics feature. It has all that plus
 raw data export. It also has even more game data analysis than the plus version.
 
 The Assets Store discount is upped in Pro to 40% from the 20% that is discounted in Plus. The Unity
-Certification Course access is extended to 3 months.
+Certification Course access is extended to 3 months. [@unityTable]
 
 #### Unity Enterprise
 
@@ -1141,7 +1143,7 @@ In the Enterprise tier, Unity will build a custom Unity Cloud infrastructure to 
 queue time that only includes the users in that business.
 
 The Unity Analytics feature is also upgraded in the Enterprise tier to a level that is configurable by the
-business. It has all the features of Pro with a custom raw data export size and a custom analysis.
+business. It has all the features of Pro with a custom raw data export size and a custom analysis. [@unityTable]
 
 
 ## Unreal Engine 4 Research
