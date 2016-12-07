@@ -1402,6 +1402,10 @@ The following UML diagram gives a general overview of the planned computer visio
 
 ## Unity UML
 
+The following Activity Diagram gives a general high-level description of how the Unity module will work when called.
+
+![](Figures/unityActivityDiagram.png "Unity Activity Diagram")
+
 ## Overview UML
 
 # Development Environment and Operations
