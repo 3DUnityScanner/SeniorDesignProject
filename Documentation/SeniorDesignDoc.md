@@ -1317,7 +1317,7 @@ plugins function. On initial press of the button, the UI will call on the camera
 to send images back, which it will then feed to the computer vision interface so that the computer vision module can process
 the images. An example of a simple custom screen and the script in the assets is shown below, without any of the functionality described above.
 
-![](Pictures/editorwindow.png "Unity Editor Home Screen")
+![](Pictures/editorwindow.png "Unity Test Custom Window")
 
 #### UI Features
 
