@@ -443,7 +443,7 @@ or `Dispose` method must be called on the acquired `SenseManager`. Use `Close`
 if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
 
-TODO: Intel SDK Example
+TODO: Intel® SDK Example
 
 ##### 3D Scanning
 
@@ -474,7 +474,7 @@ file location. Upon completion of data capture and exporting the data to a file,
 Use `Close` if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
 
-TODO: Intel SDK Example
+TODO: Intel® SDK Example
 
 ##### Dispose Method
 
@@ -692,7 +692,7 @@ specifications listed below.
 
 |    Component  |          Specification                             |
 |---------------|----------------------------------------------------|
-| CPU           | Intel 6th Generation Core i7                       |
+| CPU           | Intel® 6th Generation Core i7                       |
 | OS            | Windows 10 Pro                                     |
 | Display       | 15.6" FHD (1920x1080), IPS-Level                   |
 | Chipset       | Intel® HM170                                       |
@@ -1297,7 +1297,28 @@ The metadata associated with each detected object will be exported to Unity in a
 
 # Design Summary
 
-## Camera UML
+## Camera Module UML
+
+The final overall design of the camera module is displayed below. This
+includes the organization of the classes used as well as the flow of 
+activities.
+
+### Camera Module Class Diagram
+The following is the design of the Camera module. All access to the camera
+module is handled through the ICamera interface. This allows the commands
+called by the Unity Module to stay constant while the implementation
+of the Camera Module is free to change. The
+
+![](Figures/CameraModuleClass.png "Camera Module Class Diagram")
+
+### Camera Module Activity Diagram
+The following is the flow of activity within the class diagram. Once 
+start has been called, the Intel® RealSense™ pipeline is initiated 
+and will continually capture data frames until the caller has called
+stop. These captured frames are available via the `GetImage` method of
+the `ICamera` interface.
+
+![](Figures/CameraModuleActivity.png "Camera Module Activity Diagram")
 
 ## Computer Vision UML
 
