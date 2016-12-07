@@ -180,6 +180,7 @@ final deliverable.
 1. The system has Linux and OSX compatibility
 2. The system can take and analyse RGB or RGB-D data
 3. The system can interpret multiple vertical layers of blocks on a flat surface
+4. The system will have a similar counterpart to work in the Unreal Engine.
 
 # Research
 
@@ -1264,7 +1265,9 @@ captured images will be written to a disk. As the `ConcurrentQueue<Bitmap>` empt
 the images will be read from disk and loaded back into the queue. In order to accomplish
 this concurrency, two threads will be needed. One thread will be used to produce
 data. The other thread will belong to the caller of the `GetImage` method and
-will be used to dequeue the next image and serve it the caller. 
+will be used to dequeue the next image, by blocking if necessary, and serve it the caller. 
+The only resource shared between the two threads are the `ConcurrentQueue<Bitmap>` which
+will account for synchronization issues between the two.
 
 ## Computer Vision Design
 
@@ -1299,6 +1302,64 @@ We would like to implement a similar method to Brachmann *et al.* to refine the 
 The metadata associated with each detected object will be exported to Unity in a data-structure containing the x translation, y translation, z translation, x rotation, y rotation, z rotation, scale, and the object type according to the pre-existing 3D models. The translation values will provided according to the estimated center of the observed scene. This information will then be used to create and transform the object in a Unity scene.
 
 ## Unity Design
+
+### Custom Window
+
+The design of the Unity module will be centered around 2 different parts. The first part is the UI/central control class which
+will implement and create a new Unity Editor window. This window will contain the button that the user can press to begin the
+plugins function. On initial press of the button, the UI will call on the camera module's interface. It will wait for the camera
+to send images back, which it will then feed to the computer vision interface so that the computer vision module can process
+the images.
+
+#### UI Features
+
+While the plugin is in different stages of execution, the overall status will be translated into user-friendly terms, outputted as a
+string, and displayed as a label in the window. When the camera starts up, the label will display "Scanning Objects..." and will continue
+displaying that label until the camera software stops sending images back to the UI/Controller class. Once the images stop, the label will
+switch to "Processing Images..." while the computer vision module processes the scanned images into a usable format for the Object Creator.
+The time that it takes the Object Creator to spawn the items on the scene should be negligible enough such that a label is not needed, but
+should the time be noticeable, the label may be switched to "Drawing Scanned Objects" while the Object Creator executes it's task. Once the
+plugin's execution is finished, the UI/Controller will revert back to a ready state to potentially scan one more time. 
+
+#### Objects to Draw
+
+The processed images will return in the form of a list comprised of type, translation, rotation, and scale. The type refers to the types
+of the the specific objects scanned. Our implementation will call for prebuilt assets to be stored in our plugin files as prefabs that are
+base versions of all possible blocks that will be scanned into the Unity project. Should more block shapes be introduced into the algorithm, 
+our sponsors have already agreed to create base models for us to use in Unity. The prebuilt objects that we already have at our disposal are:
+
+* cubes
+* cones
+* cylinders
+* rectangular prisms
+* pyramids
+* bridges
+* wedges/ramps
+
+The Translation refers to the position of the objects with respect to the origin of the world space in the Unity Scene. This attribute will
+determine exactly where the model is rendered in the scene. The current plan is to have a reference measurement which can be converted into
+Unity World Space coordinates.
+
+The Rotation refers to the degrees around the object's 3 center axes (x, y, z) that the object is moving circularly. The rotation can go from 0 degrees
+up to 360 degrees (360 being the original starting position). Unity allows users to change an object's rotation through using Euler Angles and the 
+rotations themselves are stored in Unity as Quaternions.
+
+The Scale refers to the size of the object with respect to the original object that it is modelled off of. For example, a cube that is twice
+as wide, long, and high as the normal cube used will have a scale of 2 in all directions. Having this implementation will allow for multiple
+block types to be used without having to restrict the user to a specific brand of blocks. The original block's scale will be saved and compared
+to the scanned blocks, allowing the Unity module to scale the stored prefab to whatever it needs to be.
+
+### Object Creator
+
+The object creator is the class that the UI class will feed the processed object data to. This class extends Unity's MonoBehavior and is what makes
+the calls to draw the objects onto the scene. Unity has a method called `Instantiate()` that allows one to instantiate prefabs through a
+script. The Instantiate method has multiple constructors that can be called to load a prefab. The one that will be mainly used in this class
+is:
+
+`public static Object Instantiate(Object original, Vector3 position, Quaternion rotation);`
+
+This instantiation will allow us to set a variable equal to the newly instantiated prefab that is already set to the position and rotation
+necessary. From there the variable can be used to adjust the scale attribute for the newly created GameObject.
 
 # Design Summary
 
