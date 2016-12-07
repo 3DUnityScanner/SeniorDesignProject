@@ -1286,7 +1286,7 @@ Using the `putImage` method in the primary `CVInterface` class we will be import
 
 ### Random Forest Implementation
 
-Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [@brachmann, @accord]. 
+Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [@brachmann;@accord]. 
 
 ### RANSAC Implementation
 
