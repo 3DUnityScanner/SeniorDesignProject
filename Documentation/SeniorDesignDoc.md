@@ -1201,12 +1201,13 @@ the DLL:
 
 1.  In the build.cs, add the following lines:
 
-    `PublicDelayLoadDLLs.Add("FreeImage.dll");`
-    `PublicAdditionalLibraries.Add(Path.Combine(FreeImageDirectory, "FreeImage.lib"));`
+`PublicDelayLoadDLLs.Add("FreeImage.dll");`
+
+`PublicAdditionalLibraries.Add(Path.Combine(FreeImageDirectory, "FreeImage.lib"));`
 
 2.  In the main cpp file for the plugin, add the following:
 
-    `DLLHandle = FPlatformProcess::GetDllHandle(*Path);`
+`DLLHandle = FPlatformProcess::GetDllHandle(*Path);`
 
 After all that, just include the header in any file in the plugin and call any of the DLL functions.
 

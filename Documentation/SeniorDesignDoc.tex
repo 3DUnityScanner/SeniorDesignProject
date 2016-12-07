@@ -8,10 +8,13 @@
 \usepackage{multirow}
 \usepackage[autocite=inline,backend=bibtex,sorting=none]{biblatex}
 \usepackage{pdfpages}
+\usepackage{courier}
+\usepackage{times}
 
 \addbibresource{test.bib}
 
 \setmainfont{Times New Roman}
+\setmonofont{Courier}
 
 \titleformat*{\section}{\LARGE\bfseries}
 \titleformat*{\subsection}{\Large\bfseries}
@@ -221,7 +224,7 @@ scene processing and reproduction. I enjoy researching the field of
 computer vision and hope to write an original implementation for this
 project alongside Mark.
 
-I have always been enthralled with the game development process and I am
+I have always been enthralled by the game development process and I am
 excited to have a chance to contribute. My career plans are still an
 open book at this point in my life and I feel that this project could
 even open a door to future game development positions. Consisting of
@@ -2170,16 +2173,24 @@ follow the next three steps to use the functions in the DLL:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
+\tightlist
 \item
   In the build.cs, add the following lines:
+\end{enumerate}
 
-  \texttt{PublicDelayLoadDLLs.Add("FreeImage.dll");}
-  \texttt{PublicAdditionalLibraries.Add(Path.Combine(FreeImageDirectory,\ "FreeImage.lib"));}
+\texttt{PublicDelayLoadDLLs.Add("FreeImage.dll");}
+
+\texttt{PublicAdditionalLibraries.Add(Path.Combine(FreeImageDirectory,\ "FreeImage.lib"));}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
 \item
   In the main cpp file for the plugin, add the following:
-
-  \texttt{DLLHandle\ =\ FPlatformProcess::GetDllHandle(*Path);}
 \end{enumerate}
+
+\texttt{DLLHandle\ =\ FPlatformProcess::GetDllHandle(*Path);}
 
 After all that, just include the header in any file in the plugin and
 call any of the DLL functions.
