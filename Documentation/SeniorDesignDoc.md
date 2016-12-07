@@ -1317,7 +1317,7 @@ plugins function. On initial press of the button, the UI will call on the camera
 to send images back, which it will then feed to the computer vision interface so that the computer vision module can process
 the images. An example of a simple custom screen and the script in the assets is shown below, without any of the functionality described above.
 
-![](Pictures/editorwindow.png "Unity Editor Home Screen")
+![](Pictures/editorwindow.png "Unity Test Custom Window")
 
 #### UI Features
 
@@ -1401,6 +1401,10 @@ The following UML diagram gives a general overview of the planned computer visio
 ![](Figures/CV_class.png "Computer Vision Class Diagram")
 
 ## Unity UML
+
+The following Activity Diagram gives a general high-level description of how the Unity module will work when called.
+
+![](Figures/unityActivityDiagram.png "Unity Activity Diagram")
 
 ## Overview UML
 
@@ -1533,8 +1537,6 @@ The Accord.NET framework includes some unit tests for each major namespace to al
 
 |Test|Namespace|
 |:----|:---------|
-
-
 |Validate full namespace| Accord.Tests.MachineLearning|
 |Test Decision Tree|Accord.Tests.MachineLearning|
 |Test Decision Tree Rules|Accord.Tests.MachineLearning|
