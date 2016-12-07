@@ -1304,13 +1304,20 @@ The metadata associated with each detected object will be exported to Unity in a
 
 ## Unity Design
 
+When the user starts up Unity, they will be directed to the base Unity Editor screen which is shown right under. From there, they will have the
+option to go into the Window tab and select our custom screen.
+
+![](Pictures/UnityHomeScreen.png "Unity Editor Home Screen")
+
 ### Custom Window
 
 The design of the Unity module will be centered around 2 different parts. The first part is the UI/central control class which
 will implement and create a new Unity Editor window. This window will contain the button that the user can press to begin the
 plugins function. On initial press of the button, the UI will call on the camera module's interface. It will wait for the camera
 to send images back, which it will then feed to the computer vision interface so that the computer vision module can process
-the images.
+the images. An example of a simple custom screen and the script in the assets is shown below, without any of the functionality described above.
+
+![](Pictures/editorwindow.png "Unity Editor Home Screen")
 
 #### UI Features
 
@@ -1522,10 +1529,12 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 
 ### Accord Framework Unit Tests
 
-The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected.
+The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected [@accord].
 
 |Test|Namespace|
 |:----|:---------|
+
+
 |Validate full namespace| Accord.Tests.MachineLearning|
 |Test Decision Tree|Accord.Tests.MachineLearning|
 |Test Decision Tree Rules|Accord.Tests.MachineLearning|
@@ -1758,3 +1767,4 @@ TODO: Add Summary
 ![](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann of []")
 ![](Pictures/hinterstoisserPermission.png "Correspondence with Stefan Hinterstoisser of []")
 ![](Pictures/accordLicense.png "Proof of Accord.NET License")
+![](Pictures/unityCorrespondence.png "Correspondence with David Della Rocca of Unity")
