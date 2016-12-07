@@ -178,7 +178,7 @@ final deliverable.
 ### Possible Features
 
 1. The system has Linux and OSX compatibility
-2. The system can take and analyse RGB or RGB-D data
+2. The system can take and analyze RGB or RGB-D data
 3. The system can interpret multiple vertical layers of blocks on a flat surface
 4. The system will have a similar counterpart to work in the Unreal Engine.
 
@@ -192,7 +192,7 @@ plugin models and capabilities.
 ## Camera Research
 
 The UCF Games Research Group had several devices available to us for no
-charge. These included: Intel® RealSense™ F200, Microsoft Hololens, HTC
+charge. These included: Intel® RealSense™ F200, Microsoft HoloLens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
 suitability of each of the devices.
 
@@ -208,17 +208,17 @@ is not as easy to aim as a hand-held device. The cost of the device also makes i
 prohibitively expensive which is not congruent with the accessibility that
 we desired our tool to provide. 
 
-### Microsoft Hololens
+### Microsoft HoloLens
 
-The Microsoft Hololens is an augmented reality headset that projects
+The Microsoft HoloLens is an augmented reality headset that projects
 images onto the viewing lens to make it appear as if the images are
 sharing the same space as the user. Unlike the HTC Vive, Microsoft
-Hololens does not remove the user from the environment. This allows the
+HoloLens does not remove the user from the environment. This allows the
 user to stay visually engaged in the environment and move about safely.
-The Hololens also has the added ability of being untethered which allows
+The HoloLens also has the added ability of being untethered which allows
 for easy movement independent of the location of the device running the
 rest of the application. The primary drawbacks to the use of the
-Microsoft Hololens are: battery life, cost, and usability. According to our
+Microsoft HoloLens are: battery life, cost, and usability. According to our
 sponsors while in use the battery only lasts for approximately two hours and
 returning the device to full charge requires approximately five hours. This does not coincide
 with our desire to create a tool for rapid prototyping. While the
@@ -621,11 +621,11 @@ another and are noted below [@ViveRequirements;@KinectRequirements;@IntelRequire
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
 |               HTC Vive |     Win 7 SP1; Win 8.1; Win 10 |             Intel® Core™ i5-4590 < |            4GB < |          USB 2.0 |        Unspecified |
-|     Microsoft Hololens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
+|     Microsoft HoloLens |               N/A (Untethered) |                   N/A (Untethered) | N/A (Untethered) | N/A (Untethered) |   N/A (Untethered) |
 | Intel® RealSense™ F200 | Win 8.1(x86/x64); Win 10 (x64) | 4th or 5th Generation Intel® Core™ |      Unspecified |              USB |        Unspecified |
 |       Microsoft Kinect |                  Win 8 (x64) < |             i7 3.1 GHz (or higher) | 4 GB (or higher) |          USB 3.0 |         DirectX 11 |
 
-We took the HTC Vive and the Microsoft Hololens out of consideration because
+We took the HTC Vive and the Microsoft HoloLens out of consideration because
 we did not feel that a head-mounted device fit with the way users would interact 
 with our application. Our main decision was choosing between the Intel® RealSense™ 
 F200 camera and the Microsoft Kinect. Both sensors had many of the same advantages 
@@ -681,12 +681,13 @@ The amount of images passed to the computer vision interface is a crucial detail
 Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. The metadata for our project will include an estimated object center point in 3D coordinates based on the camera's viewpoint, which is used to estimate a translation matrix. That translation matrix, an object rotation matrix, the object's scale, and a enumerated object type that corresponds with an object model will be outputted to provide sufficient information to add an object to a Unity scene. We plan on importing this data directly into the Unity Game Engine through our plugin interface.
 
 ### Training Hardware
+
 Due to the demand required in the training process, our team will be using the strongest 
 computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the specifications listed below.
 
--------------------------------------------
+-------------------------------------------------
     Component   Specification                             
---------------  ---------------------------
+--------------  ---------------------------------
     CPU         Intel® 6th Generation Core i7 
 
     OS          Windows 10 Pro    
@@ -701,7 +702,7 @@ computer we have available to us. To train our detection algorithm, we will use 
                               
     Storage     M.2 SSD 128GB and 1TB 5800rpm HDD      
 
--------------------------------------------
+--------------------------------------------------
 
 ### Computer Vision Terminology Overview
 
@@ -715,7 +716,7 @@ We will present brief definitions for most of the terms related to computer visi
 
 * Convolutional layers - Convolution layers in a CNN are what make this structure special. Each of these layers contains filters that are usually small but deep, extending the full depth of the input data. These filters are convolved with sections of the input data to create a two dimensional list of values called an activation map. This map represents the filter reactions at every point in the input data. Each layer can have many different filters and each filter has its own activation map. These maps are what make up the depth of each layer. These layers do most of the processing work in the network.
 
-* Pooling layer - The job of a pooling layer is to reduce the spatial complexity of the data being passed through the network. The operation these layers perform downspamples the images in the network to reduce the amount of parameters and therefore reduce the processing load on the network.
+* Pooling layer - The job of a pooling layer is to reduce the spatial complexity of the data being passed through the network. The operation these layers perform downsamples the images in the network to reduce the amount of parameters and therefore reduce the processing load on the network.
 
 * Normalization layer - A normalization layer in a CNN is a method of regularization that provides the activations with more of a significant value peak leading to more recognizable local maxima when compared with neighboring values.
 
@@ -844,7 +845,7 @@ An overview of the method is shown in figure 2, shown below with permission from
 ![Overview of the Brachmann *et al.* Method](Pictures/figure2.png "Overview of the Brachmann *et al.* Method")
 
 This algorithm predicts object coordinates and labels with a
-modified random forest called a joint classification regression forest. This forest is trained by mapping object coordinates to a smaller set of discrete values using nearest neighbor assignment to the training data's object coordinates randomly.Then those with the most information gain when compared with the object distribution are chosen and these are stored as a Gaussian Mixture Model. When testing an image, a pixel is fed through a tree in the forest and when it gets to a leaf it will store the distribution of object coordinates and predictions for that pixel. Then all of that tree's object predictions are merged to form an overall prediction for that pixel. The coordinate distribution for the tree is then averaged [@brachmann].  
+modified random forest called a joint classification regression forest. This forest is trained by mapping object coordinates to a smaller set of discrete values using nearest neighbor assignment to the training data's object coordinates randomly. Then those with the most information gain when compared with the object distribution are chosen and these are stored as a Gaussian Mixture Model. When testing an image, a pixel is fed through a tree in the forest and when it gets to a leaf it will store the distribution of object coordinates and predictions for that pixel. Then all of that tree's object predictions are merged to form an overall prediction for that pixel. The coordinate distribution for the tree is then averaged [@brachmann].  
 
 Then Brachmann *et al.* use a stack of these forests to generate context
 information for each pixel in the input image. The first level of this stack of forests is trained normally, but all the following trees have access to the outputted information of the previous tree. To smooth the object probability distribution they use a median filter on the pixels surrounding each pixel. This median filter optimizes loss, specifically the least absolute deviations that minimize the difference between hypothesized values and target values, which allows it to be effective when dealing with outlier pixels that would otherwise negatively impact the result. The object coordinates are also regularized using a similar method which optimizes loss[@brachmann].
@@ -857,7 +858,7 @@ Hypotheses are drawn by solving the perspective-n-point problem for four corresp
 
  When this algorithm is detecting multiple objects at once the above method of detection does not maintain efficiency when a large number of objects are to be detected. Multi-object detections are performed by drawing a shared set of hypotheses instead of individual sets for each object. These hypotheses are chosen by analyzing the object probability distributions at the first pixel of the current hypothesis when performing the same actions as a single-object RANSAC pose estimation. These chosen hypotheses still have to pass the same validity check as in single-object detections. Using this method allows the algorithm to decide if a hypothesis belongs to multiple objects during the hypothesis sampling process instead of having a separate process for each object. This allows their RANSAC pose estimation to scale more easily with a large number of object detections in the same image [@brachmann].
 
-During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log-likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood of the projection volume, as seen in the equation seen below which was reprinted with the author's permission, and take the log-likelihood of that [@brachmann]. Results of some final poses from the Hinterstoisser *et al.* dataset are shown in the paper's figure 4 pictured below, with permission from both Hinterstoisser and Brachmann [@brachmann;@hinterstoisser].
+During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log-likelihood of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood of the projection volume, as seen in the equation seen below which was reprinted with the author's permission, and take the log-likelihood of that [@brachmann]. Results of some final poses from the Hinterstoisser *et al.* dataset are shown in the paper's figure 4 pictured below, with permission from both Hinterstoisser and Brachmann [@brachmann;@hinterstoisser].
 
 ![Equation for projection volume approximation](Pictures/eq8.png "Equation for projection volume approximation")
 
@@ -930,12 +931,12 @@ method is called by Unity on every frame of the game. [@unityScripts]
 
 Unity has two kinds of file that it can use to import 3D models. The first is exported 3D file formats and the second is application files from 3D Editors.
 
-The exported 3D file formats that Unity uses are: .FBX, .dxf, .obj, .3DS, and.dae. The 
+The exported 3D file formats that Unity uses are: .FBX, .dxf, .obj, .3DS, and .dae. The 
 benefit to these kinds of files are that they tend to be smaller than the application files
-and export only the data you will be using. These types of files are  more generalized and are more easily generated programatically due to them not being proprietary to a certain piece of premium software. 
+and export only the data you will be using. These types of files are  more generalized and are more easily generated programmatically due to them not being proprietary to a certain piece of premium software. 
 
 The applications that unity accepts files from are: Blender, Cinema4D, Cheetah3D, Lightwave,
-Maya, Max, and Modo. These kinda of files tend to be simpler in terms of usability, especially
+Maya, Max, and Modo. These kind of files tend to be simpler in terms of usability, especially
 since Unity will re-import the model every time the user saves the file. But they also tend to be larger when compared with exported files due to data bloating which is commonly found within 3D modeling software, which can cause a slowdown of Unity. The proprietary software used to create the file must also be owned and licensed on the computer in which it's being used. 
 
 
@@ -1124,7 +1125,7 @@ version can make any Unity game and does not have to change their subscription b
 This is most likely because Unity Pro is the highest tier of Unity that a single person can buy.
 
 The Unity Cloud feature is upgraded further from the Plus Unity Cloud feature. It still contains the 
-Priority Queue allowing th user to have a faster build time than the Personal users, but it also allows
+Priority Queue allowing the user to have a faster build time than the Personal users, but it also allows
 for creating multiple parallel builds for any project.
 
 Unity Analytics comes with the Unity Pro Analytics feature. It has all that plus has with 50 gigabytes of
@@ -1163,12 +1164,12 @@ of the system (2015).
 
 Unreal uses C++ within its environment to do programming, and the same goes for the plugin system.
 For the most part, plugin source file layout is the same as any other C++ module in Unreal Engine. 
-The Primary addition is a *.uplugin file that acts as a descriptor for the plugin. 
+The Primary addition is a .uplugin file that acts as a descriptor for the plugin. 
 
 #### Descriptors
 
-Plugin descriptors are files that end in a *.uplugin extension that are formatted like JSON. one should 
-refer to the following two tables to create a proper plugin description couple with a proper proper module description.
+Plugin descriptors are files that end in a .uplugin extension that are formatted like JSON. one should 
+refer to the following two tables to create a proper plugin description couple with a proper module description.
 
 Descriptor File Format [@unreal:plugins]
 
@@ -1302,7 +1303,7 @@ We would like to implement a similar method to Brachmann *et al.* to refine the 
 
 ### Output to the Unity Interface
 
-The metadata associated with each detected object will be exported to Unity in a data-structure containing the x translation, y translation, z translation, x rotation, y rotation, z rotation, scale, and the object type according to the pre-existing 3D models. The translation values will provided according to the estimated center of the observed scene. This information will then be used to create and transform the object in a Unity scene.
+The metadata associated with each detected object will be exported to Unity in a data-structure containing the x translation, y translation, z translation, x rotation, y rotation, z rotation, scale, and the object type according to the pre-existing 3D models. The translation values will be provided according to the estimated center of the observed scene. This information will then be used to create and transform the object in a Unity scene.
 
 ## Unity Design
 
@@ -1334,7 +1335,7 @@ plugin's execution is finished, the UI/Controller will revert back to a ready st
 #### Objects to Draw
 
 The processed images will return in the form of a list comprised of type, translation, rotation, and scale. The type refers to the types
-of the the specific objects scanned. Our implementation will call for prebuilt assets to be stored in our plugin files as prefabs that are
+of the specific objects scanned. Our implementation will call for prebuilt assets to be stored in our plugin files as prefabs that are
 base versions of all possible blocks that will be scanned into the Unity project. Should more block shapes be introduced into the algorithm, 
 our sponsors have already agreed to create base models for us to use in Unity. The prebuilt objects that we already have at our disposal are:
 
@@ -1432,7 +1433,7 @@ to incorporate the tool into our developer operations without any further
 training needed. Also since Git is free, it will not carry a cost to our 
 sponsors or our team members. We are hosting our Git repository on GitHub.
 Hosting on GitHub is also free for public repositories, which we are able
-to use since we are not subject to an nondisclosure agreement. In addition
+to use since we are not subject to a nondisclosure agreement. In addition
 to repository hosting, GitHub also offers some valuable tools to assist in
 developer coordination. We are making use of the issue tracking system within
 GitHub in order to coordinate the status of various features and bug fixes.
@@ -1450,7 +1451,7 @@ with allows for writing documents with common features such as: headers, lists, 
 We chose to use Markdown because it is easy to version control as well as being a widespread 
 format. Because Markdown is a plaintext format, multiple group members can work on it at 
 the same time and Git is able to easily merge their changes. This is in contrast to a binary format
-such as *.docx whose line changes Git cannot merge. Also since Markdown has become 
+such as .docx whose line changes Git cannot merge. Also since Markdown has become 
 such a widespread format there is plenty of tooling to support its authoring and 
 conversion. We chose Markdown over similar formats such as LaTex and HTML because its
 syntax is much simpler. This makes Markdown easy to learn as well as quick to write. 
@@ -1460,7 +1461,7 @@ Without Markdown, our documentation process would be slower and more prone to da
 
 We used to Pandoc to convert our Markdown to more presentation oriented formats. This tool
 allows us to easily develop, merge, and version control our documentation while also being
-able to support visually appealing presentation file formats such as *.docx and *.pdf. Without
+able to support visually appealing presentation file formats such as .docx and .pdf. Without
 Pandoc we would be forced to use binary formats which would make it difficult to version control
 our documentation.
 
@@ -1613,7 +1614,7 @@ Research Group. Therefore the use of the camera will not carry a cost
 to our group. The only potential cost the camera could pose is if we
 find the Intel® RealSense™ F200 camera to be unusable and we have to use a
 camera that the UCF Games Research Group does not already have in their
-possession. They also have a Microsoft Kinect, Microsoft Hololens, and an HTC Vive.
+possession. They also have a Microsoft Kinect, Microsoft HoloLens, and an HTC Vive.
 
 ## Working Area
 The UCF Games Research Group has an office space with computers, cameras, and 
