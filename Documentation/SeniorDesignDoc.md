@@ -444,8 +444,6 @@ or `Dispose` method must be called on the acquired `SenseManager`. Use `Close`
 if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
 
-TODO: Intel® SDK Example
-
 ##### 3D Scanning
 
 The Intel® RealSense™ SDK also provides algorithms for scanning 3D objects into
@@ -474,8 +472,6 @@ file location. Upon completion of data capture and exporting the data to a file,
 `Close` method  or `Dispose` method must be called on the acquired `SenseManager`. 
 Use `Close` if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
-
-TODO: Intel® SDK Example
 
 ##### Dispose Method
 
