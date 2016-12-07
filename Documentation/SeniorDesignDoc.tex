@@ -1583,7 +1583,7 @@ created script to affect the GameObjects in Unity. It also gives the
 class access to the functions that determine when the script is called
 (like start and update). The \texttt{Start()} method is called by Unity
 when the script is initialized, whereas the \texttt{Update()} method is
-called by Unity on every frame of the game.
+called by Unity on every frame of the game. \autocite{unityScripts}
 
 \paragraph{3D Models}\label{d-models}
 
@@ -1707,7 +1707,7 @@ Linked Libraries (DLLs). This allows a user to take C\# code and compile
 it through a different compiler into a DLL, then the user can place the
 DLL into a unity plugin folder to be used in their scripts. from there
 the DLLs can be used in the same way that normal C\# scripts are used in
-Unity.
+Unity. \autocite{unityManaged}
 
 \paragraph{Native Plugins}\label{native-plugins}
 
@@ -1736,7 +1736,7 @@ interface.
 Any version of Unity that is below 5 requires either a Unity Pro License
 or a Unity Enterprise License to be able to use Native Plugins. Unity 5,
 however, allows all versions to use Native Plugins, from the Personal
-version to the Enterprise Version.
+version to the Enterprise Version. \autocite{unityNative}
 
 \paragraph{Extending the Editor (Maybe change this part's
 location)}\label{extending-the-editor-maybe-change-this-parts-location}
@@ -1967,6 +1967,8 @@ N\strut
 \bottomrule
 \end{longtable}
 
+\autocite{unityTable}
+
 \paragraph{Unity free}\label{unity-free}
 
 Unity Free is the base version of Unity that anyone can download from
@@ -1999,7 +2001,7 @@ Unity Analytics is a feature that allows game developers seamlessly view
 information about their game like how it's being used, general gameplay
 behaviors, and it comes with a money optimization feature. It comes with
 Unity IAP, which allows users to set up In-App Purchases within their
-game and keep track of it across all platforms.
+game and keep track of it across all platforms. \autocite{unityTable}
 
 \paragraph{Unity Plus}\label{unity-plus}
 
@@ -2039,7 +2041,7 @@ control what person on the team uses Unity and how they use it.
 
 Another thing that having a Plus subscription gives users is a 20\%
 discount in the Unity Assets Store, plus one months access to Unity's
-Certification Program.
+Certification Program. \autocite{unityTable}
 
 \paragraph{Unity Pro}\label{unity-pro}
 
@@ -2065,7 +2067,7 @@ more game data analysis than the plus version.
 
 The Assets Store discount is upped in Pro to 40\% from the 20\% that is
 discounted in Plus. The Unity Certification Course access is extended to
-3 months.
+3 months. \autocite{unityTable}
 
 \paragraph{Unity Enterprise}\label{unity-enterprise}
 
@@ -2082,6 +2084,7 @@ users in that business.
 The Unity Analytics feature is also upgraded in the Enterprise tier to a
 level that is configurable by the business. It has all the features of
 Pro with a custom raw data export size and a custom analysis.
+\autocite{unityTable}
 
 \subsection{Unreal Engine 4 Research}\label{unreal-engine-4-research}
 
@@ -3212,7 +3215,39 @@ Status: Pending
 
 \section{Summary}\label{summary}
 
-TODO: Add Summary
+For our senior design project we are creating a 3D scanning tool for the
+Unity Game Engine. This tool will be a useful tool for game design
+students and developers alike. Our tool will be packaged as a Unity
+plugin that will interact with two other main components: a camera
+interface for the Intel® RealSense™ F200 and a computer vision
+implementation of a state-of-the-art algorithm. These three major
+modules will work together to provide a prototyping tool for level
+designers using the Unity Engine. Users will be able to build a physical
+level layout in the real world using basic wooden blocks and import
+their level layout directly into Unity. This will cut out time-consuming
+block layout creation in the engine interface and replace it with a
+novel process that will help students and designers make real
+connections with their game levels.
+
+The camera module of our project will heavily implement the Intel®
+RealSense™ SDK. This interface will capture images from the camera and
+send this data to the Unity interface in the appropriate format.
+
+The computer vision interface will be based on a state-of-the-art method
+called ``Uncertainty-Driven 6D Pose Estimation of Objects and Scenes
+from a Single RGB Image'' by Bachmann \emph{et al.} \autocite{bachmann}.
+The primary resource being used to build this interface will be the
+Accord.NET framework, which will provide the necessary structures and
+methods to perform RANSAC pose estimation, build random forests for
+training and predictions, and compute the mathematic formulas necessary
+during these processes \autocite{accord}. This interface will take image
+data as input, process this data, make predictions about the objects in
+the scene, estimate their poses, and output this data back to the Unity
+interface.
+
+The Unity interface itself will be created as a plugin. This interface
+will control the data flow of our project and create the final product
+in a Unity scene.
 
 \section{Appendices}\label{appendices}
 
