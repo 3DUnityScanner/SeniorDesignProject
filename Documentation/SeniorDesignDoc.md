@@ -1270,13 +1270,13 @@ will account for synchronization issues between the two.
 
 The Accord.NET framework is a machine learning framework written in C# for signal processing, statistics, computer audition, and computer vision applications. Accord.NET extends AForge.NET which is another popular C# machine learning framework, but Accord adds extra scientific computing features. 
 
-The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included.
+The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included [@accord].
 
- Another useful namespace for this project is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation. 
+ Another useful namespace for this project is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation [@accord]. 
 
 ![](Pictures/Accord.Math.Integration.png "Accord.Math.Integration Classes Provided under the Creative Commons Attribution/Share-Alike License")
 
- The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics.
+ The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics [@accord].
 
 Accord is made available in the NuGet package manager, making it easily integrated into our Visual Studio project environment.  
 
@@ -1286,17 +1286,17 @@ Using the `putImage` method in the primary `CVInterface` class we will be import
 
 ### Random Forest Implementation
 
-Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [,]. 
+Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [@brachmann, @accord]. 
 
 ### RANSAC Implementation
 
-Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" []. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation. This implementation will be modified to run parallel hypothesis checks to follow the structure of preemptive RANSAC. 
+Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" [@brachmann]. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation [@accord]. This implementation will be modified to run parallel hypothesis checks to follow the structure of preemptive RANSAC. 
 
 Our instance of RANSAC will have a set of Hypotheses which have the pose information stored. During processing these will be culled, refined, and added to as necessary.
 
 ### Pose Refinement Implementation
 
-We would like to implement a similar method to Brachmann *et al.* to refine the poses gathered by RANSAC. Each Hypothesis in the RANSAC instance will have a refinement method called `refine()` which will be able to improve the pose estimation if that hypothesis is chosen for refinement. The poses chosen for refinement will be handled within our RANSAC implementation.
+We would like to implement a similar method to Brachmann *et al.* to refine the poses gathered by RANSAC [@brachmann]. Each Hypothesis in the RANSAC instance will have a refinement method called `refine()` which will be able to improve the pose estimation if that hypothesis is chosen for refinement. The poses chosen for refinement will be handled within our RANSAC implementation.
 
 ### Output to the Unity Interface
 
