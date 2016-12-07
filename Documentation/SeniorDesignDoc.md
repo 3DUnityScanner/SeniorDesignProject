@@ -1309,6 +1309,18 @@ plugins function. On initial press of the button, the UI will call on the camera
 to send images back, which it will then feed to the computer vision interface so that the computer vision module can process
 the images.
 
+#### UI Features
+
+While the plugin is in different stages of execution, the overall status will be translated into user-friendly terms, outputted as a
+string, and displayed as a label in the window. When the camera starts up, the label will display "Scanning Objects..." and will continue
+displaying that label until the camera software stops sending images back to the UI/Controller class. Once the images stop, the label will
+switch to "Processing Images..." while the computer vision module processes the scanned images into a usable format for the Object Creator.
+The time that it takes the Object Creator to spawn the items on the scene should be negligible enough such that a label is not needed, but
+should the time be noticeable, the label may be switched to "Drawing Scanned Objects" while the Object Creator executes it's task. Once the
+plugin's execution is finished, the UI/Controller will revert back to a ready state to potentially scan one more time. 
+
+#### Objects to Draw
+
 The processed images will return in the form of a list comprised of type, translation, rotation, and scale. The type refers to the types
 of the the specific objects scanned. Our implementation will call for prebuilt assets to be stored in our plugin files as prefabs that are
 base versions of all possible blocks that will be scanned into the Unity project. Should more block shapes be introduced into the algorithm, 
@@ -1337,7 +1349,15 @@ to the scanned blocks, allowing the Unity module to scale the stored prefab to w
 
 ### Object Creator
 
-The object
+The object creator is the class that the UI class will feed the processed object data to. This class extends Unity's MonoBehavior and is what makes
+the calls to draw the objects onto the scene. Unity has a method called `Instantiate()` that allows one to instantiate prefabs through a
+script. The Instantiate method has multiple constructors that can be called to load a prefab. The one that will be mainly used in this class
+is:
+
+`public static Object Instantiate(Object original, Vector3 position, Quaternion rotation);`
+
+This instantiation will allow us to set a variable equal to the newly instantiated prefab that is already set to the position and rotation
+necessary. From there the variable can be used to adjust the scale attribute for the newly created GameObject.
 
 # Design Summary
 
