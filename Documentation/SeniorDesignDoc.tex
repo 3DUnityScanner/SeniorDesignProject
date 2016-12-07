@@ -2713,9 +2713,9 @@ We will be using the CVPR 2016 code included with ``Uncertainty-Driven
 6D Pose Estimation of Objects and Scenes from a Single RGB Image'' as a
 benchmark for our computer vision interface. We would like to track
 metrics on our training and detection processes to attempt to get as
-close as possible to the results of Bachmann \emph{et al.}.
+close as possible to the results of Brachmann \emph{et al.}.
 
-On the Hinterstoisser dataset Bachmann \emph{et al.} achieved 82.1\%
+On the Hinterstoisser dataset Brachmann \emph{et al.} achieved 82.1\%
 accuracy when estimating 3D 6-DOF pose with a maximum re-projection
 error for all vertices of 5cm and a maximum rotation error of 5°.
 Processing time was calculated at a maximum of 1 second for 13 objects,
@@ -3090,8 +3090,8 @@ technologies so that implementation from this point on can go smoothly.
 
 \section{Milestones}\label{milestones}
 
-\subsubsection{October 2016 - Run and test Bachmann
-implementation}\label{october-2016---run-and-test-bachmann-implementation}
+\subsubsection{October 2016 - Run and test Brachmann
+implementation}\label{october-2016---run-and-test-brachmann-implementation}
 
 Compile on Ubuntu 14.04 and run the source code provided with the CVPR
 2016 demo for ``Uncertainty-Driven 6D Pose Estimation of Objects and
@@ -3102,9 +3102,9 @@ Status: Completed Successfully
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\subsubsection{\texorpdfstring{November 2016 - Train Bachmann
+\subsubsection{\texorpdfstring{November 2016 - Train Brachmann
 implementation on `Dummy Data' and test on test
-set}{November 2016 - Train Bachmann implementation on Dummy Data and test on test set}}\label{november-2016---train-bachmann-implementation-on-dummy-data-and-test-on-test-set}
+set}{November 2016 - Train Brachmann implementation on Dummy Data and test on test set}}\label{november-2016---train-brachmann-implementation-on-dummy-data-and-test-on-test-set}
 
 Run \texttt{train\_trees} on the data included in the `dummy\_data'
 folder. If training is successful test on the included test sets.
@@ -3145,9 +3145,9 @@ Status: In Progress
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\subsubsection{January 2017 - Train Bachmann implementation on real data
-and
-test}\label{january-2017---train-bachmann-implementation-on-real-data-and-test}
+\subsubsection{January 2017 - Train Brachmann implementation on real
+data and
+test}\label{january-2017---train-brachmann-implementation-on-real-data-and-test}
 
 Run \texttt{train\_trees} on either the Hinterstoisser dataset or the
 Object Segmentation Database to set a benchmark to test against.
@@ -3245,15 +3245,15 @@ send this data to the Unity interface in the appropriate format.
 
 The computer vision interface will be based on a state-of-the-art method
 called ``Uncertainty-Driven 6D Pose Estimation of Objects and Scenes
-from a Single RGB Image'' by Bachmann \emph{et al.} \autocite{bachmann}.
-The primary resource being used to build this interface will be the
-Accord.NET framework, which will provide the necessary structures and
-methods to perform RANSAC pose estimation, build random forests for
-training and predictions, and compute the mathematic formulas necessary
-during these processes \autocite{accord}. This interface will take image
-data as input, process this data, make predictions about the objects in
-the scene, estimate their poses, and output this data back to the Unity
-interface.
+from a Single RGB Image'' by Brachmann \emph{et al.}
+\autocite{brachmann}. The primary resource being used to build this
+interface will be the Accord.NET framework, which will provide the
+necessary structures and methods to perform RANSAC pose estimation,
+build random forests for training and predictions, and compute the
+mathematic formulas necessary during these processes \autocite{accord}.
+This interface will take image data as input, process this data, make
+predictions about the objects in the scene, estimate their poses, and
+output this data back to the Unity interface.
 
 The Unity interface itself will be created as a plugin. This interface
 will control the data flow of our project and create the final product
@@ -3271,7 +3271,7 @@ direction.
 \begin{figure}
 \centering
 \includegraphics{Pictures/brachmannPermission.png}
-\caption{Correspondence with Eric Brachmann of \autocite{bachmann}}
+\caption{Correspondence with Eric Brachmann of \autocite{brachmann}}
 \end{figure}
 
 \begin{figure}
