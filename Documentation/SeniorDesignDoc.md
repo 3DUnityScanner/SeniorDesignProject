@@ -1257,9 +1257,22 @@ until the `StartCapture` method has been called.
 
 #### GetImage
 Gets the next available image from the camera as a `Bitmap`. 
-The image is likely to have already been captured and possibly written to 
-disk. In this case the image would need to be read from disk and then 
-returned. If the image is still in memory then the `Bitmap`.
+If an image is available, it will be returned. Otherwise, the
+function will block if the `Status` member equals `CameraStatus.RUNNING`
+and return the next available image once it becomes available. 
+If the `Status` member equals `CameraStatus.STOPPED`, the 
+method will return `null` to signal that there are no available
+images.
+
+### Concurrency
+The ICamera Interface should be able to return a `Bitmap` image while still 
+capturing data. This will be accomplished by placing captured images into a 
+`ConcurrentQueue<Bitmap>`. When the queue reaches a certain capacity the remaining
+captured images will be written to a disk. As the `ConcurrentQueue<Bitmap>` empties 
+the images will be read from disk and loaded back into the queue. In order to accomplish
+this concurrency, two threads will be needed. One thread will be used to produce
+data. The other thread will belong to the caller of the `GetImage` method and
+will be used to dequeue the next image and serve it the caller. 
 
 ## Computer Vision Design
 
