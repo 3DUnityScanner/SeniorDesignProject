@@ -58,10 +58,9 @@
 \cfoot{}
 \rfoot{\thepage}
 
-\pagenumbering{roman} % Start roman numbering
-
 \begin{document}
-
+\includepdf[pages=-]{coverPage.pdf}
+\pagenumbering{roman} % Start roman numbering
 \setcounter{tocdepth}{3}
 \tableofcontents
 
@@ -3247,20 +3246,28 @@ interface.
 
 The Unity interface itself will be created as a plugin. This interface
 will control the data flow of our project and create the final product
-in a Unity scene.
+in a Unity scene. Using a custom Unity Editor Window, we will allow
+users to begin the scanning process and then send the images scanned
+into the computer vision interface. The Unity UI class will then take
+the processed data that the computer vision module returns and send it
+to the Object Creator class which is a normal Unity C\# Script. That
+script will take the data and use it to output the objects to the scene
+in the correct position, with the correct size, and rotated in the right
+direction.
 
 \section{Appendices}\label{appendices}
 
 \begin{figure}
 \centering
 \includegraphics{Pictures/brachmannPermission.png}
-\caption{Correspondence with Eric Brachmann of {[}{]}}
+\caption{Correspondence with Eric Brachmann of \autocite{bachmann}}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics{Pictures/hinterstoisserPermission.png}
-\caption{Correspondence with Stefan Hinterstoisser of {[}{]}}
+\caption{Correspondence with Stefan Hinterstoisser of
+\autocite{hinterstoisser}}
 \end{figure}
 
 \begin{figure}

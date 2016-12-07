@@ -1,4 +1,3 @@
-\includepdf[pages=-, pagecommand={}]{coverPage.pdf}
 # Executive Summary
 
 The purpose of our 3D scanner for Unity is to provide a useful and novel
