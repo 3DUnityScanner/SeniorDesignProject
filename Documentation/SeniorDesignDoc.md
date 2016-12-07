@@ -1264,7 +1264,9 @@ captured images will be written to a disk. As the `ConcurrentQueue<Bitmap>` empt
 the images will be read from disk and loaded back into the queue. In order to accomplish
 this concurrency, two threads will be needed. One thread will be used to produce
 data. The other thread will belong to the caller of the `GetImage` method and
-will be used to dequeue the next image and serve it the caller. 
+will be used to dequeue the next image, by blocking if necessary, and serve it the caller. 
+The only resource shared between the two threads are the `ConcurrentQueue<Bitmap>` which
+will account for synchronization issues between the two.
 
 ## Computer Vision Design
 
