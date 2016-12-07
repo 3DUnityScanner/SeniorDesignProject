@@ -328,7 +328,7 @@ The Intel® RealSense™ SDK provides access to the camera as well as access
 to some computer vision algorithms. Fundamentally the SDK is needed so that 
 we can receive the data from the camera and then pass it along to the 
 computer vision module. All the following information is available from the
-Intel® RealSense™ SDK [TODO]
+Intel® RealSense™ SDK [@IntelSDK].
 
 ##### SenseManager
 
@@ -537,7 +537,7 @@ invested in the computer vision algorithms and processing and not the data captu
 
 The following is a brief description of classes from the SDK as they would be useful to 
 our project. All the information is available in the Microsoft Kinect SDK Documentation in
-Appendix TODO.
+Appendix B.
 
 ##### KinectSensor
 
@@ -616,7 +616,7 @@ Our project team has the computing power to use each of these devices and
 we feel it is also reasonable to assume that game developers would also 
 already have devices of this caliber in order to run high performance games. 
 Even so all the devices compared have comparable hardware requirements to one 
-another and are noted below [TODO].
+another and are noted below [@ViveRequirements, @KinectRequirements, @IntelRequirements].
 
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
