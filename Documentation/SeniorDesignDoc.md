@@ -444,7 +444,7 @@ or `Dispose` method must be called on the acquired `SenseManager`. Use `Close`
 if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
 
-TODO: Intel SDK Example
+TODO: Intel® SDK Example
 
 ##### 3D Scanning
 
@@ -475,7 +475,7 @@ file location. Upon completion of data capture and exporting the data to a file,
 Use `Close` if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
 
-TODO: Intel SDK Example
+TODO: Intel® SDK Example
 
 ##### Dispose Method
 
@@ -682,29 +682,21 @@ The amount of images passed to the computer vision interface is a crucial detail
 
 ### Outputs
 
-Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
-
-We plan on importing this data directly into the Unity Game Engine through our plugin interface. The data will include four values in a data structure: a translation matrix, rotation matrix, scale, and object type based on the models we have been provided for the block types.
+Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. The metadata for our project will include an estimated object center point in 3D coordinates based on the camera's viewpoint, which is used to estimate a translation matrix. That translation matrix, an object rotation matrix, the object's scale, and a enumerated object type that corresponds with an object model will be outputted to provide sufficient information to add an object to a Unity scene. We plan on importing this data directly into the Unity Game Engine through our plugin interface.
 
 ### Training Hardware
 Due to the demand required in the training process, our team will be using the strongest 
-computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
-specifications listed below.
+computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the specifications listed below.
 
 |    Component  |          Specification                             |
 |---------------|----------------------------------------------------|
-| CPU           | Intel 6th Generation Core i7                       |
+| CPU           | Intel® 6th Generation Core i7                      |
 | OS            | Windows 10 Pro                                     |
 | Display       | 15.6" FHD (1920x1080), IPS-Level                   |
 | Chipset       | Intel® HM170                                       |
 | Graphics      | GeForce® GTX 1060 with 6GB GDDR5                   |
 | Memory        | DDR4 16GB                                          |
 | Storage       | M.2 SSD 128GB and 1TB 5800rpm HDD                  |
-| Webcam        | HD type (30fps@720p)                               |
-| Keyboard      | Backlight Keyboard (Full-Color)                    |
-| Communication | Killer Gb LAN and Killer ac Wi-Fi + Bluetooth v4.1 |
-| Audio         | ImageG2x 2W Speaker                                |
-| Battery       | 3-Cell , 65 Whr                                    |
 
 
 ### Computer Vision Terminology Overview
@@ -1258,9 +1250,22 @@ until the `StartCapture` method has been called.
 
 #### GetImage
 Gets the next available image from the camera as a `Bitmap`. 
-The image is likely to have already been captured and possibly written to 
-disk. In this case the image would need to be read from disk and then 
-returned. If the image is still in memory then the `Bitmap`.
+If an image is available, it will be returned. Otherwise, the
+function will block if the `Status` member equals `CameraStatus.RUNNING`
+and return the next available image once it becomes available. 
+If the `Status` member equals `CameraStatus.STOPPED`, the 
+method will return `null` to signal that there are no available
+images.
+
+### Concurrency
+The ICamera Interface should be able to return a `Bitmap` image while still 
+capturing data. This will be accomplished by placing captured images into a 
+`ConcurrentQueue<Bitmap>`. When the queue reaches a certain capacity the remaining
+captured images will be written to a disk. As the `ConcurrentQueue<Bitmap>` empties 
+the images will be read from disk and loaded back into the queue. In order to accomplish
+this concurrency, two threads will be needed. One thread will be used to produce
+data. The other thread will belong to the caller of the `GetImage` method and
+will be used to dequeue the next image and serve it the caller. 
 
 ## Computer Vision Design
 
@@ -1271,6 +1276,10 @@ The Accord.NET framework is a machine learning framework written in C# for signa
 The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included. Another useful namespace is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation. The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics.
 
 Accord is made available in the NuGet package manager, making it easily integrated into our Visual Studio project environment.  
+
+### Input from Unity Interface
+
+Using the `putImage` method in the primary `CVInterface` class we will be importing images captured by the Intel® RealSense™ camera after it is passed through the Unity interface. These images will be read in and stored using the `System.Drawing.Bitmap` format. This format's pixel structure can be altered depending on the needs of the computer vision implementation. 
 
 ### Random Forest Implementation
 
@@ -1285,6 +1294,10 @@ Our instance of RANSAC will have a set of Hypotheses which have the pose informa
 ### Pose Refinement Implementation
 
 We would like to implement a similar method to Brachmann *et al.* to refine the poses gathered by RANSAC. Each Hypothesis in the RANSAC instance will have a refinement method called `refine()` which will be able to improve the pose estimation if that hypothesis is chosen for refinement. The poses chosen for refinement will be handled within our RANSAC implementation.
+
+### Output to the Unity Interface
+
+The metadata associated with each detected object will be exported to Unity in a data-structure containing the x translation, y translation, z translation, x rotation, y rotation, z rotation, scale, and the object type according to the pre-existing 3D models. The translation values will provided according to the estimated center of the observed scene. This information will then be used to create and transform the object in a Unity scene.
 
 ## Unity Design
 
@@ -1328,9 +1341,32 @@ The object
 
 # Design Summary
 
-## Camera UML
+## Camera Module UML
+
+The final overall design of the camera module is displayed below. This
+includes the organization of the classes used as well as the flow of 
+activities.
+
+### Camera Module Class Diagram
+The following is the design of the Camera module. All access to the camera
+module is handled through the ICamera interface. This allows the commands
+called by the Unity Module to stay constant while the implementation
+of the Camera Module is free to change. The
+
+![](Figures/CameraModuleClass.png "Camera Module Class Diagram")
+
+### Camera Module Activity Diagram
+The following is the flow of activity within the class diagram. Once 
+start has been called, the Intel® RealSense™ pipeline is initiated 
+and will continually capture data frames until the caller has called
+stop. These captured frames are available via the `GetImage` method of
+the `ICamera` interface.
+
+![](Figures/CameraModuleActivity.png "Camera Module Activity Diagram")
 
 ## Computer Vision UML
+
+The following UML diagrams give a general overview of the planned computer vision implementation for this project. The more fine-grained details such as parameters, methods, and types are still subject to change as development continues, but the general structure and ideas will remain the same. 
 
 ## Unity UML
 
@@ -1345,7 +1381,7 @@ develop our project. We chose Microsoft Visual Studio 2015 Community Edition
 because, it offers support for Unity Plugin development as well as excellent
 support for C# development. All the members on our team also have substantial 
 experience with the IDE. Microsoft Visual Studio also helps to simplify the
-build process for multiple dependent projects. Finally Microsoft Visual Studio
+build process for multiple dependent projects. Visual Studio also features the NuGet Package Manager which is an incredibly helpful tool for adding libraries, frameworks, or dependencies to a project. The Accord.NET framework is available as a NuGet package and can be easily integrated with the Visual Studio environment. Finally Microsoft Visual Studio
 also has excellent integration with the Git version control system which will 
 help facilitate rapid development by multiple authors on our team.
 
@@ -1477,17 +1513,49 @@ The Accord.NET framework includes some unit tests for each major namespace to al
 
 ### Unit Testing
 
+The first set of computer vision tests will begin in late December 2016 and continue through early January 2017. These tests will consist of integrity verification of the Accord.NET framework. We will ensure that the framework is performing as expected and the desired data-structures are built, modified, and run as efficiently as the team expects. Sample code included with the framework will be compiled and run for each of the major features to be implemented in the computer vision interface of our project.
 
+#### RANSAC Tests
 
-### Integration Testing
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Dec. 2016 - Jan. 2017|Verify Accord RANSAC|Sample code runs and performs as advertised.|
+|Feb. 2017|Basic RANSAC Function Test|RANSAC can be run on placeholder data with appropriate results.|
+|Mar. 2017|Fully Functioning RANSAC|RANSAC runs on real data gathered from the Random Forest.|
+|Apr. 2017|RANSAC Performance Benchmarking|RANSAC runs with comparable measurements to stat-of-the-art methods.|
 
+#### Random Forest Tests
 
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Dec. 2016 - Jan. 2017|Verify Accord Random Forests|Sample code runs and performs as advertised.|
+|Feb. 2017|Random Forest Training Test|Ensure RFs can be trained using built-in `Learn()` method.|
+|Mar. 2017|Random Forest Testing|Forest is trained and can be used for predictions on image input with appropriate leaf values.|
+|Apr. 2017|Random Forest Performance Benchmarking|Forest should be used for object predictions in reasonable time and with sufficiently accurate leaf values when compared to state-of-the-art methods.|
+
+#### Input Tests
+
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Jan. 2017|Get an Image|Receive an image from the camera interface in the correct format.|
+|Feb. 2017|Get a Series of Images|Receive multiple images at an appropriate rate according to processing time estimates.|
+|Mar. 2017|Camera Angle Tests|Ensure the optimal camera setup for pitch and distance to receive the best results from the algorithm.|
+
+#### Output Tests
+
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Jan. 2017|Output a Structure|Output a data-structure to Unity holding placeholder data.|
+|Mar. 2017|Output Real Data|Output pose information gathered in RANSAC into the Unity interface.| 
 
 ## Unity Testing
 
 ## Integration Testing
 
+As mentioned in the above test cases, by January 2017, when we have access to the necessary hardware for testing, the camera interface will be able to output an image in a bitmap format to the Unity interface. The Unity interface will then receive the input image data from the camera interface and send it to the computer vision interface. The computer vision interface will then output placeholder information into the Unity interface, completing the flow of data in our application. This will allow us to begin integration tests.
+
 # Budget and Resources Provided by Sponsors
+
 Our sponsors did not specify a specific dollar amount for our budget but 
 our possible costs are highly controlled. The UCF Games Research Group has 
 many resources available for our team to utilize for this project.
@@ -1588,6 +1656,14 @@ The camera module should be written and functional. All unit tests should have p
 interface should be returning correct values.
 
 Status: In Progress
+
+---
+
+### January 2017 - Train Bachmann implementation on real data and test
+
+Run `train_trees` on either the Hinterstoisser dataset or the Object Segmentation Database to set a benchmark to test against.
+
+Status: Pending
 
 ---
 
