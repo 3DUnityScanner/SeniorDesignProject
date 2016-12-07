@@ -1771,7 +1771,10 @@ The camera module of our project will heavily implement the Intel® RealSense™
 
 The computer vision interface will be based on a state-of-the-art method called "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" by Bachmann *et al.* [@bachmann]. The primary resource being used to build this interface will be the Accord.NET framework, which will provide the necessary structures and methods to perform RANSAC pose estimation, build random forests for training and predictions, and compute the mathematic formulas necessary during these processes [@accord]. This interface will take image data as input, process this data, make predictions about the objects in the scene, estimate their poses, and output this data back to the Unity interface.
 
-The Unity interface itself will be created as a plugin. This interface will control the data flow of our project and create the final product in a Unity scene.
+The Unity interface itself will be created as a plugin. This interface will control the data flow of our project and create the final product in a Unity scene. Using a custom Unity Editor Window, we will allow
+users to begin the scanning process and then send the images scanned into the computer vision interface. The Unity UI class will then take the processed data that the computer vision module returns and send it
+to the Object Creator class which is a normal Unity C# Script. That script will take the data and use it to output the objects to the scene in the correct position, with the correct size, and rotated in the right
+direction.
 
 #Appendices
 ![Correspondence with Eric Brachmann of []](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann of []")
