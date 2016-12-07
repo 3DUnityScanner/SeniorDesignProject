@@ -1772,9 +1772,9 @@ The computer vision interface will be based on a state-of-the-art method called 
 The Unity interface itself will be created as a plugin. This interface will control the data flow of our project and create the final product in a Unity scene.
 
 #Appendices
-![Correspondence with Eric Brachmann of []](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann of []")
+![Correspondence with Eric Brachmann of [@bachmann]](Pictures/brachmannPermission.png "Correspondence with Eric Brachmann")
 
-![Correspondence with Stefan Hinterstoisser of []](Pictures/hinterstoisserPermission.png "Correspondence with Stefan Hinterstoisser of []")
+![Correspondence with Stefan Hinterstoisser of [@hinterstoisser]](Pictures/hinterstoisserPermission.png "Correspondence with Stefan Hinterstoisser")
 
 ![Proof of Accord.NET License](Pictures/accordLicense.png "Proof of Accord.NET License")
 
