@@ -857,7 +857,7 @@ Hypotheses are drawn by solving the perspective-n-point problem for four corresp
 
  When this algorithm is detecting multiple objects at once the above method of detection does not maintain efficiency when a large number of objects are to be detected. Multi-object detections are performed by drawing a shared set of hypotheses instead of individual sets for each object. These hypotheses are chosen by analyzing the object probability distributions at the first pixel of the current hypothesis when performing the same actions as a single-object RANSAC pose estimation. These chosen hypotheses still have to pass the same validity check as in single-object detections. Using this method allows the algorithm to decide if a hypothesis belongs to multiple objects during the hypothesis sampling process instead of having a separate process for each object. This allows their RANSAC pose estimation to scale more easily with a large number of object detections in the same image [@brachmann].
 
-During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log-likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood of the projection volume, as seen in the equation seen below which was reprinted with the author's permission, and take the log-likelihood of that [@brachmann]. Results of some final poses from the Hinterstoisser *et al.* dataset are shown in the paper's figure 4 pictured below, with permission from both Hinterstoisser and Brachmann [@brachmann, @hinterstoisser].
+During the pose refinement stage of this implementation they replace the standard error calculation that uses depth information with an error based on the projection volume of a pixel. This is one of the tweaks that allows this method to be extended to RGB images without depth information available. Instead of calculating the log-likelihood of of the correspondences observed in a hypothesis using the depth-based error they find the approximate likelihood of the projection volume, as seen in the equation seen below which was reprinted with the author's permission, and take the log-likelihood of that [@brachmann]. Results of some final poses from the Hinterstoisser *et al.* dataset are shown in the paper's figure 4 pictured below, with permission from both Hinterstoisser and Brachmann [@brachmann;@hinterstoisser].
 
 ![](Pictures/eq8.png "Equation for projection volume approximation")
 
@@ -1286,7 +1286,7 @@ Using the `putImage` method in the primary `CVInterface` class we will be import
 
 ### Random Forest Implementation
 
-Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [@brachmann, @accord]. 
+Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [@brachmann;@accord]. 
 
 ### RANSAC Implementation
 
@@ -1529,7 +1529,7 @@ The primary classes for benchmark testing in the CVPR 2016 implementation of "Un
 
 ### Accord Framework Unit Tests
 
-The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected.
+The Accord.NET framework includes some unit tests for each major namespace to allow the user to verify the integrity of the framework. We will run the unit tests for each namespace we will be utilizing to ensure that they are functioning as expected [@accord].
 
 |Test|Namespace|
 |:----|:---------|
@@ -1768,3 +1768,5 @@ TODO: Add Summary
 ![](Pictures/hinterstoisserPermission.png "Correspondence with Stefan Hinterstoisser of []")
 ![](Pictures/accordLicense.png "Proof of Accord.NET License")
 ![](Pictures/unityCorrespondence.png "Correspondence with David Della Rocca of Unity")
+
+\includepdf[pages=-, pagecommand={}]{Appendix/AppendixB.pdf}

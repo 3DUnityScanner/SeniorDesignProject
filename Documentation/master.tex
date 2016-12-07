@@ -7,8 +7,9 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{multirow}
-\usepackage[autocite=inline,backend=bibtex]{biblatex}
+\usepackage[autocite=inline,backend=bibtex,sorting=none]{biblatex}
 \usepackage{xcolor,colortbl,tabularx}
+\usepackage{pdfpages}
 
 \addbibresource{test.bib}
 
@@ -67,7 +68,6 @@
 
 $body$
 
-\nocite{*}
 \printbibliography[title=References]
 
 \end{document}
