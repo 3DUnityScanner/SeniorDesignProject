@@ -943,7 +943,7 @@ Unity itself has support for simple models to be created through the editor. In 
 
 Unity also also has support for dynamic Mesh creation.
 
-The file format for 3D models we have chosen to use for our project in the Unity Engine is the .obj format mentioned previously. This format was chosen due to some key advantages such as the ability to generate the file programatically if it is found to be necessary. The .obj file specification is also publicly available and allows us to construct .obj files from scratch. The four types of vertex types are geometric vertices (`v`), texture vertices (`vt`), vertex normals (`vn`), and parameter space vertices (`vp`). 
+The file format for 3D models we have chosen to use for our project in the Unity Engine is the .obj format mentioned previously. This format was chosen due to some key advantages such as the ability to generate the file programatically if it is found to be necessary. The .obj file specification is also publicly available and allows us to construct .obj files from scratch. The four types of vertex types are geometric vertices (`v`), texture vertices (`vt`), vertex normals (`vn`), and parameter space vertices (`vp`) [@obj]. 
 
 The following are proper syntax examples in the .obj file format:
 
@@ -967,7 +967,7 @@ Syntax for different geometric elements are as follows:
 
 `curv2 vp1 ... vpn` for a 2D curve, where `vpn` is the nth control point parameter vertices.
 
-`surf s0 s1 t0 t1 v1/vt1/vn1 ... vn/vtn/vnn` for a surface, where `s0` is the start parameter value for the u direction, `s1` is the end parameter value for the u direction, `t0` is the start parameter value for the v direction, `t1` is the end parameter value for the v direction and `vn/vtn/vnn` is the nth control vertex with the nth texture vertex and normal vertex separated by a `/`.
+`surf s0 s1 t0 t1 v1/vt1/vn1 ... vn/vtn/vnn` for a surface, where `s0` is the start parameter value for the u direction, `s1` is the end parameter value for the u direction, `t0` is the start parameter value for the v direction, `t1` is the end parameter value for the v direction and `vn/vtn/vnn` is the nth control vertex with the nth texture vertex and normal vertex separated by a `/` [@obj].
 
 #### Asset Store
 
