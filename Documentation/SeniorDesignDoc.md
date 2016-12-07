@@ -1568,6 +1568,13 @@ The first set of computer vision tests will begin in late December 2016 and cont
 
 ## Unity Testing
 
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Jan. 2017|UI Button and Label Tests|Change labels and button text as the UI state changes.|
+|Jan. 2017|Camera Output|Test main UI class calls to camera and that it receives camera output correctly.|
+|Feb. 2017|Object Creation|Instantiate object prefabs with mock input and have them show up on screen.|
+|Mar.. 2017|CV Data Tests|Test Object Creator with data output from cv module.|
+
 ## Integration Testing
 
 As mentioned in the above test cases, by January 2017, when we have access to the necessary hardware for testing, the camera interface will be able to output an image in a bitmap format to the Unity interface. The Unity interface will then receive the input image data from the camera interface and send it to the computer vision interface. The computer vision interface will then output placeholder information into the Unity interface, completing the flow of data in our application. This will allow us to begin integration tests.
@@ -1693,9 +1700,27 @@ Status: Pending
 
 ---
 
+### January 2017 - Working UI
+
+Create and design the custom Unity window where the users will be activating the app. Have it tested to make sure it puts the right labels
+for the correct states.
+
+Status: Pending
+
+---
+
 ### February 2017 - Computer Vision Progress
 
 The progress of our computer vision system in February should include a basic implementation of a trainable Random Forest structure as well as a testable RANSAC implementation.
+
+Status: Pending
+
+---
+
+### February 2017 - Object Creator
+
+Working instance of the Object Creator class that is linked to the UI and can create all of the object prefabs in any order that they come 
+in.
 
 Status: Pending
 
