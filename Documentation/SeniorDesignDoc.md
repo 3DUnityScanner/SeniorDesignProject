@@ -444,8 +444,6 @@ or `Dispose` method must be called on the acquired `SenseManager`. Use `Close`
 if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
 
-TODO: Intel® SDK Example
-
 ##### 3D Scanning
 
 The Intel® RealSense™ SDK also provides algorithms for scanning 3D objects into
@@ -474,8 +472,6 @@ file location. Upon completion of data capture and exporting the data to a file,
 `Close` method  or `Dispose` method must be called on the acquired `SenseManager`. 
 Use `Close` if the `SenseManager` instance will be used to stream data later. 
 Otherwise use `Dispose` to free all resources associated with the instance. 
-
-TODO: Intel® SDK Example
 
 ##### Dispose Method
 
@@ -1265,7 +1261,9 @@ captured images will be written to a disk. As the `ConcurrentQueue<Bitmap>` empt
 the images will be read from disk and loaded back into the queue. In order to accomplish
 this concurrency, two threads will be needed. One thread will be used to produce
 data. The other thread will belong to the caller of the `GetImage` method and
-will be used to dequeue the next image and serve it the caller. 
+will be used to dequeue the next image, by blocking if necessary, and serve it the caller. 
+The only resource shared between the two threads are the `ConcurrentQueue<Bitmap>` which
+will account for synchronization issues between the two.
 
 ## Computer Vision Design
 
