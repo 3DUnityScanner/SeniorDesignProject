@@ -13,5 +13,5 @@ DEL SeniorDesignDoc.toc
 DEL SeniorDesignDoc-blx.bib
 DEL SeniorDesignDoc.bbl
 DEL SeniorDesignDoc.blg
-DEL SeniorDesignDoc.tex
+
 start SeniorDesignDoc.pdf

@@ -8,6 +8,7 @@
 \usepackage{longtable}
 \usepackage{multirow}
 \usepackage[autocite=inline,backend=bibtex]{biblatex}
+\usepackage{xcolor,colortbl,tabularx}
 
 \addbibresource{test.bib}
 
@@ -16,8 +17,14 @@
 \titleformat*{\section}{\LARGE\bfseries}
 \titleformat*{\subsection}{\Large\bfseries}
 \titleformat*{\subsubsection}{\large\bfseries}
-\titleformat*{\paragraph}{\large\bfseries}
-\titleformat*{\subparagraph}{\large\bfseries}
+
+\titleformat{\paragraph}
+  {\normalfont\large\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{0ex plus .2ex}
+
+\titleformat{\subparagraph}
+  {\normalfont\normalsize\bfseries}{\subparagraph}{1em}{}
+\titlespacing*{\subparagraph}{0pt}{3.25ex plus 1ex minus .2ex}{0ex plus .2ex}
 
 \usepackage{geometry}
 \geometry{letterpaper, portrait, margin=1in, left=1.5in}
