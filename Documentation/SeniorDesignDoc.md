@@ -681,29 +681,21 @@ The amount of images passed to the computer vision interface is a crucial detail
 
 ### Outputs
 
-Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. This data will include an estimated object center point in 3D coordinates based on the camera's viewpoint, an estimated rotational matrix that can be applied to the corresponding 3D model, an estimated translation matrix.
-
-We plan on importing this data directly into the Unity Game Engine through our plugin interface. The data will include four values in a data structure: a translation matrix, rotation matrix, scale, and object type based on the models we have been provided for the block types.
+Output from the computer vision interface will mimic the researched methods in the following section. These algorithms output pose information usually in the form of metadata. The metadata for our project will include an estimated object center point in 3D coordinates based on the camera's viewpoint, which is used to estimate a translation matrix. That translation matrix, an object rotation matrix, the object's scale, and a enumerated object type that corresponds with an object model will be outputted to provide sufficient information to add an object to a Unity scene. We plan on importing this data directly into the Unity Game Engine through our plugin interface.
 
 ### Training Hardware
 Due to the demand required in the training process, our team will be using the strongest 
-computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the 
-specifications listed below.
+computer we have available to us. To train our detection algorithm, we will use Mark's personal laptop, which has the specifications listed below.
 
 |    Component  |          Specification                             |
 |---------------|----------------------------------------------------|
-| CPU           | Intel® 6th Generation Core i7                       |
+| CPU           | Intel® 6th Generation Core i7                      |
 | OS            | Windows 10 Pro                                     |
 | Display       | 15.6" FHD (1920x1080), IPS-Level                   |
 | Chipset       | Intel® HM170                                       |
 | Graphics      | GeForce® GTX 1060 with 6GB GDDR5                   |
 | Memory        | DDR4 16GB                                          |
 | Storage       | M.2 SSD 128GB and 1TB 5800rpm HDD                  |
-| Webcam        | HD type (30fps@720p)                               |
-| Keyboard      | Backlight Keyboard (Full-Color)                    |
-| Communication | Killer Gb LAN and Killer ac Wi-Fi + Bluetooth v4.1 |
-| Audio         | ImageG2x 2W Speaker                                |
-| Battery       | 3-Cell , 65 Whr                                    |
 
 
 ### Computer Vision Terminology Overview
@@ -1612,6 +1604,14 @@ The camera module should be written and functional. All unit tests should have p
 interface should be returning correct values.
 
 Status: In Progress
+
+---
+
+### January 2017 - Train Bachmann implementation on real data and test
+
+Run `train_trees` on either the Hinterstoisser dataset or the Object Segmentation Database to set a benchmark to test against.
+
+Status: Pending
 
 ---
 
