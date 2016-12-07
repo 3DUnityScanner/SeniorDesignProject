@@ -616,7 +616,7 @@ Our project team has the computing power to use each of these devices and
 we feel it is also reasonable to assume that game developers would also 
 already have devices of this caliber in order to run high performance games. 
 Even so all the devices compared have comparable hardware requirements to one 
-another and are noted below [@ViveRequirements, @KinectRequirements, @IntelRequirements].
+another and are noted below [@ViveRequirements;@KinectRequirements;@IntelRequirements].
 
 |                 Sensor |                             OS |                                CPU |           Memory |              I/O |               Misc |
 |------------------------|--------------------------------|------------------------------------|------------------|------------------|--------------------|
