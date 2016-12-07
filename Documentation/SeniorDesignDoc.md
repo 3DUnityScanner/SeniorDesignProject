@@ -1271,6 +1271,10 @@ The libraries available in the Accord.NET framework are divided into three secti
 
 Accord is made available in the NuGet package manager, making it easily integrated into our Visual Studio project environment.  
 
+### Input from Unity Interface
+
+Using the `putImage` method in the primary `CVInterface` class we will be importing images captured by the Intel® RealSense™ camera after it is passed through the Unity interface. These images will be read in and stored using the `System.Drawing.Bitmap` format. This format's pixel structure can be altered depending on the needs of the computer vision implementation. 
+
 ### Random Forest Implementation
 
 Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [,]. 
@@ -1285,6 +1289,10 @@ Our instance of RANSAC will have a set of Hypotheses which have the pose informa
 
 We would like to implement a similar method to Brachmann *et al.* to refine the poses gathered by RANSAC. Each Hypothesis in the RANSAC instance will have a refinement method called `refine()` which will be able to improve the pose estimation if that hypothesis is chosen for refinement. The poses chosen for refinement will be handled within our RANSAC implementation.
 
+### Output to the Unity Interface
+
+The metadata associated with each detected object will be exported to Unity in a data-structure containing the x translation, y translation, z translation, x rotation, y rotation, z rotation, scale, and the object type according to the pre-existing 3D models. The translation values will provided according to the estimated center of the observed scene. This information will then be used to create and transform the object in a Unity scene.
+
 ## Unity Design
 
 # Design Summary
@@ -1292,6 +1300,8 @@ We would like to implement a similar method to Brachmann *et al.* to refine the 
 ## Camera UML
 
 ## Computer Vision UML
+
+The following UML diagrams give a general overview of the planned computer vision implementation for this project. The more fine-grained details such as parameters, methods, and types are still subject to change as development continues, but the general structure and ideas will remain the same. 
 
 ## Unity UML
 
@@ -1306,7 +1316,7 @@ develop our project. We chose Microsoft Visual Studio 2015 Community Edition
 because, it offers support for Unity Plugin development as well as excellent
 support for C# development. All the members on our team also have substantial 
 experience with the IDE. Microsoft Visual Studio also helps to simplify the
-build process for multiple dependent projects. Finally Microsoft Visual Studio
+build process for multiple dependent projects. Visual Studio also features the NuGet Package Manager which is an incredibly helpful tool for adding libraries, frameworks, or dependencies to a project. The Accord.NET framework is available as a NuGet package and can be easily integrated with the Visual Studio environment. Finally Microsoft Visual Studio
 also has excellent integration with the Git version control system which will 
 help facilitate rapid development by multiple authors on our team.
 
@@ -1438,17 +1448,49 @@ The Accord.NET framework includes some unit tests for each major namespace to al
 
 ### Unit Testing
 
+The first set of computer vision tests will begin in late December 2016 and continue through early January 2017. These tests will consist of integrity verification of the Accord.NET framework. We will ensure that the framework is performing as expected and the desired data-structures are built, modified, and run as efficiently as the team expects. Sample code included with the framework will be compiled and run for each of the major features to be implemented in the computer vision interface of our project.
 
+#### RANSAC Tests
 
-### Integration Testing
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Dec. 2016 - Jan. 2017|Verify Accord RANSAC|Sample code runs and performs as advertised.|
+|Feb. 2017|Basic RANSAC Function Test|RANSAC can be run on placeholder data with appropriate results.|
+|Mar. 2017|Fully Functioning RANSAC|RANSAC runs on real data gathered from the Random Forest.|
+|Apr. 2017|RANSAC Performance Benchmarking|RANSAC runs with comparable measurements to stat-of-the-art methods.|
 
+#### Random Forest Tests
 
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Dec. 2016 - Jan. 2017|Verify Accord Random Forests|Sample code runs and performs as advertised.|
+|Feb. 2017|Random Forest Training Test|Ensure RFs can be trained using built-in `Learn()` method.|
+|Mar. 2017|Random Forest Testing|Forest is trained and can be used for predictions on image input with appropriate leaf values.|
+|Apr. 2017|Random Forest Performance Benchmarking|Forest should be used for object predictions in reasonable time and with sufficiently accurate leaf values when compared to state-of-the-art methods.|
+
+#### Input Tests
+
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Jan. 2017|Get an Image|Receive an image from the camera interface in the correct format.|
+|Feb. 2017|Get a Series of Images|Receive multiple images at an appropriate rate according to processing time estimates.|
+|Mar. 2017|Camera Angle Tests|Ensure the optimal camera setup for pitch and distance to receive the best results from the algorithm.|
+
+#### Output Tests
+
+|Date|Test Purpose|Expected Outcome|
+|----|------------|----------------|
+|Jan. 2017|Output a Structure|Output a data-structure to Unity holding placeholder data.|
+|Mar. 2017|Output Real Data|Output pose information gathered in RANSAC into the Unity interface.| 
 
 ## Unity Testing
 
 ## Integration Testing
 
+As mentioned in the above test cases, by January 2017, when we have access to the necessary hardware for testing, the camera interface will be able to output an image in a bitmap format to the Unity interface. The Unity interface will then receive the input image data from the camera interface and send it to the computer vision interface. The computer vision interface will then output placeholder information into the Unity interface, completing the flow of data in our application. This will allow us to begin integration tests.
+
 # Budget and Resources Provided by Sponsors
+
 Our sponsors did not specify a specific dollar amount for our budget but 
 our possible costs are highly controlled. The UCF Games Research Group has 
 many resources available for our team to utilize for this project.
