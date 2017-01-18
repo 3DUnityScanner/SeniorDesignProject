@@ -3,63 +3,68 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
-public class Scanner : EditorWindow
+namespace UnityScanner3D
 {
-    string status = "Idle";
-    string button = "Scan";
-    bool groupEnabled;
-    bool scanning = false;
-
-    [MenuItem("Window/3D Scanner")]
-
-    public static void ShowWindow()
+    public class Scanner : EditorWindow
     {
-        EditorWindow.GetWindow(typeof(Scanner));
-    }
+        string status = "Idle";
+        string button = "Scan";
+        bool groupEnabled;
+        bool scanning = false;
 
-    void OnGUI()
-    {
-        GUILayout.BeginArea(new Rect((Screen.width / 2) - 100, (Screen.height / 2) - 150, 250, 200));
-        GUILayout.FlexibleSpace();
-        GUILayout.BeginHorizontal(EditorStyles.helpBox);
-        GUILayout.FlexibleSpace();
+        [MenuItem("Window/3D Scanner")]
 
-        if (GUILayout.Button(button, GUILayout.Width(250), GUILayout.Height(20)))
+        public static void ShowWindow()
         {
-            if(!scanning)
-            {
-                status = "Scanning";
-                button = "Stop Scanning";
-                scanning = true;
-            }
-            else
-            {
-                status = "Idle";
-                button = "Scan";
-                scanning = false;
-            }
+            EditorWindow.GetWindow(typeof(Scanner));
         }
 
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-        GUILayout.FlexibleSpace();
-        GUILayout.EndArea();
-
-        GUILayout.BeginArea(new Rect((Screen.width / 2) - 50, (Screen.height / 2) - 200, 200, 200));
-        EditorGUILayout.LabelField("Status: " + status);
-        GUILayout.EndArea();
-
-    }
-
-    private void Update()
-    {
-        if(scanning)
+        void OnGUI()
         {
-            while(status != "Scanning...")
+            GUILayout.BeginArea(new Rect((Screen.width / 2) - 100, (Screen.height / 2) - 150, 250, 200));
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginHorizontal(EditorStyles.helpBox);
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button(button, GUILayout.Width(250), GUILayout.Height(20)))
             {
-                status = status + ".";
+                if (!scanning)
+                {
+                    status = "Scanning";
+                    button = "Stop Scanning";
+                    scanning = true;
+
+                    //TODO: Start Camera
+                }
+                else
+                {
+                    status = "Idle";
+                    button = "Scan";
+                    scanning = false;
+                }
             }
-            status = "Scanning";
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.EndArea();
+
+            GUILayout.BeginArea(new Rect((Screen.width / 2) - 50, (Screen.height / 2) - 200, 200, 200));
+            EditorGUILayout.LabelField("Status: " + status);
+            GUILayout.EndArea();
+
+        }
+
+        private void Update()
+        {
+            if (scanning)
+            {
+                while (status != "Scanning...")
+                {
+                    status = status + ".";
+                }
+                status = "Scanning";
+            }
         }
     }
 }
