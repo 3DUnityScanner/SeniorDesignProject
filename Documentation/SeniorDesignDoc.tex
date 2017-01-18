@@ -8,10 +8,23 @@
 \usepackage{multirow}
 \usepackage[autocite=inline,backend=bibtex,sorting=none]{biblatex}
 \usepackage{pdfpages}
+\usepackage{courier}
+\usepackage{times}
+
+% Overwrite \begin{figure}[htbp] with \begin{figure}[H]
+\usepackage{float}
+\let\origfigure=\figure
+\let\endorigfigure=\endfigure
+\renewenvironment{figure}[1][]{%
+  \origfigure[H]
+}{%
+  \endorigfigure
+}
 
 \addbibresource{test.bib}
 
 \setmainfont{Times New Roman}
+\setmonofont{Courier}
 
 \titleformat*{\section}{\LARGE\bfseries}
 \titleformat*{\subsection}{\Large\bfseries}
@@ -58,10 +71,9 @@
 \cfoot{}
 \rfoot{\thepage}
 
-\pagenumbering{roman} % Start roman numbering
-
 \begin{document}
-
+\includepdf[pages=-]{coverPage.pdf}
+\pagenumbering{roman} % Start roman numbering
 \setcounter{tocdepth}{3}
 \tableofcontents
 
@@ -222,12 +234,12 @@ scene processing and reproduction. I enjoy researching the field of
 computer vision and hope to write an original implementation for this
 project alongside Mark.
 
-I have always been enthralled with the game development process and I am
+I have always been enthralled by the game development process and I am
 excited to have a chance to contribute. My career plans are still an
 open book at this point in my life and I feel that this project could
 even open a door to future game development positions. Consisting of
 both computer vision systems and game development methodologies, this
-project combines two fields that I am passionate about and I .
+project combines two fields that I am passionate about.
 
 \section{Specifications}\label{specifications}
 
@@ -280,7 +292,7 @@ our product to have but are not mandatory for the final deliverable.
 \item
   The system has Linux and OSX compatibility
 \item
-  The system can take and analyse RGB or RGB-D data
+  The system can take and analyze RGB or RGB-D data
 \item
   The system can interpret multiple vertical layers of blocks on a flat
   surface
@@ -300,7 +312,7 @@ capabilities.
 \subsection{Camera Research}\label{camera-research}
 
 The UCF Games Research Group had several devices available to us for no
-charge. These included: Intel® RealSense™ F200, Microsoft Hololens, HTC
+charge. These included: Intel® RealSense™ F200, Microsoft HoloLens, HTC
 Vive, and Microsoft Kinect. The following is an analysis as to the
 suitability of each of the devices.
 
@@ -316,17 +328,17 @@ is not as easy to aim as a hand-held device. The cost of the device also
 makes it prohibitively expensive which is not congruent with the
 accessibility that we desired our tool to provide.
 
-\subsubsection{Microsoft Hololens}\label{microsoft-hololens}
+\subsubsection{Microsoft HoloLens}\label{microsoft-hololens}
 
-The Microsoft Hololens is an augmented reality headset that projects
+The Microsoft HoloLens is an augmented reality headset that projects
 images onto the viewing lens to make it appear as if the images are
 sharing the same space as the user. Unlike the HTC Vive, Microsoft
-Hololens does not remove the user from the environment. This allows the
+HoloLens does not remove the user from the environment. This allows the
 user to stay visually engaged in the environment and move about safely.
-The Hololens also has the added ability of being untethered which allows
+The HoloLens also has the added ability of being untethered which allows
 for easy movement independent of the location of the device running the
 rest of the application. The primary drawbacks to the use of the
-Microsoft Hololens are: battery life, cost, and usability. According to
+Microsoft HoloLens are: battery life, cost, and usability. According to
 our sponsors while in use the battery only lasts for approximately two
 hours and returning the device to full charge requires approximately
 five hours. This does not coincide with our desire to create a tool for
@@ -897,7 +909,7 @@ USB 2.0\strut
 Unspecified\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-Microsoft Hololens\strut
+Microsoft HoloLens\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright\strut
 N/A (Untethered)\strut
 \end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
@@ -938,7 +950,7 @@ DirectX 11\strut
 \bottomrule
 \end{longtable}
 
-We took the HTC Vive and the Microsoft Hololens out of consideration
+We took the HTC Vive and the Microsoft HoloLens out of consideration
 because we did not feel that a head-mounted device fit with the way
 users would interact with our application. Our main decision was
 choosing between the Intel® RealSense™ F200 camera and the Microsoft
@@ -1021,44 +1033,44 @@ specifications listed below.
 \toprule
 \begin{minipage}[b]{0.21\columnwidth}\centering\strut
 Component\strut
-\end{minipage} & \begin{minipage}[b]{0.35\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[b]{0.43\columnwidth}\raggedright\strut
 Specification\strut
 \end{minipage}\tabularnewline
 \midrule
 \endhead
 \begin{minipage}[t]{0.21\columnwidth}\centering\strut
 CPU\strut
-\end{minipage} & \begin{minipage}[t]{0.35\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.43\columnwidth}\raggedright\strut
 Intel® 6th Generation Core i7\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.21\columnwidth}\centering\strut
 OS\strut
-\end{minipage} & \begin{minipage}[t]{0.35\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.43\columnwidth}\raggedright\strut
 Windows 10 Pro\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.21\columnwidth}\centering\strut
 Display\strut
-\end{minipage} & \begin{minipage}[t]{0.35\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.43\columnwidth}\raggedright\strut
 15.6" FHD (1920x1080), IPS-Level\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.21\columnwidth}\centering\strut
 Chipset\strut
-\end{minipage} & \begin{minipage}[t]{0.35\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.43\columnwidth}\raggedright\strut
 Intel® HM170\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.21\columnwidth}\centering\strut
 Graphics\strut
-\end{minipage} & \begin{minipage}[t]{0.35\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.43\columnwidth}\raggedright\strut
 GeForce® GTX 1060 with 6GB GDDR5\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.21\columnwidth}\centering\strut
 Memory\strut
-\end{minipage} & \begin{minipage}[t]{0.35\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.43\columnwidth}\raggedright\strut
 DDR4 16GB\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.21\columnwidth}\centering\strut
 Storage\strut
-\end{minipage} & \begin{minipage}[t]{0.35\columnwidth}\raggedright\strut
+\end{minipage} & \begin{minipage}[t]{0.43\columnwidth}\raggedright\strut
 M.2 SSD 128GB and 1TB 5800rpm HDD\strut
 \end{minipage}\tabularnewline
 \bottomrule
@@ -1105,7 +1117,7 @@ following section.
 \item
   Pooling layer - The job of a pooling layer is to reduce the spatial
   complexity of the data being passed through the network. The operation
-  these layers perform downspamples the images in the network to reduce
+  these layers perform downsamples the images in the network to reduce
   the amount of parameters and therefore reduce the processing load on
   the network.
 \item
@@ -1359,7 +1371,7 @@ This algorithm predicts object coordinates and labels with a modified
 random forest called a joint classification regression forest. This
 forest is trained by mapping object coordinates to a smaller set of
 discrete values using nearest neighbor assignment to the training data's
-object coordinates randomly.Then those with the most information gain
+object coordinates randomly. Then those with the most information gain
 when compared with the object distribution are chosen and these are
 stored as a Gaussian Mixture Model. When testing an image, a pixel is
 fed through a tree in the forest and when it gets to a leaf it will
@@ -1437,8 +1449,8 @@ During the pose refinement stage of this implementation they replace the
 standard error calculation that uses depth information with an error
 based on the projection volume of a pixel. This is one of the tweaks
 that allows this method to be extended to RGB images without depth
-information available. Instead of calculating the log-likelihood of of
-the correspondences observed in a hypothesis using the depth-based error
+information available. Instead of calculating the log-likelihood of the
+correspondences observed in a hypothesis using the depth-based error
 they find the approximate likelihood of the projection volume, as seen
 in the equation seen below which was reprinted with the author's
 permission, and take the log-likelihood of that \autocite{brachmann}.
@@ -1592,14 +1604,14 @@ first is exported 3D file formats and the second is application files
 from 3D Editors.
 
 The exported 3D file formats that Unity uses are: .FBX, .dxf, .obj,
-.3DS, and.dae. The benefit to these kinds of files are that they tend to
-be smaller than the application files and export only the data you will
-be using. These types of files are more generalized and are more easily
-generated programatically due to them not being proprietary to a certain
-piece of premium software.
+.3DS, and .dae. The benefit to these kinds of files are that they tend
+to be smaller than the application files and export only the data you
+will be using. These types of files are more generalized and are more
+easily generated programmatically due to them not being proprietary to a
+certain piece of premium software.
 
 The applications that unity accepts files from are: Blender, Cinema4D,
-Cheetah3D, Lightwave, Maya, Max, and Modo. These kinda of files tend to
+Cheetah3D, Lightwave, Maya, Max, and Modo. These kind of files tend to
 be simpler in terms of usability, especially since Unity will re-import
 the model every time the user saves the file. But they also tend to be
 larger when compared with exported files due to data bloating which is
@@ -2057,8 +2069,8 @@ This is most likely because Unity Pro is the highest tier of Unity that
 a single person can buy.
 
 The Unity Cloud feature is upgraded further from the Plus Unity Cloud
-feature. It still contains the Priority Queue allowing th user to have a
-faster build time than the Personal users, but it also allows for
+feature. It still contains the Priority Queue allowing the user to have
+a faster build time than the Personal users, but it also allows for
 creating multiple parallel builds for any project.
 
 Unity Analytics comes with the Unity Pro Analytics feature. It has all
@@ -2105,13 +2117,13 @@ due to the relatively new implementation of the system (2015).
 Unreal uses C++ within its environment to do programming, and the same
 goes for the plugin system. For the most part, plugin source file layout
 is the same as any other C++ module in Unreal Engine. The Primary
-addition is a *.uplugin file that acts as a descriptor for the plugin.
+addition is a .uplugin file that acts as a descriptor for the plugin.
 
 \paragraph{Descriptors}\label{descriptors}
 
-Plugin descriptors are files that end in a *.uplugin extension that are
+Plugin descriptors are files that end in a .uplugin extension that are
 formatted like JSON. one should refer to the following two tables to
-create a proper plugin description couple with a proper proper module
+create a proper plugin description couple with a proper module
 description.
 
 Descriptor File Format \autocite{unreal:plugins}
@@ -2171,16 +2183,24 @@ follow the next three steps to use the functions in the DLL:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
+\tightlist
 \item
   In the build.cs, add the following lines:
+\end{enumerate}
 
-  \texttt{PublicDelayLoadDLLs.Add("FreeImage.dll");}
-  \texttt{PublicAdditionalLibraries.Add(Path.Combine(FreeImageDirectory,\ "FreeImage.lib"));}
+\texttt{PublicDelayLoadDLLs.Add("FreeImage.dll");}
+
+\texttt{PublicAdditionalLibraries.Add(Path.Combine(FreeImageDirectory,\ "FreeImage.lib"));}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
 \item
   In the main cpp file for the plugin, add the following:
-
-  \texttt{DLLHandle\ =\ FPlatformProcess::GetDllHandle(*Path);}
 \end{enumerate}
+
+\texttt{DLLHandle\ =\ FPlatformProcess::GetDllHandle(*Path);}
 
 After all that, just include the header in any file in the plugin and
 call any of the DLL functions.
@@ -2347,9 +2367,9 @@ The metadata associated with each detected object will be exported to
 Unity in a data-structure containing the x translation, y translation, z
 translation, x rotation, y rotation, z rotation, scale, and the object
 type according to the pre-existing 3D models. The translation values
-will provided according to the estimated center of the observed scene.
-This information will then be used to create and transform the object in
-a Unity scene.
+will be provided according to the estimated center of the observed
+scene. This information will then be used to create and transform the
+object in a Unity scene.
 
 \subsection{Unity Design}\label{unity-design}
 
@@ -2403,9 +2423,9 @@ state to potentially scan one more time.
 
 The processed images will return in the form of a list comprised of
 type, translation, rotation, and scale. The type refers to the types of
-the the specific objects scanned. Our implementation will call for
-prebuilt assets to be stored in our plugin files as prefabs that are
-base versions of all possible blocks that will be scanned into the Unity
+the specific objects scanned. Our implementation will call for prebuilt
+assets to be stored in our plugin files as prefabs that are base
+versions of all possible blocks that will be scanned into the Unity
 project. Should more block shapes be introduced into the algorithm, our
 sponsors have already agreed to create base models for us to use in
 Unity. The prebuilt objects that we already have at our disposal are:
@@ -2558,7 +2578,7 @@ were able to incorporate the tool into our developer operations without
 any further training needed. Also since Git is free, it will not carry a
 cost to our sponsors or our team members. We are hosting our Git
 repository on GitHub. Hosting on GitHub is also free for public
-repositories, which we are able to use since we are not subject to an
+repositories, which we are able to use since we are not subject to a
 nondisclosure agreement. In addition to repository hosting, GitHub also
 offers some valuable tools to assist in developer coordination. We are
 making use of the issue tracking system within GitHub in order to
@@ -2580,7 +2600,7 @@ such as: headers, lists, and tables. We chose to use Markdown because it
 is easy to version control as well as being a widespread format. Because
 Markdown is a plaintext format, multiple group members can work on it at
 the same time and Git is able to easily merge their changes. This is in
-contrast to a binary format such as *.docx whose line changes Git cannot
+contrast to a binary format such as .docx whose line changes Git cannot
 merge. Also since Markdown has become such a widespread format there is
 plenty of tooling to support its authoring and conversion. We chose
 Markdown over similar formats such as LaTex and HTML because its syntax
@@ -2593,9 +2613,9 @@ more prone to data loss.
 We used to Pandoc to convert our Markdown to more presentation oriented
 formats. This tool allows us to easily develop, merge, and version
 control our documentation while also being able to support visually
-appealing presentation file formats such as \emph{.docx and }.pdf.
-Without Pandoc we would be forced to use binary formats which would make
-it difficult to version control our documentation.
+appealing presentation file formats such as .docx and .pdf. Without
+Pandoc we would be forced to use binary formats which would make it
+difficult to version control our documentation.
 
 \section{Testing Plan}\label{testing-plan}
 
@@ -2703,9 +2723,9 @@ We will be using the CVPR 2016 code included with ``Uncertainty-Driven
 6D Pose Estimation of Objects and Scenes from a Single RGB Image'' as a
 benchmark for our computer vision interface. We would like to track
 metrics on our training and detection processes to attempt to get as
-close as possible to the results of Bachmann \emph{et al.}.
+close as possible to the results of Brachmann \emph{et al.}.
 
-On the Hinterstoisser dataset Bachmann \emph{et al.} achieved 82.1\%
+On the Hinterstoisser dataset Brachmann \emph{et al.} achieved 82.1\%
 accuracy when estimating 3D 6-DOF pose with a maximum re-projection
 error for all vertices of 5cm and a maximum rotation error of 5°.
 Processing time was calculated at a maximum of 1 second for 13 objects,
@@ -3009,7 +3029,7 @@ Research Group. Therefore the use of the camera will not carry a cost to
 our group. The only potential cost the camera could pose is if we find
 the Intel® RealSense™ F200 camera to be unusable and we have to use a
 camera that the UCF Games Research Group does not already have in their
-possession. They also have a Microsoft Kinect, Microsoft Hololens, and
+possession. They also have a Microsoft Kinect, Microsoft HoloLens, and
 an HTC Vive.
 
 \subsection{Working Area}\label{working-area}
@@ -3080,8 +3100,8 @@ technologies so that implementation from this point on can go smoothly.
 
 \section{Milestones}\label{milestones}
 
-\subsubsection{October 2016 - Run and test Bachmann
-implementation}\label{october-2016---run-and-test-bachmann-implementation}
+\subsubsection{October 2016 - Run and test Brachmann
+implementation}\label{october-2016---run-and-test-brachmann-implementation}
 
 Compile on Ubuntu 14.04 and run the source code provided with the CVPR
 2016 demo for ``Uncertainty-Driven 6D Pose Estimation of Objects and
@@ -3092,9 +3112,9 @@ Status: Completed Successfully
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\subsubsection{\texorpdfstring{November 2016 - Train Bachmann
+\subsubsection{\texorpdfstring{November 2016 - Train Brachmann
 implementation on `Dummy Data' and test on test
-set}{November 2016 - Train Bachmann implementation on Dummy Data and test on test set}}\label{november-2016---train-bachmann-implementation-on-dummy-data-and-test-on-test-set}
+set}{November 2016 - Train Brachmann implementation on Dummy Data and test on test set}}\label{november-2016---train-brachmann-implementation-on-dummy-data-and-test-on-test-set}
 
 Run \texttt{train\_trees} on the data included in the `dummy\_data'
 folder. If training is successful test on the included test sets.
@@ -3135,9 +3155,9 @@ Status: In Progress
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\subsubsection{January 2017 - Train Bachmann implementation on real data
-and
-test}\label{january-2017---train-bachmann-implementation-on-real-data-and-test}
+\subsubsection{January 2017 - Train Brachmann implementation on real
+data and
+test}\label{january-2017---train-brachmann-implementation-on-real-data-and-test}
 
 Run \texttt{train\_trees} on either the Hinterstoisser dataset or the
 Object Segmentation Database to set a benchmark to test against.
@@ -3235,32 +3255,40 @@ send this data to the Unity interface in the appropriate format.
 
 The computer vision interface will be based on a state-of-the-art method
 called ``Uncertainty-Driven 6D Pose Estimation of Objects and Scenes
-from a Single RGB Image'' by Bachmann \emph{et al.} \autocite{bachmann}.
-The primary resource being used to build this interface will be the
-Accord.NET framework, which will provide the necessary structures and
-methods to perform RANSAC pose estimation, build random forests for
-training and predictions, and compute the mathematic formulas necessary
-during these processes \autocite{accord}. This interface will take image
-data as input, process this data, make predictions about the objects in
-the scene, estimate their poses, and output this data back to the Unity
-interface.
+from a Single RGB Image'' by Brachmann \emph{et al.}
+\autocite{brachmann}. The primary resource being used to build this
+interface will be the Accord.NET framework, which will provide the
+necessary structures and methods to perform RANSAC pose estimation,
+build random forests for training and predictions, and compute the
+mathematic formulas necessary during these processes \autocite{accord}.
+This interface will take image data as input, process this data, make
+predictions about the objects in the scene, estimate their poses, and
+output this data back to the Unity interface.
 
 The Unity interface itself will be created as a plugin. This interface
 will control the data flow of our project and create the final product
-in a Unity scene.
+in a Unity scene. Using a custom Unity Editor Window, we will allow
+users to begin the scanning process and then send the images scanned
+into the computer vision interface. The Unity UI class will then take
+the processed data that the computer vision module returns and send it
+to the Object Creator class which is a normal Unity C\# Script. That
+script will take the data and use it to output the objects to the scene
+in the correct position, with the correct size, and rotated in the right
+direction.
 
 \section{Appendices}\label{appendices}
 
 \begin{figure}
 \centering
 \includegraphics{Pictures/brachmannPermission.png}
-\caption{Correspondence with Eric Brachmann of {[}{]}}
+\caption{Correspondence with Eric Brachmann of \autocite{brachmann}}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics{Pictures/hinterstoisserPermission.png}
-\caption{Correspondence with Stefan Hinterstoisser of {[}{]}}
+\caption{Correspondence with Stefan Hinterstoisser of
+\autocite{hinterstoisser}}
 \end{figure}
 
 \begin{figure}

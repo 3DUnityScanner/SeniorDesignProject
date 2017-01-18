@@ -8,10 +8,23 @@
 \usepackage{multirow}
 \usepackage[autocite=inline,backend=bibtex,sorting=none]{biblatex}
 \usepackage{pdfpages}
+\usepackage{courier}
+\usepackage{times}
+
+% Overwrite \begin{figure}[htbp] with \begin{figure}[H]
+\usepackage{float}
+\let\origfigure=\figure
+\let\endorigfigure=\endfigure
+\renewenvironment{figure}[1][]{%
+  \origfigure[H]
+}{%
+  \endorigfigure
+}
 
 \addbibresource{test.bib}
 
 \setmainfont{Times New Roman}
+\setmonofont{Courier}
 
 \titleformat*{\section}{\LARGE\bfseries}
 \titleformat*{\subsection}{\Large\bfseries}
@@ -58,10 +71,9 @@
 \cfoot{}
 \rfoot{\thepage}
 
-\pagenumbering{roman} % Start roman numbering
-
 \begin{document}
-
+\includepdf[pages=-]{coverPage.pdf}
+\pagenumbering{roman} % Start roman numbering
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
 
