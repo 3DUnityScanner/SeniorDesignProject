@@ -96,13 +96,21 @@ namespace cvTest
             //compute output of fitted model
             double[] output = robust.Transform(col0);
 
+            //print
+            Console.WriteLine("RANSAC inliers: ");
+            for (int j = 0; j < output.Length; j++)
+            {
+                Console.WriteLine(output[j]);
+            }
+            Console.ReadLine();
+
             return output;
         }
 
 /**END RANSAC, BEGIN DECISION TREE**/
         
-        //Global tree
-        DecisionTree tree;
+        //Global forest
+        RandomForest forest;
 
         //doubles for probs and ints for predictions
         public void initTree(double[][] inputs, int[] outputs)
@@ -112,25 +120,37 @@ namespace cvTest
                 new DecisionVariable("x", DecisionVariableKind.Continuous),
                 new DecisionVariable("y", DecisionVariableKind.Continuous),
             };
-            
-            //C4.5 Learning alg, we'll do this different
-            var c45 = new C45Learning(vars);
-            tree = c45.Learn(inputs,outputs);
+
+            //C4.5 Learning alg, for ind. trees
+            //var c45 = new C45Learning(vars);
+            //DecisionTree[] trees = forest.Trees;
+
+            var alg = new RandomForestLearning()
+            {
+                NumberOfTrees = 3,
+                //CoverageRatio = 0.9,
+                //Join = 50,
+                SampleRatio = 1.0,
+            };
+
+            //TODO: Fix Learning
+            forest = alg.Learn(inputs,outputs);
         }
 
-        //Tests tree
+        //Tests forest
         private void testTree(double[][] inputs, int[] expected)
         {
-            if (tree == null)
+            if (forest == null)
                 return;
 
-            int[] results = new int[inputs.Length];
+            //compute forest outputs (simplified)
+            int[] results = forest.Decide(inputs);
             
-            //compute tree outputs
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                results[i] = tree.Decide(inputs[i]);
-            }
+            //compute forest outputs
+            //for (int i = 0; i < inputs.Length; i++)
+            //{ 
+            //        results[i] = forest.Decide(inputs[i]);                
+            //}
 
             //confusion matrix to use as comparison data (performance metric)
             ConfusionMatrix confusionMatrix = new ConfusionMatrix(results, expected, 1, 0);
