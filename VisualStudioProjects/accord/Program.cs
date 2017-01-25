@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
 using Accord.Statistics.Models.Regression.Linear;
 using Accord.MachineLearning;
 using Accord.Math;
 using Accord.MachineLearning.DecisionTrees;
-using Accord.MachineLearning.DecisionTrees.Learning;
 using Accord.Statistics.Analysis;
+using Accord.Math.Optimization.Losses;
 
 /** Testing for the basic structures to be used in the cv algorithm **/
 
@@ -100,7 +95,7 @@ namespace cvTest
             Console.WriteLine("RANSAC inliers: ");
             for (int j = 0; j < output.Length; j++)
             {
-                Console.WriteLine(output[j]);
+                Console.WriteLine(col0[j] +","+ output[j]);
             }
             Console.ReadLine();
 
@@ -117,7 +112,7 @@ namespace cvTest
         {
             DecisionVariable[] vars =
             {
-                new DecisionVariable("x", DecisionVariableKind.Continuous),
+                new DecisionVariable("x", DecisionVariableKind.Continuous), //will use discrete values for pixels
                 new DecisionVariable("y", DecisionVariableKind.Continuous),
             };
 
@@ -125,7 +120,7 @@ namespace cvTest
             //var c45 = new C45Learning(vars);
             //DecisionTree[] trees = forest.Trees;
 
-            var alg = new RandomForestLearning()
+            var alg = new RandomForestLearning(vars)
             {
                 NumberOfTrees = 3,
                 //CoverageRatio = 0.9,
@@ -145,6 +140,9 @@ namespace cvTest
 
             //compute forest outputs (simplified)
             int[] results = forest.Decide(inputs);
+
+            //error
+            double err = new ZeroOneLoss(expected).Loss(forest.Decide(inputs));
             
             //compute forest outputs
             //for (int i = 0; i < inputs.Length; i++)
@@ -154,6 +152,7 @@ namespace cvTest
 
             //confusion matrix to use as comparison data (performance metric)
             ConfusionMatrix confusionMatrix = new ConfusionMatrix(results, expected, 1, 0);
+            Console.WriteLine("Error: " + err);
             Console.WriteLine("TPos: "+confusionMatrix.TruePositives);
             Console.WriteLine("FPos: " + confusionMatrix.FalsePositives);
             Console.WriteLine("TNeg: " + confusionMatrix.TrueNegatives);
