@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace UnityScanner3D.CameraIO
 {
     public struct ColorDepthImage
     {
-        public int[] ColorImage;
-        public int[] DepthImage;
+        public Texture2D ColorImage;
+        public Texture2D DepthImage;
     }
 }

@@ -27,13 +27,13 @@ namespace UnityScanner3D.CameraIO
             Image colorImage = SampleStream.Sample.Color;
             ImageData colorImageData;
             colorImage.AcquireAccess(ImageAccess.ACCESS_READ, out colorImageData);
-            colorImageData.ToIntArray(0, toRet.ColorImage);
+            colorImageData.ToTexture2D(0, toRet.ColorImage);
 
             //Extract the depth image
             Image depthImage = SampleStream.Sample.Depth;
             ImageData depthImageData;
             depthImage.AcquireAccess(ImageAccess.ACCESS_READ, out depthImageData);
-            depthImageData.ToIntArray(0, toRet.DepthImage);
+            depthImageData.ToTexture2D(0, toRet.DepthImage);
 
             //Clean up image data
             colorImage.Dispose();
