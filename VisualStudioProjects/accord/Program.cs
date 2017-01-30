@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
 using Accord.Statistics.Models.Regression.Linear;
 using Accord.MachineLearning;
 using Accord.Math;
 using Accord.MachineLearning.DecisionTrees;
-using Accord.MachineLearning.DecisionTrees.Learning;
 using Accord.Statistics.Analysis;
+using Accord.Math.Optimization.Losses;
 
 /** Testing for the basic structures to be used in the cv algorithm **/
 
@@ -96,44 +91,68 @@ namespace cvTest
             //compute output of fitted model
             double[] output = robust.Transform(col0);
 
+            //print
+            Console.WriteLine("RANSAC inliers: ");
+            for (int j = 0; j < output.Length; j++)
+            {
+                Console.WriteLine(col0[j] +","+ output[j]);
+            }
+            Console.ReadLine();
+
             return output;
         }
 
 /**END RANSAC, BEGIN DECISION TREE**/
         
-        //Global tree
-        DecisionTree tree;
+        //Global forest
+        RandomForest forest;
 
         //doubles for probs and ints for predictions
         public void initTree(double[][] inputs, int[] outputs)
         {
             DecisionVariable[] vars =
             {
-                new DecisionVariable("x", DecisionVariableKind.Continuous),
+                new DecisionVariable("x", DecisionVariableKind.Continuous), //will use discrete values for pixels
                 new DecisionVariable("y", DecisionVariableKind.Continuous),
             };
-            
-            //C4.5 Learning alg, we'll do this different
-            var c45 = new C45Learning(vars);
-            tree = c45.Learn(inputs,outputs);
+
+            //C4.5 Learning alg, for ind. trees
+            //var c45 = new C45Learning(vars);
+            //DecisionTree[] trees = forest.Trees;
+
+            var alg = new RandomForestLearning(vars)
+            {
+                NumberOfTrees = 3,
+                //CoverageRatio = 0.9,
+                //Join = 50,
+                SampleRatio = 1.0,
+            };
+
+            //TODO: Fix Learning
+            forest = alg.Learn(inputs,outputs);
         }
 
-        //Tests tree
+        //Tests forest
         private void testTree(double[][] inputs, int[] expected)
         {
-            if (tree == null)
+            if (forest == null)
                 return;
 
-            int[] results = new int[inputs.Length];
+            //compute forest outputs (simplified)
+            int[] results = forest.Decide(inputs);
+
+            //error
+            double err = new ZeroOneLoss(expected).Loss(forest.Decide(inputs));
             
-            //compute tree outputs
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                results[i] = tree.Decide(inputs[i]);
-            }
+            //compute forest outputs
+            //for (int i = 0; i < inputs.Length; i++)
+            //{ 
+            //        results[i] = forest.Decide(inputs[i]);                
+            //}
 
             //confusion matrix to use as comparison data (performance metric)
             ConfusionMatrix confusionMatrix = new ConfusionMatrix(results, expected, 1, 0);
+            Console.WriteLine("Error: " + err);
             Console.WriteLine("TPos: "+confusionMatrix.TruePositives);
             Console.WriteLine("FPos: " + confusionMatrix.FalsePositives);
             Console.WriteLine("TNeg: " + confusionMatrix.TrueNegatives);
