@@ -6,13 +6,18 @@ using Accord.Math;
 using Accord.MachineLearning.DecisionTrees;
 using Accord.Statistics.Analysis;
 using Accord.Math.Optimization.Losses;
+using static accord.positTest;
 
 /** Testing for the basic structures to be used in the cv algorithm **/
 
-namespace cvTest
+namespace treeRansacTest
 {
     class Program
     {
+        /**
+        RANSAC notes: make 2d bounding box full-size of img, 
+            **/
+
         //RANSAC func for dummy data 2D array
         private double[] ransac(double[][] data)
         {
@@ -367,6 +372,23 @@ namespace cvTest
             prog.testTree(jaggedInputs, outputs);
 
             prog.ransac(jaggedRansacIn);
+
+            /*POSIT*/
+            accord.positTest pTest = new accord.positTest();
+
+            //model points for sample (cube)
+            Vector3[] model = new Vector3[4]
+            {
+            new Vector3 (28,28,-28),
+            new Vector3(-28,28,-28),
+            new Vector3(28,-28,-28),
+            new Vector3  (28,28,28),
+            };
+
+            //focal length of camera (find a way to estimate this)
+            float fl = 640;
+
+            pTest.estimate(model, fl);
         }
     }
 }
