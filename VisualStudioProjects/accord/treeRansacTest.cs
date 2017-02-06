@@ -6,7 +6,7 @@ using Accord.Math;
 using Accord.MachineLearning.DecisionTrees;
 using Accord.Statistics.Analysis;
 using Accord.Math.Optimization.Losses;
-using static accord.positTest;
+using static accord.PositTest;
 
 /** Testing for the basic structures to be used in the cv algorithm **/
 
@@ -368,13 +368,17 @@ namespace treeRansacTest
             };
             double[][] jaggedRansacIn = ransacIn.ToJagged();
 
-            prog.initTree(jaggedInputs, outputs);
-            prog.testTree(jaggedInputs, outputs);
+//FOREST
 
-            prog.ransac(jaggedRansacIn);
+            // prog.initTree(jaggedInputs, outputs);
+            //prog.testTree(jaggedInputs, outputs);
 
-            /*POSIT*/
-            accord.positTest pTest = new accord.positTest();
+//RANSAC
+
+            //prog.ransac(jaggedRansacIn);
+
+            //posit setup
+            accord.PositTest pTest = new accord.PositTest();
 
             //model points for sample (cube)
             Vector3[] model = new Vector3[4]
@@ -387,8 +391,12 @@ namespace treeRansacTest
 
             //focal length of camera (find a way to estimate this)
             float fl = 640;
+            
+//POSIT
 
-            pTest.estimate(model, fl);
+            //pTest.runPosit(model, fl);
+            pTest.hughTrans();
+            pTest.doSurf();
         }
     }
 }
