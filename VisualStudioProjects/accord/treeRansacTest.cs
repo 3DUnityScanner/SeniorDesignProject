@@ -395,8 +395,9 @@ namespace treeRansacTest
 //POSIT
 
             //pTest.runPosit(model, fl);
-            pTest.hughTrans();
+            pTest.houghTrans();
             pTest.doSurf();
+            pTest.doHarris();
         }
     }
 }

@@ -11,20 +11,51 @@ using System.Collections.Generic;
 
 namespace accord
 {
-
+    
     class PositTest
     {
-        //surf feature detector
-        public void doSurf()
+        String input = "../../block2.jpg";//test image
+        String outputHough = "../../hough.jpg";//output of hough transform
+        String outputSURF = "../../surf.jpg";//output of surf features
+        String outputHarris = "../../harris.jpg";//output of Harris corners        
+        String outputCombo = "../../combo.jpg";//all outputs overlayed
+
+        //harris corner detector
+        public void doHarris()
         {
-            Bitmap image;
+            Bitmap image, combo;
             try
             {
-                image = (Bitmap)System.Drawing.Image.FromFile("../../block.jpg");
+                image = (Bitmap)System.Drawing.Image.FromFile(input);
+                combo = (Bitmap)System.Drawing.Image.FromFile(outputCombo);
+
             }
             catch (System.IO.FileNotFoundException e)
             { throw new System.IO.FileNotFoundException("file not found"); }
-            //default vals
+
+            HarrisCornersDetector harrisDetect = new HarrisCornersDetector();
+            List < Accord.IntPoint > corners = harrisDetect.ProcessImage(image);
+            PointsMarker points = new PointsMarker(corners);
+            points.MarkerColor = Color.Red;
+            Bitmap cornerImg = points.Apply(image);
+            cornerImg.Save(outputHarris);
+            Bitmap comboImg = points.Apply(combo);
+            comboImg.Save(outputCombo);
+        }
+
+        //surf feature detector
+        public void doSurf()
+        {
+            Bitmap image, hough;
+            try
+            {
+                image = (Bitmap)System.Drawing.Image.FromFile(input);
+                hough = (Bitmap)System.Drawing.Image.FromFile(outputHough);
+
+            }
+            catch (System.IO.FileNotFoundException e)
+            { throw new System.IO.FileNotFoundException("file not found"); }
+            //default vals, TODO: find how parameters affect features
             float thresh = (float)0.000200;
             int octaves = 5;
             int initial = 2;
@@ -32,21 +63,25 @@ namespace accord
             SpeededUpRobustFeaturesDetector surf = new SpeededUpRobustFeaturesDetector(thresh, octaves, initial);
             List<SpeededUpRobustFeaturePoint> points = surf.ProcessImage(image);
 
-            Bitmap edited = image;
+            //SURF feature set
             FeaturesMarker features = new FeaturesMarker(points);
-            features.Apply(edited);
-            edited.Save("../../surf.jpg");
+            //just SURF features
+            Bitmap edited1 = features.Apply(image);
+            edited1.Save(outputSURF);
+            //Hough and SURF
+            Bitmap edited2 = features.Apply(hough);
+            edited2.Save(outputCombo);
         }
 
         //do hough transform
-        public void hughTrans()
-        {
-            //Console.WriteLine(System.IO.Directory.GetCurrentDirectory());Console.ReadLine();
+        public void houghTrans()
+        {//TODO: hough circles for cylinder detection
             Bitmap image, grayImage;
+
             //System.Drawing image
             try
             {
-                image = (Bitmap)System.Drawing.Image.FromFile("../../block.jpg");
+                image = (Bitmap)System.Drawing.Image.FromFile(input);
                 grayImage = Grayscale.CommonAlgorithms.BT709.Apply(image);//converts to bpp grayscale for the hough transform
             }
             catch (System.IO.FileNotFoundException e)
@@ -58,15 +93,15 @@ namespace accord
             var hough = new HoughLineTransformation();
             hough.ProcessImage(grayImage);
             Bitmap houghImg = hough.ToBitmap();
-            BitmapData bmpData = houghImg.LockBits(new Rectangle(0, 0, houghImg.Width, houghImg.Height), ImageLockMode.ReadWrite, houghImg.PixelFormat);//bmp data for drawing lines
             System.Console.WriteLine("lines: " + hough.LinesCount);
             System.Console.WriteLine("local peaks radius: " + hough.LocalPeakRadius);
             System.Console.WriteLine("max intensity: " + hough.MaxIntensity);
             System.Console.WriteLine("min: " + hough.MinLineIntensity);
             System.Console.ReadLine();
 
-            //HoughLine[] lines = hough.GetLinesByRelativeIntensity(0.98);
-            HoughLine[] lines = hough.GetMostIntensiveLines(40);
+            //HoughLine[] lines = hough.GetLinesByRelativeIntensity(0.7);//gets all lines with an intensity above the threshold
+            HoughLine[] lines = hough.GetMostIntensiveLines(40);//gets the n most intensive lines in the set
+
             foreach (HoughLine line in lines) //draw lines
             {
                 int radius = line.Radius;
@@ -101,12 +136,12 @@ namespace accord
                 }
                 Drawing.Line(umImage, new Accord.IntPoint((int)x0 + w, h - (int)y0), new Accord.IntPoint((int)x1 + w, h - (int)y1), Color.Red);
             }
-            umImage.ToManagedImage().Save("../../hough.jpg");
+            umImage.ToManagedImage().Save(outputHough);
         }
 
         //basic posit estimation
         public void runPosit(Vector3[] model, float fl)
-        {
+        {//TODO: account for other object types/scales
             //POSIT object
             Posit posit = new Posit(model, fl);
 
