@@ -14,66 +14,16 @@ namespace accord
     
     class PositTest
     {
-        String input = "../../block2.jpg";//test image
+        String input = "../../block.jpg";//test image
         String outputHough = "../../hough.jpg";//output of hough transform
         String outputSURF = "../../surf.jpg";//output of surf features
         String outputHarris = "../../harris.jpg";//output of Harris corners        
-        String outputCombo = "../../combo.jpg";//all outputs overlayed
+        String outputCombo = "../../combo.jpg";//surf and hough
+        String outputCombo2 = "../../all.jpg";//all
 
-        //harris corner detector
-        public void doHarris()
-        {
-            Bitmap image, combo;
-            try
-            {
-                image = (Bitmap)System.Drawing.Image.FromFile(input);
-                combo = (Bitmap)System.Drawing.Image.FromFile(outputCombo);
-
-            }
-            catch (System.IO.FileNotFoundException e)
-            { throw new System.IO.FileNotFoundException("file not found"); }
-
-            HarrisCornersDetector harrisDetect = new HarrisCornersDetector();
-            List < Accord.IntPoint > corners = harrisDetect.ProcessImage(image);
-            PointsMarker points = new PointsMarker(corners);
-            points.MarkerColor = Color.Red;
-            Bitmap cornerImg = points.Apply(image);
-            cornerImg.Save(outputHarris);
-            Bitmap comboImg = points.Apply(combo);
-            comboImg.Save(outputCombo);
-        }
-
-        //surf feature detector
-        public void doSurf()
-        {
-            Bitmap image, hough;
-            try
-            {
-                image = (Bitmap)System.Drawing.Image.FromFile(input);
-                hough = (Bitmap)System.Drawing.Image.FromFile(outputHough);
-
-            }
-            catch (System.IO.FileNotFoundException e)
-            { throw new System.IO.FileNotFoundException("file not found"); }
-            //default vals, TODO: find how parameters affect features
-            float thresh = (float)0.000200;
-            int octaves = 5;
-            int initial = 2;
-
-            SpeededUpRobustFeaturesDetector surf = new SpeededUpRobustFeaturesDetector(thresh, octaves, initial);
-            List<SpeededUpRobustFeaturePoint> points = surf.ProcessImage(image);
-
-            //SURF feature set
-            FeaturesMarker features = new FeaturesMarker(points);
-            //just SURF features
-            Bitmap edited1 = features.Apply(image);
-            edited1.Save(outputSURF);
-            //Hough and SURF
-            Bitmap edited2 = features.Apply(hough);
-            edited2.Save(outputCombo);
-        }
-
-        //do hough transform
+        /**
+         *  do hough transform
+         **/
         public void houghTrans()
         {//TODO: hough circles for cylinder detection
             Bitmap image, grayImage;
@@ -139,30 +89,130 @@ namespace accord
             umImage.ToManagedImage().Save(outputHough);
         }
 
-        //basic posit estimation
-        public void runPosit(Vector3[] model, float fl)
+        /** 
+         * harris corner detector
+         **/
+        public List<Accord.IntPoint> doHarris()
+        {
+            Bitmap image, combo;
+            try
+            {
+                image = (Bitmap)System.Drawing.Image.FromFile(input);
+                combo = (Bitmap)System.Drawing.Image.FromFile(outputCombo);
+
+            }
+            catch (System.IO.FileNotFoundException e)
+            { throw new System.IO.FileNotFoundException("file not found"); }
+
+            HarrisCornersDetector harrisDetect = new HarrisCornersDetector();
+            List < Accord.IntPoint > corners = harrisDetect.ProcessImage(image);
+            PointsMarker points = new PointsMarker(corners);
+            points.MarkerColor = Color.Black; points.Width = 4;
+            Bitmap cornerImg = points.Apply(image);
+            cornerImg.Save(outputHarris);
+            Bitmap comboImg = points.Apply(combo);
+            comboImg.Save(outputCombo2);
+
+            return corners;
+        }
+
+        /**
+         * surf feature detector
+         **/
+        public List<SpeededUpRobustFeaturePoint> doSurf()
+        {
+            Bitmap image, hough;
+            try
+            {
+                image = (Bitmap)System.Drawing.Image.FromFile(input);
+                hough = (Bitmap)System.Drawing.Image.FromFile(outputHough);
+
+            }
+            catch (System.IO.FileNotFoundException e)
+            { throw new System.IO.FileNotFoundException("file not found"); }
+            //default vals, TODO: find how parameters affect features
+            float thresh = (float)0.000200;
+            int octaves = 5;
+            int initial = 2;
+
+            SpeededUpRobustFeaturesDetector surf = new SpeededUpRobustFeaturesDetector(thresh, octaves, initial);
+            List<SpeededUpRobustFeaturePoint> points = surf.ProcessImage(image);
+
+            //SURF feature set
+            FeaturesMarker features = new FeaturesMarker(points);
+            //just SURF features
+            Bitmap edited1 = features.Apply(image);
+            edited1.Save(outputSURF);
+            //Hough and SURF
+            Bitmap edited2 = features.Apply(hough);
+            edited2.Save(outputCombo);
+
+            return points;
+        }
+
+
+        /** 
+         * Combination of techniques to get interest points for POSIT
+         **/
+        public List<Accord.Point> getPoints()
+        {
+            List<Accord.Point> interestPoints = new List<Accord.Point>(); 
+            List<Accord.IntPoint> cornerPoints = doHarris();
+            List <SpeededUpRobustFeaturePoint> surfPoints = doSurf();
+            int index=0;
+
+            for (int x = 0; x < surfPoints.Count; x++) { System.Console.WriteLine(surfPoints[x].Response+"\n"); }
+
+            double thresh = 2.5;//SURF response threshold
+
+            //for every harris point
+            for (int i=0; i<cornerPoints.ToArray().Length; i++)
+            {
+                //check for surf features near it w/ a respoinse above a certain threshold
+                for (int j = 0; j < surfPoints.ToArray().Length; j++)
+                {
+                    if (Math.Abs(cornerPoints[i].X - surfPoints[j].X) <= 8 && Math.Abs(cornerPoints[i].Y - surfPoints[j].Y) <= 8)
+                    {
+                        if (surfPoints[j].Scale >= thresh)//should be response but i'm getting zeros for whatever reason
+                        {
+                            interestPoints.Insert(index,cornerPoints[i]); index++;
+                        }
+                    }
+                }
+            }
+
+            return interestPoints;
+        }
+
+        /** 
+         * basic posit estimation
+         **/
+        public float[] runPosit(Vector3[] model, float fl)
         {//TODO: account for other object types/scales
             //POSIT object
             Posit posit = new Posit(model, fl);
 
-            //projection points of the cube (this is what we want to generate)
-            Accord.Point[] projectedPoints = new Accord.Point[4]
+            List<Accord.Point> interestPoints = getPoints();
+            if (interestPoints == null)
             {
-            new Accord.Point(-4,29),
-            new Accord.Point(-180,86),
-            new Accord.Point(-5,-102),
-            new Accord.Point(76,137),
-            };
+                System.Console.WriteLine("ERR (POSIT): no points found");
+                System.Console.ReadLine();
+                return null;
+            }
+            List<Accord.Point> positPoints;int[] indexes = {0,1,2,3};
+            positPoints = interestPoints.Get(indexes);//get the first four since posit only does four points... 
 
             //estimating pose
             Matrix3x3 rotation;
             Vector3 translation;
-            posit.EstimatePose(projectedPoints, out rotation, out translation);
+            posit.EstimatePose(positPoints.ToArray(), out rotation, out translation);
             System.Console.WriteLine("posit rotation:" + rotation.V00+","+rotation.V01 + "," + rotation.V02 + ",\n" 
                 + rotation.V10 + "," + rotation.V11 + "," + rotation.V12 + ",\n" 
                 + rotation.V20 + "," + rotation.V21 + "," + rotation.V22);
             System.Console.WriteLine("posit translation:" + translation);
             System.Console.ReadLine();
+            //will return list of doubles including rotation vals and translation vals length and object type[13] 
+            return rotation.ToArray().Concatenate(translation.ToArray().Concatenate(0));
         }
     }
 }
