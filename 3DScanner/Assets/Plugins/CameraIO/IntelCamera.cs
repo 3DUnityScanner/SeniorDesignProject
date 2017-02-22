@@ -19,7 +19,7 @@ namespace UnityScanner3D.CameraIO
                 throw new InvalidOperationException("The camera cannot produce data unless it is running");
 
             if (SMInstance.AcquireFrame(true).IsError())
-                throw new Exception("Unable to captuer frame");
+                throw new Exception("Unable to capture frame");
 
             ColorDepthImage toRet = new ColorDepthImage();
 
