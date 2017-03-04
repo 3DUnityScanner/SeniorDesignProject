@@ -52,11 +52,12 @@ namespace cv
                 Fitting = delegate (int[] sample)
                 {
                     //training data
-                    double[] inputs = col0.Get(sample);
-                    double[] outputs = col0.Get(sample);
+					//double[] inputs = col0.Get(sample);
+                    //double[] outputs = col0.Get(sample);
 
                     //Simple Linear Regression Model
-                    return new OrdinaryLeastSquares().Learn(inputs, outputs);
+                    //return new OrdinaryLeastSquares().Learn(inputs, outputs);
+					return new OrdinaryLeastSquares().Learn(new double[]{}, new double[]{});
                 },
                 //Define degenerate samples
                 Degenerate = delegate (int[] sample)
