@@ -11,6 +11,8 @@ using MathNet.Numerics.LinearAlgebra.Storage;
 using knearest;
 using pointmatcher.net;
 using MathNet.Numerics;
+using System.IO;
+using System.Globalization;
 
 namespace accord
 { 
@@ -18,7 +20,8 @@ namespace accord
     public class testICP
     {
         /// <summary>
-        /// Test KNN
+        /// Test KNN - 
+        /// assigns weights to each point based on its distance to the query model
         /// </summary>
         [TestMethod]
         public void testKnn()
@@ -28,17 +31,19 @@ namespace accord
             Matrix<float> points = DenseMatrix.CreateRandom(3, 100, new ContinuousUniform(-10, 10));
             MathNet.Numerics.LinearAlgebra.Generic.Vector<float> maxRadii = DenseVector.Create(100, i => float.PositiveInfinity);
 
-
+            //good search
             var search = new KdTreeNearestNeighborSearch((DenseColumnMajorMatrixStorage<float>)points.Storage); 
             var results = DenseColumnMajorMatrixStorage<int>.OfInit(1, 100, (i, j) => 0);
             var resultDistances = DenseColumnMajorMatrixStorage<float>.OfInit(1, 100, (i, j) => 0);
             search.knn(query, results, resultDistances, maxRadii, k: 1, epsilon: float.Epsilon, optionFlags: SearchOptionFlags.AllowSelfMatch);
 
+            //bad but correct search
             var bruteForceSearch = new BruteForceNearestNeighbor(points);
             var results2 = DenseColumnMajorMatrixStorage<int>.OfInit(1, 100, (i, j) => 0);
             var resultDistances2 = DenseColumnMajorMatrixStorage<float>.OfInit(1, 100, (i, j) => 0);
             search.knn(query, results2, resultDistances2, maxRadii, k: 1, epsilon: float.Epsilon, optionFlags: SearchOptionFlags.AllowSelfMatch);
 
+            //make sure results are the same
             for (int i = 0; i < results.ColumnCount; i++)
             {
                 for (int j = 0; j < results.RowCount; j++)
@@ -49,7 +54,8 @@ namespace accord
         }
 
         /// <summary>
-        /// Test Error Minimization
+        /// Test Error Minimization - 
+        /// minimizing alignment error
         /// </summary>
         private static Random r = new Random();
 
@@ -114,7 +120,8 @@ namespace accord
         }
 
         /// <summary>
-        /// Test Quick Selection
+        /// Test Quick Selection - 
+        /// quickly gets a value that satisfies a given param
         /// </summary>
         [TestMethod]
         public void QuickSelectTest()
@@ -143,7 +150,8 @@ namespace accord
         }
 
         /// <summary>
-        /// Test Normal Sampling
+        /// Test Normal Sampling - 
+        /// finds normals
         /// </summary>
         [TestMethod]
         public void SingleBinTest()
@@ -172,21 +180,71 @@ namespace accord
     /// <summary>
     /// Actual algorithm goes here
     /// </summary>
-    public class impICP
+    public class icp
     {
-        //TODO actual 3D data
+        //Get a point cloud (list of 3d points) from a .ply file
+        public DataPoints getCloudFromPLY()
+        {
+            FileStream file = new FileStream("../../mesh.ply", FileMode.OpenOrCreate, FileAccess.Read);
+            StreamReader reader = new StreamReader(file);
+            var fmt = new NumberFormatInfo()
+            {
+                NegativeSign = "-"
+            };
+            Matrix mat = DenseMatrix.CreateRandom(3, 100, new ContinuousUniform(-10, 10));
+            DataPoints cloud = new DataPoints();
+            Vector3 vec;
+            string line;
+            int ctr=0, index=0, limit=-1, flag=0;//hey i see u lookin at my excessive vars
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                string[] items = line.Split(' ');
+                if (items[0].Equals("element") && items[1].Equals("vertex"))
+                {
+                    limit = int.Parse(items[2]);//num of verts
+                    cloud.points = new DataPoint[limit];
+                }
+
+                if (flag == 1)
+                {
+                    vec.X = float.Parse(items[0], fmt);
+                    vec.Y = float.Parse(items[1], fmt);
+                    vec.Z = float.Parse(items[2], fmt);
+                    cloud.points[index].point = vec;
+                    index++;
+                }
+                else if (line.Equals("end_header"))
+                { flag = 1; }
+                
+                ctr++;
+                if (ctr == limit)
+                        break;
+                
+            }
+            return cloud;
+        }
+
+        //TODO: add return for EuclideanTransform -> Shape
         public void runICP()
         {
-            DataPoints reading;//point cloud
-            DataPoints reference;//reference point cloud
-            EuclideanTransform init;//initial guess (?)
+            DataPoints reading = getCloudFromPLY();//point cloud
+            DataPoints reference = reading;//reference point cloud //DEBUG
 
+            //could do RANSAC to init pose and ICP to refine??? Random for now
+            Random r = new Random();
+            EuclideanTransform init = new EuclideanTransform()//initial guess (?)
+            {
+                translation = { X = (float)r.NextDouble(), Y = (float)r.NextDouble(), Z = (float)r.NextDouble() },
+                rotation = {W= (float)r.NextDouble(), X= (float)r.NextDouble(), Y= (float)r.NextDouble() , Z= (float)r.NextDouble() }
+            };
+            
             ICP icp = new ICP();
             icp.ReadingDataPointsFilters = new RandomSamplingDataPointsFilter(prob: 0.1f);
             icp.ReferenceDataPointsFilters = new SamplingSurfaceNormalDataPointsFilter(SamplingMethod.RandomSampling, ratio: 0.2f);
             icp.OutlierFilter = new TrimmedDistOutlierFilter(ratio: 0.5f);
 
-            //var transform = icp.Compute(reading, reference, init);
+            var transform = icp.Compute(reading, reference, init);
         }
     }
 }

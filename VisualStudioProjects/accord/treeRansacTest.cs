@@ -7,6 +7,7 @@ using Accord.MachineLearning.DecisionTrees;
 using Accord.Statistics.Analysis;
 using Accord.Math.Optimization.Losses;
 using static accord.PositTest;
+using static accord.icp;
 
 /** Testing for the basic structures to be used in the cv algorithm **/
 
@@ -394,8 +395,10 @@ namespace treeRansacTest
             
 //POSIT
 
-            pTest.runPosit(model, fl);
-            
+            //pTest.runPosit(model, fl);
+//ICP
+            accord.icp icpImp = new accord.icp();
+            icpImp.runICP();
         }
     }
 }
