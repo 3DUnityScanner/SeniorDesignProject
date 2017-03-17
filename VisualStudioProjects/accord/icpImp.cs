@@ -183,15 +183,14 @@ namespace accord
     public class icp
     {
         //Get a point cloud (list of 3d points) from a .ply file
-        public DataPoints getCloudFromPLY()
+        public DataPoints getCloudFromPLY(string filename)
         {
-            FileStream file = new FileStream("../../mesh.ply", FileMode.OpenOrCreate, FileAccess.Read);
+            FileStream file = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Read);
             StreamReader reader = new StreamReader(file);
             var fmt = new NumberFormatInfo()
             {
                 NegativeSign = "-"
             };
-            Matrix mat = DenseMatrix.CreateRandom(3, 100, new ContinuousUniform(-10, 10));
             DataPoints cloud = new DataPoints();
             Vector3 vec;
             string line;
@@ -222,14 +221,16 @@ namespace accord
                         break;
                 
             }
+            file.Close();
+            reader.Close();
             return cloud;
         }
 
-        //TODO: add return for EuclideanTransform -> Shape
+        //TODO: add return for EuclideanTransform -> Shape when in actual project
         public void runICP()
         {
-            DataPoints reading = getCloudFromPLY();//point cloud
-            DataPoints reference = reading;//reference point cloud //DEBUG
+            DataPoints reading = getCloudFromPLY("../../mesh.ply");//point cloud
+            DataPoints reference = getCloudFromPLY("../../mesh2.ply"); ;//reference point cloud //DEBUG
 
             //could do RANSAC to init pose and ICP to refine??? Random for now
             Random r = new Random();
@@ -245,6 +246,12 @@ namespace accord
             icp.OutlierFilter = new TrimmedDistOutlierFilter(ratio: 0.5f);
 
             var transform = icp.Compute(reading, reference, init);
+            /*Shape pose = new Shape()
+             * {
+             *   //translation & rotation from transform   
+             * };
+             * return pose;
+             */
         }
     }
 }
