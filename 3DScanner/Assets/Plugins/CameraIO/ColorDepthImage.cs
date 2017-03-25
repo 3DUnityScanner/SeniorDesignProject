@@ -14,7 +14,14 @@ namespace UnityScanner3D.CameraIO
             DepthImage = depth;
         }
 
-        public Texture2D ColorImage;
-        public Texture2D DepthImage;
+        public IEnumerable<Vector3> GetCloudPointData()
+        {
+            for (int x = 0; x < DepthImage.width; x++)
+                for (int y = 0; y < DepthImage.height; y++)
+                    yield return new Vector3(x, y, DepthImage.GetPixel(x, y).grayscale);
+        }
+
+        public Texture2D ColorImage { get; private set; }
+        public Texture2D DepthImage { get; private set; }
     }
 }
