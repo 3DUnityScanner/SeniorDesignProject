@@ -1,9 +1,10 @@
-﻿namespace UnityScanner3D.ComputerVision
+﻿using UnityEngine;
+namespace UnityScanner3D.ComputerVision
 {
     /// <summary>
     /// Defines the possible shape types
     /// </summary>
-    enum ShapeType
+    public enum ShapeType
     {
         Cube,
         Cylinder
@@ -12,7 +13,7 @@
     /// <summary>
     /// A struct for describing a shaped detected by an <see cref="IAlgorithm"/>
     /// </summary>
-    struct Shape
+    public struct Shape
     {
         /// <summary>
         /// Specifies the type of the shape (e.g. Cube, Arch, Cylinder, etc.)
@@ -20,33 +21,12 @@
         public ShapeType Type { get; set; }
 
         /// <summary>
-        /// X axis position (Translational)
+        /// Specifies the 3D translation to perform in the Unity Scene
         /// </summary>
-        public double X { get; set; }
-
+        public Vector3 Translation { get; set; }
         /// <summary>
-        /// Y axis position (Translational)
+        /// Specifies the rotation for Unity to apply to the shape 
         /// </summary>
-        public double Y { get; set; }
-
-        /// <summary>
-        /// Z axis position (Translational)
-        /// </summary>
-        public double Z { get; set; }
-
-        /// <summary>
-        /// U position (Rotational)
-        /// </summary>
-        public double U { get; set; }
-
-        /// <summary>
-        /// V position (Rotational)
-        /// </summary>
-        public double V { get; set; }
-
-        /// <summary>
-        /// W position (Rotational)
-        /// </summary>
-        public double W { get; set; }
+        public Quaternion Rotation { get; set; }
     }
 }
