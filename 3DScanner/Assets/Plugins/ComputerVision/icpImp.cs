@@ -17,7 +17,6 @@ namespace UnityScanner3D.ComputerVision
         public IEnumerable<Shape> GetShapes()
         {
             return poseList;
-            throw new NotImplementedException();
         }
         //input
         public void ProcessImage(ColorDepthImage image)
@@ -33,7 +32,6 @@ namespace UnityScanner3D.ComputerVision
                 ctr++;
             }
             poseList.Add(runICP(cloud));
-            throw new NotImplementedException();
         }
 
         //Get a point cloud (list of 3d points) from a .ply file for testing purposes
