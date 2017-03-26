@@ -136,6 +136,9 @@
     <Reference Include="Intel.RealSense.unity">
       <HintPath>Assets\RSSDK\core\Plugins\Intel.RealSense.unity.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>Assets\Plugins\Libs\MathNet.Numerics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Plugins\CameraIO\ColorDepthImage.cs" />
