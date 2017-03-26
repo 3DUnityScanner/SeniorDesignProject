@@ -67,7 +67,7 @@ public class Scanner : EditorWindow
 
         if (Resources.Load("scannerBlocks") != null)
         {
-            fileData = System.IO.File.ReadAllBytes("D:\\scannerBlocks.jpg");
+            //fileData = System.IO.File.ReadAllBytes("D:\\scannerBlocks.jpg");
             tex = Resources.Load("scannerBlocks") as Texture2D;
             //tex.LoadImage(Resources.Load("scannerBlocks")); //..this will auto-resize the texture dimensions.
         }
