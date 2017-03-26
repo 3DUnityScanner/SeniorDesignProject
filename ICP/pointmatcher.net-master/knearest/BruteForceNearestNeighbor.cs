@@ -19,7 +19,7 @@ namespace knearest
 
         public ulong knn(
             DenseColumnMajorMatrixStorage<float> query,
-            DenseColumnMajorMatrixStorage<int> indices,
+            DenseColumnMajorMatrixStorage<float> indices,
             DenseColumnMajorMatrixStorage<float> dists2,
             Vector<float> maxRadii,
             int k,
@@ -37,7 +37,7 @@ namespace knearest
         private ulong onePointKnn(
             DenseColumnMajorMatrixStorage<float> query,
             int i,
-            DenseColumnMajorMatrixStorage<int> indices,
+            DenseColumnMajorMatrixStorage<float> indices,
             DenseColumnMajorMatrixStorage<float> dists2,
             Vector<float> maxRadii,
             int k,

@@ -47,7 +47,7 @@ namespace pointmatcher.net
             public Matches FindClosests(DataPoints filteredReading)
             {
                 int n = filteredReading.points.Length;
-                var results = DenseColumnMajorMatrixStorage<int>.OfInit(1, n, (i,j) => 0);
+                var results = DenseColumnMajorMatrixStorage<float>.OfInit(1, n, (i,j) => 0);
                 var resultDistances = DenseColumnMajorMatrixStorage<float>.OfInit(1, n, (i, j) => 0);
                 Vector<float> maxRadii = DenseVector.Create(n, i => this.maxDist);
 

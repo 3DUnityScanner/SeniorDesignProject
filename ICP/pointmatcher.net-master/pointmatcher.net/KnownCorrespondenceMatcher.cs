@@ -29,7 +29,7 @@ namespace pointmatcher.net
             public Matches FindClosests(DataPoints filteredReading)
             {
                 int n = this.reference.points.Length;
-                var indexes = DenseColumnMajorMatrixStorage<int>.OfInit(1, n, (i, j) => j);
+                var indexes = DenseColumnMajorMatrixStorage<float>.OfInit(1, n, (i, j) => j);
                 var distances = DenseColumnMajorMatrixStorage<float>.OfInit(
                     1,
                     n,

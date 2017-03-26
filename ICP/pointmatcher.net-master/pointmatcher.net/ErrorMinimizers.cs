@@ -131,7 +131,7 @@ namespace pointmatcher.net
 			        {
 				        keptPoints.Add(requestedPts.points[i]);
 
-                        int matchIdx = matches.Ids.At(k, i);
+                        int matchIdx = (int)matches.Ids.At(k, i);
                         matchedPoints.Add(sourcePts.points[matchIdx]);
 				        keptWeights.Add(weight);
 				        //weightedPointUsedRatio += weight;

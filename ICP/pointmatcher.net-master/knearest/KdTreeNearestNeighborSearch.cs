@@ -91,7 +91,7 @@ namespace knearest
 
         public ulong knn(
             DenseColumnMajorMatrixStorage<float> query,
-            DenseColumnMajorMatrixStorage<int> indices,
+            DenseColumnMajorMatrixStorage<float> indices,
             DenseColumnMajorMatrixStorage<float> dists2,
             Vector<float> maxRadii,
             int k,
@@ -123,7 +123,7 @@ namespace knearest
 
         ulong onePointKnn(
             DenseColumnMajorMatrixStorage<float> query,
-            DenseColumnMajorMatrixStorage<int> indices,
+            DenseColumnMajorMatrixStorage<float> indices,
             DenseColumnMajorMatrixStorage<float> dists2,
             int i,
             IPriorityQueue<BucketEntry> heap,
@@ -387,7 +387,7 @@ namespace knearest
 
         private void checkSizesKnn(
             DenseColumnMajorMatrixStorage<float> query,
-            DenseColumnMajorMatrixStorage<int> indices,
+            DenseColumnMajorMatrixStorage<float> indices,
             DenseColumnMajorMatrixStorage<float> dists2,
             int k,
             SearchOptionFlags optionFlags,

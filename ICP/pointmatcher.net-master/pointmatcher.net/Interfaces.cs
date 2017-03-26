@@ -33,7 +33,7 @@ namespace pointmatcher.net
         /// <summary>
         /// Identifiers of closest points
         /// </summary>
-		public DenseColumnMajorMatrixStorage<int> Ids;
+		public DenseColumnMajorMatrixStorage<float> Ids;
 		
 		public float GetDistsQuantile(float quantile)
         {

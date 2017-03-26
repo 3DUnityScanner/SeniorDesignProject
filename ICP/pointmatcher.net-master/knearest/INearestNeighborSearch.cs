@@ -59,7 +59,7 @@ namespace knearest
         /// <returns>The number of leaf nodes visited in the search process</returns>
         ulong knn(
             DenseColumnMajorMatrixStorage<float> query,
-            DenseColumnMajorMatrixStorage<int> indices,
+            DenseColumnMajorMatrixStorage<float> indices,
             DenseColumnMajorMatrixStorage<float> dists2,
             Vector<float> maxRadii,
             int k,

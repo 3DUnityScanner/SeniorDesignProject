@@ -21,12 +21,12 @@ namespace knearestTest
 
 
             var search = new KdTreeNearestNeighborSearch((DenseColumnMajorMatrixStorage<float>)points.Storage);
-            var results = DenseColumnMajorMatrixStorage<int>.OfInit(1, 100, (i,j) => 0);
+            var results = DenseColumnMajorMatrixStorage<float>.OfInit(1, 100, (i, j) => 0.0f);
             var resultDistances = DenseColumnMajorMatrixStorage<float>.OfInit(1, 100, (i, j) => 0);
             search.knn(query, results, resultDistances, maxRadii, k: 1, epsilon: float.Epsilon, optionFlags: SearchOptionFlags.AllowSelfMatch);
 
             var bruteForceSearch = new BruteForceNearestNeighbor(points);
-            var results2 = DenseColumnMajorMatrixStorage<int>.OfInit(1, 100, (i, j) => 0);
+            var results2 = DenseColumnMajorMatrixStorage<float>.OfInit(1, 100, (i, j) => 0);
             var resultDistances2 = DenseColumnMajorMatrixStorage<float>.OfInit(1, 100, (i, j) => 0);
             search.knn(query, results2, resultDistances2, maxRadii, k: 1, epsilon: float.Epsilon, optionFlags: SearchOptionFlags.AllowSelfMatch);
 
