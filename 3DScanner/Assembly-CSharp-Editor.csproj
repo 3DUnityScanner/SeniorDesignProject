@@ -70,60 +70,6 @@
  <Reference Include="UnityEditor.TreeEditor">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/TreeEditor/Editor/UnityEditor.TreeEditor.dll</HintPath>
  </Reference>
- <Reference Include="Accord.Audition">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Audition.dll</HintPath>
- </Reference>
- <Reference Include="Accord">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Fuzzy">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Fuzzy.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Genetic">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Genetic.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Imaging">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Imaging.dll</HintPath>
- </Reference>
- <Reference Include="Accord.IO">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.IO.dll</HintPath>
- </Reference>
- <Reference Include="Accord.MachineLearning">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.MachineLearning.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Math.Core">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Math.Core.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Math">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Math.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Neuro">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Neuro.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Statistics">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Statistics.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Video.DirectShow">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Video.DirectShow.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Video">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Video.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Video.Kinect">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Video.Kinect.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Video.VFW">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Video.VFW.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Video.Ximea">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Video.Ximea.dll</HintPath>
- </Reference>
- <Reference Include="Accord.Vision">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/Accord.Vision.dll</HintPath>
- </Reference>
- <Reference Include="System.Data">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Accord/System.Data.dll</HintPath>
- </Reference>
  <Reference Include="Intel.RealSense.unity">
  <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/RSSDK/core/Plugins/Intel.RealSense.unity.dll</HintPath>
  </Reference>
@@ -133,6 +79,70 @@
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="Accord.Video.DirectShow">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.DirectShow.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Math">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Math.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video.Kinect">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.Kinect.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Fuzzy">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Fuzzy.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Vision">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Vision.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Neuro">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Neuro.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Data">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/System.Data.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Imaging">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Imaging.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Genetic">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Genetic.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.IO">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.IO.dll</HintPath>
+ </Reference>
+ <Reference Include="knearest">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/knearest.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Math.Core">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Math.Core.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.MachineLearning">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.MachineLearning.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Audition">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Audition.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Statistics">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Statistics.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.dll</HintPath>
+ </Reference>
+ <Reference Include="pointmatcher.net">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/pointmatcher.net.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video.Ximea">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.Ximea.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video.VFW">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.VFW.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{F1AFA355-5BE1-15B6-DB91-B5491633AFD3}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
