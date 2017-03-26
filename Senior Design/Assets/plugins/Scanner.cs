@@ -2,69 +2,120 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using UnityEngine.Windows;
 
-namespace UnityScanner3D
+public class Scanner : EditorWindow
 {
-    public class Scanner : EditorWindow
+
+    string fileName = "FileName";
+    string status = "Idle";
+    string recordButton = "Scan";
+    bool recording = false;
+    bool snapTo = false;
+    float lastFrameTime = 0.0f;
+    int capturedFrame = 0;
+    Texture2D tex = null;
+    byte[] fileData;
+    int selected = 0;
+    string[] options = new string[]
     {
-        string status = "Idle";
-        string button = "Scan";
-        bool groupEnabled;
-        bool scanning = false;
+        "Intel Camera", "Kinect",
+    };
+    bool showPosition = true;
+    string stat = "Advanced Options";
 
-        [MenuItem("Window/3D Scanner")]
+    [MenuItem("Window/3D Scanner")]
 
-        public static void ShowWindow()
+    public static void ShowWindow()
+    {
+        EditorWindow.GetWindow(typeof(Scanner));
+    }
+
+    void OnGUI()
+    {
+        selected = EditorGUILayout.Popup("Choose a Camera", selected, options);
+
+        GUILayout.BeginArea(new Rect((Screen.width / 2) - 50, 50, 100, 100));
         {
-            EditorWindow.GetWindow(typeof(Scanner));
-        }
-
-        void OnGUI()
-        {
-            GUILayout.BeginArea(new Rect((Screen.width / 2) - 100, (Screen.height / 2) - 150, 250, 200));
-            GUILayout.FlexibleSpace();
-            GUILayout.BeginHorizontal(EditorStyles.helpBox);
-            GUILayout.FlexibleSpace();
-
-            if (GUILayout.Button(button, GUILayout.Width(250), GUILayout.Height(20)))
+            if (GUILayout.Button(recordButton, GUILayout.Width(100)))
             {
-                if (!scanning)
-                {
-                    status = "Scanning";
-                    button = "Stop Scanning";
-                    scanning = true;
-
-                    //TODO: Start Camera
+                if (recording)
+                { //recording
+                    status = "Idle...";
+                    recordButton = "Scan";
+                    recording = false;
                 }
                 else
-                {
-                    status = "Idle";
-                    button = "Scan";
-                    scanning = false;
+                { // idle
+                    capturedFrame = 0;
+                    recordButton = "Stop";
+                    recording = true;
                 }
             }
+        }
+        GUILayout.EndArea();
 
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.EndArea();
+        EditorGUILayout.LabelField("Status: ", status);
 
-            GUILayout.BeginArea(new Rect((Screen.width / 2) - 50, (Screen.height / 2) - 200, 200, 200));
-            EditorGUILayout.LabelField("Status: " + status);
-            GUILayout.EndArea();
+        snapTo = GUILayout.Toggle(snapTo, "Snap to Objects");
 
+        GUILayout.BeginArea(new Rect(195, 195, 100, 100));
+        {
+            EditorGUILayout.LabelField("Camera Feed:");
+        }
+        GUILayout.EndArea();
+
+        if (System.IO.File.Exists("D:\\scannerBlocks.jpg"))
+        {
+            fileData = System.IO.File.ReadAllBytes("D:\\scannerBlocks.jpg");
+            tex = new Texture2D(2, 2);
+            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
         }
 
-        private void Update()
-        {
-            if (scanning)
+        EditorGUI.DrawPreviewTexture(new Rect(300, 200, 400, 400), tex);
+
+        showPosition = EditorGUILayout.Foldout(showPosition, stat);
+        if (showPosition)
+            if (true)
             {
-                while (status != "Scanning...")
-                {
-                    status = status + ".";
-                }
-                status = "Scanning";
+                    EditorGUILayout.Vector3Field("Position", new Vector3(4, 5, 6));
             }
+
+        if (!Selection.activeTransform)
+        {
+            stat = "Advanced Options";
+            showPosition = false;
+        }
+
+    }
+
+    private void Update()
+    {
+        if (recording)
+        {
+            if (EditorApplication.isPlaying && !EditorApplication.isPaused)
+            {
+                RecordImages();
+                Repaint();
+            }
+            else
+                status = "Waiting for Editor to Play";
+        }
+    }
+
+    public void OnInspectorUpdate()
+    {
+        this.Repaint();
+    }
+
+    void RecordImages()
+    {
+        if (lastFrameTime < Time.time + (1 / 24f))
+        { // 24fps
+            status = "Captured frame " + capturedFrame;
+            Application.CaptureScreenshot(fileName + " " + capturedFrame + ".png");
+            capturedFrame++;
+            lastFrameTime = Time.time;
         }
     }
 }
