@@ -1,14 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using UnityScanner3D.CameraIO;
 
 namespace UnityScanner3D.CameraIO
 {
-    class DummyCamera : ICamera
+    internal class DummyCamera : ICamera
     {
+        #region Public Properties
+
+        public CameraStatus Status { get; private set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
         public ColorDepthImage GetImage()
         {
             if (Status != CameraStatus.Running)
@@ -32,18 +36,22 @@ namespace UnityScanner3D.CameraIO
         {
             if (Status == CameraStatus.Running)
                 throw new Exception("A camera can't be started if it is already running.");
+            Status = CameraStatus.Running;
         }
 
         public void StopCapture()
         {
             if (Status == CameraStatus.Stopped)
                 throw new Exception("A camera can't be stopped if it is already stopped.");
-
+            Status = CameraStatus.Stopped;
         }
 
-        public CameraStatus Status { get; private set; }
+        #endregion Public Methods
 
+        #region Private Fields
 
         private bool isBlack = true;
+
+        #endregion Private Fields
     }
 }
