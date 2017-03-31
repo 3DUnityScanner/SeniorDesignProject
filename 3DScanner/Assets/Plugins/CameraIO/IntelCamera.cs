@@ -1,5 +1,6 @@
 ﻿using Intel.RealSense;
 using System;
+using UnityEngine;
 
 namespace UnityScanner3D.CameraIO
 {
@@ -21,25 +22,26 @@ namespace UnityScanner3D.CameraIO
             if (SMInstance.AcquireFrame(true).IsError())
                 throw new Exception("Unable to capture frame");
 
-            ColorDepthImage toRet = new ColorDepthImage();
+            Texture2D colorTex = new Texture2D(200, 200);
+            Texture2D depthTex = new Texture2D(200, 200);
 
             //Extract the color image
             Image colorImage = SampleStream.Sample.Color;
             ImageData colorImageData;
             colorImage.AcquireAccess(ImageAccess.ACCESS_READ, out colorImageData);
-            colorImageData.ToTexture2D(0, toRet.ColorImage);
+            colorImageData.ToTexture2D(0, colorTex);
 
             //Extract the depth image
             Image depthImage = SampleStream.Sample.Depth;
             ImageData depthImageData;
             depthImage.AcquireAccess(ImageAccess.ACCESS_READ, out depthImageData);
-            depthImageData.ToTexture2D(0, toRet.DepthImage);
+            depthImageData.ToTexture2D(0, depthTex);
 
             //Clean up image data
             colorImage.Dispose();
             depthImage.Dispose();
     
-            return toRet;
+            return new ColorDepthImage(colorTex, depthTex);
         }
 
         public void StartCapture()

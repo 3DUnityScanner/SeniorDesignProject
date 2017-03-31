@@ -5,8 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{F1AFA355-5BE1-15B6-DB91-B5491633AFD3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -20,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_EDITOR_RETINA;ENABLE_RETINA_GUISTYLES;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_5_2;UNITY_5_5;UNITY_5;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_GENERICS;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_SCRIPTING_NEW_CSHARP_COMPILER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_VIDEO;ENABLE_VR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -37,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="System.XML" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
@@ -46,83 +46,98 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Plugins\CameraIO\ColorDepthImage.cs" />
-    <Compile Include="Assets\Plugins\CameraIO\DummyCamera.cs" />
-    <Compile Include="Assets\Plugins\CameraIO\ICamera.cs" />
-    <Compile Include="Assets\Plugins\CameraIO\IntelCamera.cs" />
-    <Compile Include="Assets\Plugins\ComputerVision\IAlgorithm.cs" />
-    <Compile Include="Assets\Plugins\ComputerVision\icpImp.cs" />
-    <Compile Include="Assets\Plugins\ComputerVision\Shape.cs" />
-    <Compile Include="Assets\Plugins\Scanner.cs" />
-    <Reference Include="UnityEngine.UI">
-      <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="Intel.RealSense.unity">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/RSSDK/core/Plugins/Intel.RealSense.unity.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video.DirectShow">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.DirectShow.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video.Kinect">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.Kinect.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Fuzzy">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Fuzzy.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Vision">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Vision.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Neuro">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Neuro.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/System.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Imaging">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Genetic">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Genetic.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.IO">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="knearest">
-      <HintPath>Assets\Plugins\Libs\knearest.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math.Core">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Math.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.MachineLearning">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.MachineLearning.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Audition">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Audition.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Statistics">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Statistics.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.dll</HintPath>
-    </Reference>
-    <Reference Include="pointmatcher.net">
-      <HintPath>Assets\Plugins\Libs\pointmatcher.net.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video.Ximea">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.Ximea.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video.VFW">
-      <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.VFW.dll</HintPath>
-    </Reference>
+     <Compile Include="Assets\Plugins\CameraIO\ColorDepthImage.cs" />
+     <Compile Include="Assets\Plugins\CameraIO\DummyCamera.cs" />
+     <Compile Include="Assets\Plugins\CameraIO\ICamera.cs" />
+     <Compile Include="Assets\Plugins\CameraIO\IntelCamera.cs" />
+     <Compile Include="Assets\Plugins\ComputerVision\IAlgorithm.cs" />
+     <Compile Include="Assets\Plugins\ComputerVision\Shape.cs" />
+     <Compile Include="Assets\Plugins\ComputerVision\icpImp.cs" />
+     <Compile Include="Assets\Plugins\Scanner.cs" />
+ <Reference Include="UnityEngine.UI">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Networking">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.PlaymodeTestsRunner">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/PlaymodeTestsRunner/UnityEngine.PlaymodeTestsRunner.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.HoloLens">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.VR">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Audition">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Audition.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Fuzzy">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Fuzzy.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Genetic">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Genetic.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Imaging">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Imaging.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.IO">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.IO.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.MachineLearning">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.MachineLearning.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Math.Core">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Math.Core.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Math">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Math.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Neuro">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Neuro.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Statistics">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Statistics.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video.DirectShow">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.DirectShow.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video.Kinect">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.Kinect.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video.VFW">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.VFW.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Video.Ximea">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Video.Ximea.dll</HintPath>
+ </Reference>
+ <Reference Include="Accord.Vision">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Vision.dll</HintPath>
+ </Reference>
+ <Reference Include="knearest">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/knearest.dll</HintPath>
+ </Reference>
+ <Reference Include="MathNet.Numerics">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/MathNet.Numerics.dll</HintPath>
+ </Reference>
+ <Reference Include="pointmatcher.net">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/pointmatcher.net.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Data">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/System.Data.dll</HintPath>
+ </Reference>
+ <Reference Include="Intel.RealSense.unity">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/RSSDK/core/Plugins/Intel.RealSense.unity.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -132,4 +147,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  
 </Project>

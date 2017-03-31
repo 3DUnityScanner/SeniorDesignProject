@@ -3,119 +3,111 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using UnityEngine.Windows;
+using UnityScanner3D.CameraIO;
+using System.Collections.Generic;
+using System;
+using UnityScanner3D.ComputerVision;
 
 public class Scanner : EditorWindow
 {
+    //Object used to access the camera
+    ICamera camera;
+    IAlgorithm algorithm = new icp();
 
-    string fileName = "FileName";
-    string status = "Idle";
-    string recordButton = "Scan";
-    bool recording = false;
-    bool snapTo = false;
-    float lastFrameTime = 0.0f;
-    int capturedFrame = 0;
-    Texture2D tex = null;
-    byte[] fileData;
-    int selected = 0;
-    string[] options = new string[]
-    {
-        "Intel Camera", "Kinect",
-    };
+    //UI Backing Fields
+    Rect imgRect = new Rect(300, 300, 200, 200);
+    ColorDepthImage cameraImage = null;
+    bool isRecording = false;
+    bool snapEnabled = false;
     bool showPosition = true;
+    int selectedCameraIndex = 0;
+    string statusLabelText = "Idle";
+    string buttonText = "Scan";
     string stat = "Advanced Options";
+    string[] cameraOptions = new string[]
+    {
+        "Dummy Camera",
+        "Intel Camera",
+        "Kinect"
+    };
 
+    //A lookup that maps camera names to classes
+    Dictionary<string, Type> cameraNameLookup = new Dictionary<string, Type>
+    {
+        { "Dummy Camera", typeof(DummyCamera) },
+        { "Intel Camera", typeof(IntelCamera) },
+        {"Kinect", null }
+    };
+
+    //Shows the plugin when the user clicks the Window > 3DScanner option
     [MenuItem("Window/3D Scanner")]
-
     public static void ShowWindow()
     {
-        EditorWindow.GetWindow(typeof(Scanner));
+        GetWindow(typeof(Scanner));
     }
 
     void OnGUI()
     {
-        selected = EditorGUILayout.Popup("Choose a Camera", selected, options);
+        //Creates the camera selection drop down menu
+        selectedCameraIndex = EditorGUILayout.Popup("Choose a Camera", selectedCameraIndex, cameraOptions);
 
+        //Draws the button that switches between capturing and scanning
         GUILayout.BeginArea(new Rect((Screen.width / 2) - 50, 50, 100, 100));
+        if (GUILayout.Button(buttonText, GUILayout.Width(100)))
         {
-            if (GUILayout.Button(recordButton, GUILayout.Width(100)))
+            //Click handler while recording
+            if (isRecording)
             {
-                if (recording)
-                { //recording
-                    status = "Idle...";
-                    recordButton = "Scan";
-                    recording = false;
-                }
-                else
-                { // idle
-                    capturedFrame = 0;
-                    recordButton = "Stop";
-                    recording = true;
+                statusLabelText = "Idle...";
+                buttonText = "Scan";
+                isRecording = false;
+            }
+
+            //Click handler while not recording
+            else
+            {
+                statusLabelText = "Recording...";
+                buttonText = "Stop";
+                isRecording = true;
+
+                //Create an instance of the camera
+                string cameraName = cameraOptions[selectedCameraIndex];
+                Type cameraType = cameraNameLookup[cameraName];
+
+                if (cameraType != null)
+                {
+                    camera = (ICamera)Activator.CreateInstance(cameraType);
+                    camera.StartCapture();
                 }
             }
         }
         GUILayout.EndArea();
 
-        EditorGUILayout.LabelField("Status: ", status);
+        //Draws the status label
+        EditorGUILayout.LabelField("Status: ", statusLabelText);
 
-        snapTo = GUILayout.Toggle(snapTo, "Snap to Objects");
+        //Creates the snap to toggle
+        snapEnabled = GUILayout.Toggle(snapEnabled, "Snap to Objects");
 
+        //Draws the label for the camera feed
         GUILayout.BeginArea(new Rect(195, 195, 100, 100));
-        {
             EditorGUILayout.LabelField("Camera Feed:");
-        }
         GUILayout.EndArea();
 
-        if (Resources.Load("scannerBlocks") != null)
+        //Draws the image from the camera
+        if (cameraImage != null && isRecording)
         {
-            //fileData = System.IO.File.ReadAllBytes("D:\\scannerBlocks.jpg");
-            tex = Resources.Load("scannerBlocks") as Texture2D;
-            //tex.LoadImage(Resources.Load("scannerBlocks")); //..this will auto-resize the texture dimensions.
+            Debug.Log(cameraImage.ColorImage.GetPixel(3, 3));
+            EditorGUI.DrawPreviewTexture(imgRect, cameraImage.ColorImage);
         }
-
-        EditorGUI.DrawPreviewTexture(new Rect(300, 200, 400, 400), tex);
-
-        showPosition = EditorGUILayout.Foldout(showPosition, stat);
-        if (showPosition)
-            if (true)
-            {
-                    EditorGUILayout.Vector3Field("Position", new Vector3(4, 5, 6));
-            }
-
-        if (!Selection.activeTransform)
-        {
-            stat = "Advanced Options";
-            showPosition = false;
-        }
-
     }
 
     private void Update()
     {
-        if (recording)
+        if (isRecording && camera != null)
         {
-            if (EditorApplication.isPlaying && !EditorApplication.isPaused)
-            {
-                RecordImages();
-                Repaint();
-            }
-            else
-                status = "Waiting for Editor to Play";
-        }
-    }
-
-    public void OnInspectorUpdate()
-    {
-        this.Repaint();
-    }
-
-    void RecordImages()
-    {
-        if (lastFrameTime < Time.time + (1 / 24f))
-        { // 24fps
-            status = "Captured frame " + capturedFrame;
-            Application.CaptureScreenshot(fileName + " " + capturedFrame + ".png");
-            capturedFrame++;
-            lastFrameTime = Time.time;
+            cameraImage = camera.GetImage();
+            algorithm.ProcessImage(cameraImage);
         }
     }
 }

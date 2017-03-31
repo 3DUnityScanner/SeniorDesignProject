@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UnityScanner3D.CameraIO
 {
-    public struct ColorDepthImage
+    public class ColorDepthImage
     {
         public ColorDepthImage(Texture2D color, Texture2D depth)
         {

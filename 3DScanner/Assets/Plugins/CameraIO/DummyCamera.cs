@@ -5,13 +5,7 @@ namespace UnityScanner3D.CameraIO
 {
     internal class DummyCamera : ICamera
     {
-        #region Public Properties
-
         public CameraStatus Status { get; private set; }
-
-        #endregion Public Properties
-
-        #region Public Methods
 
         public ColorDepthImage GetImage()
         {
@@ -26,7 +20,7 @@ namespace UnityScanner3D.CameraIO
 
             for (int i = 0; i < HEIGHT; i++)
                 for (int j = 0; j < WIDTH; j++)
-                    color.SetPixel(i, j, isBlack ? Color.black : Color.white);
+                    color.SetPixel(i, j, isBlack ? Color.yellow : Color.red);
 
             isBlack = !isBlack;
             return new ColorDepthImage(color, depth);
@@ -46,12 +40,6 @@ namespace UnityScanner3D.CameraIO
             Status = CameraStatus.Stopped;
         }
 
-        #endregion Public Methods
-
-        #region Private Fields
-
         private bool isBlack = true;
-
-        #endregion Private Fields
     }
 }
