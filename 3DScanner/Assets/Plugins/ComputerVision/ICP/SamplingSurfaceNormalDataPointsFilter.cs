@@ -40,6 +40,9 @@ namespace pointmatcher.net
 
         public DataPoints Filter(DataPoints input)
         {
+            if (input == null)
+                throw new ArgumentNullException("input");
+
             int pointsCount = input.points.Length;
 
             var buildData = new BuildData
@@ -72,6 +75,11 @@ namespace pointmatcher.net
         /// </summary>        
         void buildNew(BuildData data, int first, int last, Vector3 minValues, Vector3 maxValues)
         {
+            if (minValues == null)
+                throw new ArgumentNullException("minValues");
+            if (maxValues == null)
+                throw new ArgumentNullException("maxValues");
+
 	        int count = last - first;
 	        if (count <= knn)
 	        {

@@ -97,7 +97,6 @@ public class Scanner : EditorWindow
         //Draws the image from the camera
         if (cameraImage != null && isRecording)
         {
-            Debug.Log(cameraImage.ColorImage.GetPixel(3, 3));
             EditorGUI.DrawPreviewTexture(imgRect, cameraImage.ColorImage);
         }
     }
