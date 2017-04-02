@@ -21,16 +21,20 @@ namespace UnityScanner3D.ComputerVision
         //input
         public void ProcessImage(ColorDepthImage image)
         {
-            DataPoints cloud = new DataPoints(); DataPoint newPoint = new DataPoint();
+            DataPoint newPoint = new DataPoint();
+            DataPoints cloud = new DataPoints();
+            var pointList = new List<DataPoint>();
             int ctr = 0;
             foreach (var v in image.GetCloudPointData())
             {
-                newPoint.point.x=v.x;
+                newPoint.point.x = v.x;
                 newPoint.point.y = v.y;
                 newPoint.point.z = v.z;
-                cloud.points[ctr] =  newPoint;
+                pointList.Add( newPoint);
                 ctr++;
             }
+            cloud.points = new DataPoint[pointList.Count];
+            cloud.points = pointList.ToArray();
             poseList.Add(runICP(cloud));
         }
 
