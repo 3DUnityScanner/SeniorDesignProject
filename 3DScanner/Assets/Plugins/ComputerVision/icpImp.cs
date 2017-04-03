@@ -83,7 +83,6 @@ namespace UnityScanner3D.ComputerVision
             return cloud;
         }
 
-        //TODO: add return for EuclideanTransform -> Shape when in actual project
         public Shape runICP(DataPoints reading)
         {
             //DataPoints reading = getCloudFromPLY("../../mesh.ply");//point cloud
@@ -102,7 +101,9 @@ namespace UnityScanner3D.ComputerVision
             icp.ReferenceDataPointsFilters = new SamplingSurfaceNormalDataPointsFilter(SamplingMethod.RandomSampling, ratio: 0.2f);
             icp.OutlierFilter = new TrimmedDistOutlierFilter(ratio: 0.5f);
 
-            var transform = icp.Compute(reading, reference, init);
+            //generate a guess based on the random guess above then run on the refined result (so dumb it could work??)
+            var guess = icp.Compute(reading, reference, init);
+            var transform = icp.Compute(reading, reference, guess);
             Shape pose = new Shape()
             {
                 //translation & rotation from transform
