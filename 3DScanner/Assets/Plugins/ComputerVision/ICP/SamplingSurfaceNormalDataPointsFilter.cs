@@ -40,9 +40,8 @@ namespace pointmatcher.net
 
         public DataPoints Filter(DataPoints input)
         {
-            if (input == null)
+            if (input == null )
                 throw new ArgumentNullException("input");
-
             int pointsCount = input.points.Length;
 
             var buildData = new BuildData

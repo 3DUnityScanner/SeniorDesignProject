@@ -127,6 +127,9 @@
     <Reference Include="knearest">
       <HintPath>Assets\Plugins\Libs\knearest.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>Assets\Plugins\Libs\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="pointmatcher.net">
       <HintPath>Assets\Plugins\Libs\pointmatcher.net.dll</HintPath>
     </Reference>
@@ -136,9 +139,6 @@
     <Reference Include="Intel.RealSense.unity">
       <HintPath>Assets\RSSDK\core\Plugins\Intel.RealSense.unity.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>Assets\Plugins\Libs\MathNet.Numerics.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Plugins\CameraIO\ColorDepthImage.cs" />
@@ -146,6 +146,25 @@
     <Compile Include="Assets\Plugins\CameraIO\ICamera.cs" />
     <Compile Include="Assets\Plugins\CameraIO\IntelCamera.cs" />
     <Compile Include="Assets\Plugins\ComputerVision\IAlgorithm.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\BruteForceNearestNeighbor.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\DataPointsFilters.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\ErrorMinimizers.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\EuclideanTransform.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\ICP.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\INearestNeighborSearch.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\IPriorityQueue.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\IdentityDataPointsFilter.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\Interfaces.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\KdTreeMatcher.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\KdTreeNearestNeighborSearch.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\KnownCorrespondenceErrorMinimizer.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\KnownCorrespondenceMatcher.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\OutlierFilters.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\QuickSelect.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\RandomSamplingDataPointsFilter.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\SamplingSurfaceNormalDataPointsFilter.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\TransformationCheckers.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ICP\VectorHelpers.cs" />
     <Compile Include="Assets\Plugins\ComputerVision\Shape.cs" />
     <Compile Include="Assets\Plugins\ComputerVision\icpImp.cs" />
     <Compile Include="Assets\Plugins\Scanner.cs" />

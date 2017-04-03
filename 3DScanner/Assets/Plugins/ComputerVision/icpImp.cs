@@ -4,9 +4,9 @@ using System.Linq;
 using System.IO;
 using System.Globalization;
 using knearest;
-using pointmatcher.net;
 using UnityEngine;
 using UnityScanner3D.CameraIO;
+using pointmatcher.net;
 
 namespace UnityScanner3D.ComputerVision
 {
@@ -33,8 +33,8 @@ namespace UnityScanner3D.ComputerVision
                 pointList.Add( newPoint);
                 ctr++;
             }
-            cloud.points = new DataPoint[pointList.Count];
             cloud.points = pointList.ToArray();
+            if (cloud == null) { throw new Exception("cloud null"); }
             poseList.Add(runICP(cloud));
         }
 
@@ -42,6 +42,7 @@ namespace UnityScanner3D.ComputerVision
         public DataPoints getCloudFromPLY(string filename)
         {
             FileStream file = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Read);
+            if (file == null) { throw new Exception("mesh file not found"); }
             StreamReader reader = new StreamReader(file);
             var fmt = new NumberFormatInfo()
             {
@@ -86,7 +87,7 @@ namespace UnityScanner3D.ComputerVision
         public Shape runICP(DataPoints reading)
         {
             //DataPoints reading = getCloudFromPLY("../../mesh.ply");//point cloud
-            DataPoints reference = getCloudFromPLY("../../mesh2.ply"); ;//reference point cloud //DEBUG
+            DataPoints reference = getCloudFromPLY("Assets/Resources/mesh.ply");//reference point cloud //DEBUG
 
             //could do RANSAC to init pose and ICP to refine??? Random for now
             System.Random r = new System.Random();
