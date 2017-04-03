@@ -12,7 +12,7 @@ namespace UnityScanner3D.ComputerVision
 {
     public class icp:IAlgorithm
     {
-        List<Shape> poseList;   
+        List<Shape> poseList = new List<Shape>();   
         //output
         public IEnumerable<Shape> GetShapes()
         {
