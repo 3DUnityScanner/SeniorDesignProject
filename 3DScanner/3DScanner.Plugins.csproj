@@ -132,11 +132,11 @@
     <Reference Include="System.Data">
       <HintPath>Assets\Plugins\Libs\System.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Intel.RealSense.unity">
-      <HintPath>Assets\RSSDK\core\Plugins\Intel.RealSense.unity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Threading">
       <HintPath>Assets\Plugins\Libs\System.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="Intel.RealSense.unity">
+      <HintPath>Assets\RSSDK\core\Plugins\Intel.RealSense.unity.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

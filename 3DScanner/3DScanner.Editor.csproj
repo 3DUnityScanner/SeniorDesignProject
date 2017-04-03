@@ -163,23 +163,17 @@
     <Reference Include="Accord.Vision">
       <HintPath>Assets\Plugins\Libs\Accord.Vision.dll</HintPath>
     </Reference>
-    <Reference Include="knearest">
-      <HintPath>Assets\Plugins\Libs\knearest.dll</HintPath>
-    </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>Assets\Plugins\Libs\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="pointmatcher.net">
-      <HintPath>Assets\Plugins\Libs\pointmatcher.net.dll</HintPath>
     </Reference>
     <Reference Include="System.Data">
       <HintPath>Assets\Plugins\Libs\System.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Intel.RealSense.unity">
-      <HintPath>Assets\RSSDK\core\Plugins\Intel.RealSense.unity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Threading">
       <HintPath>Assets\Plugins\Libs\System.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="Intel.RealSense.unity">
+      <HintPath>Assets\RSSDK\core\Plugins\Intel.RealSense.unity.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

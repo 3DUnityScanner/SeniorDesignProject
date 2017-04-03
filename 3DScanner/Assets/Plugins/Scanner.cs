@@ -70,6 +70,7 @@ public class Scanner : EditorWindow
                 buttonText = "Stop";
                 isRecording = true;
 
+                
                 //Create an instance of the camera
                 string cameraName = cameraOptions[selectedCameraIndex];
                 Type cameraType = cameraNameLookup[cameraName];
@@ -79,6 +80,8 @@ public class Scanner : EditorWindow
                     camera = (ICamera)Activator.CreateInstance(cameraType);
                     camera.StartCapture();
                 }
+                cameraImage = camera.GetImage();
+                algorithm.ProcessImage(cameraImage);
             }
         }
         GUILayout.EndArea();
@@ -105,8 +108,8 @@ public class Scanner : EditorWindow
     {
         if (isRecording && camera != null)
         {
-            cameraImage = camera.GetImage();
-            algorithm.ProcessImage(cameraImage);
+            //cameraImage = camera.GetImage();
+            //algorithm.ProcessImage(cameraImage);
         }
     }
 }
