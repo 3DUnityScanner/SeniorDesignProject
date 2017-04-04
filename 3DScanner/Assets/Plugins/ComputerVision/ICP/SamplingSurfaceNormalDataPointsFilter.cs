@@ -127,7 +127,7 @@ namespace pointmatcher.net
             }
 
             var mean = sum / colCount;
-            var NN = new MathNet.Numerics.LinearAlgebra.Single.DenseMatrix(3, colCount);
+            var NN = new DenseMatrix(3, colCount);
             var min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             var max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
             for (int i = 0; i < colCount; i++)
