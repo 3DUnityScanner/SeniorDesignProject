@@ -85,8 +85,8 @@ namespace UnityScanner3D.ComputerVision
 
         public Shape runICP(DataPoints reading)
         {
-            //DataPoints reading = getCloudFromPLY("../../mesh.ply");//point cloud
-            DataPoints reference = getCloudFromPLY("Assets/Resources/mesh.ply");//reference point cloud //DEBUG
+            reading = getCloudFromPLY("Assets/Resources/cube2_testmesh.ply");//point cloud
+            DataPoints reference = getCloudFromPLY("Assets/Resources/cubeMesh.ply");//reference point cloud //DEBUG
 
             //could do RANSAC to init pose and ICP to refine??? Random for now
             System.Random r = new System.Random();
