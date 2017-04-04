@@ -16,11 +16,14 @@ namespace UnityScanner3D.CameraIO
 
         public ColorDepthImage GetImage()
         {
+            //Checks to make sure that the camera has been properly initialized
             if (Status == CameraStatus.Stopped)
                 throw new InvalidOperationException("The camera cannot produce data unless it is running");
 
-            if (SMInstance.AcquireFrame(true).IsError())
-                throw new Exception("Unable to capture frame");
+            //Acquires the frame
+            Status acquisitionResult = SMInstance.AcquireFrame(true);
+            if (acquisitionResult.IsError())
+                throw new Exception("Unable to capture frame: " + acquisitionResult);
 
             Texture2D colorTex = new Texture2D(200, 200);
             Texture2D depthTex = new Texture2D(200, 200);
@@ -40,26 +43,35 @@ namespace UnityScanner3D.CameraIO
             //Clean up image data
             colorImage.Dispose();
             depthImage.Dispose();
+
+            //Release the acquired frame
+            SMInstance.ReleaseFrame();
     
             return new ColorDepthImage(colorTex, depthTex);
         }
 
         public void StartCapture()
         {
+            //Checks to make sure that the camera has not already been started
             if (Status != CameraStatus.Stopped)
                 throw new InvalidOperationException("A camera cannot be started if it is already running");
 
+            //Updates the status
             Status = CameraStatus.Running;
 
             //Initialize the sense manager and streams
             SampleStream = SampleReader.Activate(SMInstance);
-            SampleStream.EnableStream(StreamType.STREAM_TYPE_COLOR);
-            SampleStream.EnableStream(StreamType.STREAM_TYPE_DEPTH);
+            SampleStream.EnableStream(StreamType.STREAM_TYPE_COLOR, 640, 480);
+            SampleStream.EnableStream(StreamType.STREAM_TYPE_DEPTH, 640, 480);
             SMInstance.Init();
         }
 
         public void StopCapture()
         {
+            //Checks to make sure that the camera has not already been stopped before starting it again
+            if (Status != CameraStatus.Running)
+                throw new InvalidOperationException("A camera cannot be stopped if it is not running");
+            
             //Updates the status
             Status = CameraStatus.Stopped;
 
