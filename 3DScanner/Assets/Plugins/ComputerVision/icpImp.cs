@@ -18,6 +18,12 @@ namespace UnityScanner3D.ComputerVision
         {
             return poseList;
         }
+
+        public void ClearShapes()
+        {
+            poseList = new List<Shape>();
+        }
+
         //input
         public void ProcessImage(ColorDepthImage image)
         {
@@ -85,7 +91,7 @@ namespace UnityScanner3D.ComputerVision
 
         public Shape runICP(DataPoints reading)
         {
-            reading = getCloudFromPLY("Assets/Resources/cube2_testmesh.ply");//point cloud
+            reading = getCloudFromPLY("Assets/Resources/cube-plane_testmesh.ply");//point cloud
             DataPoints reference = getCloudFromPLY("Assets/Resources/cubeMesh.ply");//reference point cloud //DEBUG
 
             //could do RANSAC to init pose and ICP to refine??? Random for now

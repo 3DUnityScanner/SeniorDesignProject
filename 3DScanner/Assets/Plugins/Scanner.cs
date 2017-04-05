@@ -66,9 +66,9 @@ public class Scanner : EditorWindow
             //Click handler while not recording
             else
             {
-                statusLabelText = "Recording...";
-                buttonText = "Stop";
-                isRecording = true;
+                //statusLabelText = "Recording...";
+                //buttonText = "Stop";
+                //isRecording = true;
 
                 
                 //Create an instance of the camera
@@ -82,6 +82,19 @@ public class Scanner : EditorWindow
                 }
                 cameraImage = camera.GetImage();
                 algorithm.ProcessImage(cameraImage);
+
+                IEnumerable<Shape> poseList = algorithm.GetShapes();
+
+                foreach(Shape p in poseList)
+                {
+                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    cube.transform.rotation = p.Rotation;
+                    cube.transform.position = p.Translation;
+                }
+
+                algorithm.ClearShapes();
+                camera.StopCapture();
+
             }
         }
         GUILayout.EndArea();

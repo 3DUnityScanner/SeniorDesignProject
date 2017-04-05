@@ -7,5 +7,6 @@ namespace UnityScanner3D.ComputerVision
     {
         void ProcessImage(ColorDepthImage image);
         IEnumerable<Shape> GetShapes();
+        void ClearShapes();
     }
 }
