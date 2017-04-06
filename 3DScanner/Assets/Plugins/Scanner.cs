@@ -28,7 +28,9 @@ public class Scanner : EditorWindow
     {
         "Dummy Camera",
         "Intel Camera",
-        "Kinect"
+        "Kinect",
+        "Cube",
+        "Cube on Plane"
     };
 
     //A lookup that maps camera names to classes
@@ -36,7 +38,9 @@ public class Scanner : EditorWindow
     {
         { "Dummy Camera", typeof(DummyCamera) },
         { "Intel Camera", typeof(IntelCamera) },
-        {"Kinect", null }
+        {"Kinect", null },
+        {"Cube", null },
+        {"Cube on Plane", null }
     };
 
     //Shows the plugin when the user clicks the Window > 3DScanner option
@@ -60,17 +64,12 @@ public class Scanner : EditorWindow
             {
                 statusLabelText = "Idle...";
                 buttonText = "Scan";
-                isRecording = false;
             }
 
             //Click handler while not recording
             else
             {
-                //statusLabelText = "Recording...";
-                //buttonText = "Stop";
-                //isRecording = true;
 
-                
                 //Create an instance of the camera
                 string cameraName = cameraOptions[selectedCameraIndex];
                 Type cameraType = cameraNameLookup[cameraName];
@@ -79,9 +78,20 @@ public class Scanner : EditorWindow
                 {
                     camera = (ICamera)Activator.CreateInstance(cameraType);
                     camera.StartCapture();
+                    cameraImage = camera.GetImage();
+                    algorithm.ProcessImage(cameraImage);
+                } else
+                {
+                    if(cameraName == "Cube")
+                    {
+                        algorithm.ProcessPLY("Assets/Resources/cube_testmesh.ply");
+                    }
+                    else if (cameraName == "Cube on Plane")
+                    {
+                        algorithm.ProcessPLY("Assets/Resources/cube-plane_testmesh.ply");
+                    }
                 }
-                cameraImage = camera.GetImage();
-                algorithm.ProcessImage(cameraImage);
+                
 
                 IEnumerable<Shape> poseList = algorithm.GetShapes();
 
@@ -93,7 +103,6 @@ public class Scanner : EditorWindow
                 }
 
                 algorithm.ClearShapes();
-                camera.StopCapture();
 
             }
         }
