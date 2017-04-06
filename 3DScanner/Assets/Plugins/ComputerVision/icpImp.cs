@@ -91,15 +91,15 @@ namespace UnityScanner3D.ComputerVision
 
         public Shape runICP(DataPoints reading)
         {
-            reading = getCloudFromPLY("Assets/Resources/cube-plane_testmesh.ply");//point cloud
+            //reading = getCloudFromPLY("Assets/Resources/cube-plane_testmesh.ply");//point cloud
             DataPoints reference = getCloudFromPLY("Assets/Resources/cubeMesh.ply");//reference point cloud //DEBUG
 
             //could do RANSAC to init pose and ICP to refine??? Random for now
             System.Random r = new System.Random();
             EuclideanTransform init = new EuclideanTransform()//initial guess (?)
             {
-                translation = { x = (float)r.NextDouble(), y = (float)r.NextDouble(), z = (float)r.NextDouble() },
-                rotation = {w= (float)r.NextDouble(), x= (float)r.NextDouble(), y= (float)r.NextDouble() , z= (float)r.NextDouble() }
+                translation = { x = 0.0f, y = 0.0f, z = 0.0f },
+                rotation = {w= 0.0f, x= 0.0f, y= 0.0f, z= 0.0f }
             };
             
             ICP icp = new ICP();
@@ -110,6 +110,9 @@ namespace UnityScanner3D.ComputerVision
             //generate a guess based on the random guess above then run on the refined result (so dumb it could work??)
             var guess = icp.Compute(reading, reference, init);
             var transform = icp.Compute(reading, reference, guess);
+
+            transform.translation.y = 0.5f;
+            transform.rotation.x = 0.0f; transform.rotation.z = 0.0f;
             Shape pose = new Shape()
             {
                 //translation & rotation from transform
