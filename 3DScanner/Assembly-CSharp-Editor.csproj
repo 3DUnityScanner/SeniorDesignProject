@@ -146,17 +146,14 @@
  <Reference Include="Accord.Vision">
  <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/Accord.Vision.dll</HintPath>
  </Reference>
- <Reference Include="knearest">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/knearest.dll</HintPath>
- </Reference>
  <Reference Include="MathNet.Numerics">
  <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/MathNet.Numerics.dll</HintPath>
  </Reference>
- <Reference Include="pointmatcher.net">
- <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/pointmatcher.net.dll</HintPath>
- </Reference>
  <Reference Include="System.Data">
  <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/System.Data.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Threading">
+ <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/Plugins/Libs/System.Threading.dll</HintPath>
  </Reference>
  <Reference Include="Intel.RealSense.unity">
  <HintPath>C:/Users/t_chu/Source/Repos/SeniorDesignProject/3DScanner/Assets/RSSDK/core/Plugins/Intel.RealSense.unity.dll</HintPath>
