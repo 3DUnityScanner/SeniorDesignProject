@@ -44,6 +44,15 @@ namespace UnityScanner3D.ComputerVision
             poseList.Add(runICP(cloud));
         }
 
+        public void ProcessPLY(string filename)
+        {
+            DataPoints cloud = getCloudFromPLY(filename);
+
+            if (cloud == null) { throw new Exception("cloud null"); }
+
+            poseList.Add(runICP(cloud));
+        }
+
         //Get a point cloud (list of 3d points) from a .ply file for testing purposes
         public DataPoints getCloudFromPLY(string filename)
         {
@@ -89,27 +98,47 @@ namespace UnityScanner3D.ComputerVision
             return cloud;
         }
 
+        public void getPLYFromCloud(DataPoints cloud)
+        {
+            String s = String.Format("ply\nformat ascii 1.0\nelement vertex {0}\nproperty float x\nproperty float y\nproperty float z\nend_header", cloud.points.Length);
+            FileStream file = new FileStream("Assets/Resources/out.ply", FileMode.Create, FileAccess.Write);
+            if (file == null) { throw new Exception("mesh file not found"); }
+            StreamWriter writer = new StreamWriter(file);
+
+            writer.WriteLine(s);
+            foreach (DataPoint p in cloud.points)
+            {
+                writer.WriteLine(String.Format("{0:F6} {1:F6} {2:F6}", p.point.x, p.point.y, p.point.z));
+            }
+            writer.Close();
+            file.Close();
+        }
+
         public Shape runICP(DataPoints reading)
         {
-            reading = getCloudFromPLY("Assets/Resources/cube-plane_testmesh.ply");//point cloud
+            //reading = getCloudFromPLY("Assets/Resources/cube-plane_testmesh.ply");//point cloud
             DataPoints reference = getCloudFromPLY("Assets/Resources/cubeMesh.ply");//reference point cloud //DEBUG
 
             //could do RANSAC to init pose and ICP to refine??? Random for now
             System.Random r = new System.Random();
             EuclideanTransform init = new EuclideanTransform()//initial guess (?)
             {
-                translation = { x = (float)r.NextDouble(), y = (float)r.NextDouble(), z = (float)r.NextDouble() },
-                rotation = {w= (float)r.NextDouble(), x= (float)r.NextDouble(), y= (float)r.NextDouble() , z= (float)r.NextDouble() }
+                translation = { x = 0.0f, y = 0.0f, z = 0.0f },
+                rotation = {w= 0.0f, x= 0.0f, y= 0.0f, z= 0.0f }
             };
             
             ICP icp = new ICP();
             icp.ReadingDataPointsFilters = new RandomSamplingDataPointsFilter(prob: 0.1f);
             icp.ReferenceDataPointsFilters = new SamplingSurfaceNormalDataPointsFilter(SamplingMethod.RandomSampling, ratio: 0.2f);
-            icp.OutlierFilter = new TrimmedDistOutlierFilter(ratio: 0.5f);
+            icp.OutlierFilter = new TrimmedDistOutlierFilter(ratio: 0.85f);
 
             //generate a guess based on the random guess above then run on the refined result (so dumb it could work??)
             var guess = icp.Compute(reading, reference, init);
             var transform = icp.Compute(reading, reference, guess);
+
+            transform.translation.y = 0.5f;
+            transform.rotation.Set(0f, transform.rotation.y, 0f, transform.rotation.w);
+            //transform.rotation.x = 0.0f; transform.rotation.z = 0.0f;
             Shape pose = new Shape()
             {
                 //translation & rotation from transform
