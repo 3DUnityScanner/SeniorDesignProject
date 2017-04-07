@@ -110,6 +110,7 @@ namespace UnityScanner3D.ComputerVision
             //Get all acceptable pixels to the left
             while(ColorDifference(colorImage.GetPixel(leftBound, y), stopColor) > COLOR_THRESHHOLD)
             {
+                colorImage.SetPixel(leftBound, y, stopColor);
                 yield return new Point(leftBound, y, image.DepthImage.GetPixel(leftBound, y).grayscale);
                 leftBound--;
             }
@@ -117,6 +118,7 @@ namespace UnityScanner3D.ComputerVision
             //Get all acceptable pixels to the right
             while(ColorDifference(colorImage.GetPixel(rightBound, y), stopColor) > COLOR_THRESHHOLD)
             {
+                colorImage.SetPixel(rightBound, y, stopColor);
                 yield return new Point(rightBound, y, image.DepthImage.GetPixel(rightBound, y).grayscale);
                 rightBound++;
             }
