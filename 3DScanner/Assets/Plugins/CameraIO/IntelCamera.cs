@@ -6,6 +6,10 @@ namespace UnityScanner3D.CameraIO
 {
     public class IntelCamera : ICamera
     {
+        private const int WIDTH = 640;
+        private const int HEIGHT = 480;
+        private const float FPS = 30.0f;
+
         ~IntelCamera()
         {
             if(SampleStream != null)
@@ -25,19 +29,19 @@ namespace UnityScanner3D.CameraIO
             if (acquisitionResult.IsError())
                 throw new Exception("Unable to capture frame: " + acquisitionResult);
 
-            Texture2D colorTex = new Texture2D(200, 200);
-            Texture2D depthTex = new Texture2D(200, 200);
+            Texture2D colorTex = new Texture2D(WIDTH, HEIGHT, TextureFormat.RGBA32, false);
+            Texture2D depthTex = new Texture2D(WIDTH, HEIGHT, TextureFormat.RGBA32, false);
 
             //Extract the color image
             Image colorImage = SampleStream.Sample.Color;
             ImageData colorImageData;
-            colorImage.AcquireAccess(ImageAccess.ACCESS_READ, out colorImageData);
+            colorImage.AcquireAccess(ImageAccess.ACCESS_READ, PixelFormat.PIXEL_FORMAT_RGB32, out colorImageData);
             colorImageData.ToTexture2D(0, colorTex);
 
             //Extract the depth image
             Image depthImage = SampleStream.Sample.Depth;
             ImageData depthImageData;
-            depthImage.AcquireAccess(ImageAccess.ACCESS_READ, out depthImageData);
+            depthImage.AcquireAccess(ImageAccess.ACCESS_READ, PixelFormat.PIXEL_FORMAT_RGB32, out depthImageData);
             depthImageData.ToTexture2D(0, depthTex);
 
             //Clean up image data
@@ -61,8 +65,8 @@ namespace UnityScanner3D.CameraIO
 
             //Initialize the sense manager and streams
             SampleStream = SampleReader.Activate(SMInstance);
-            SampleStream.EnableStream(StreamType.STREAM_TYPE_COLOR, 640, 480);
-            SampleStream.EnableStream(StreamType.STREAM_TYPE_DEPTH, 640, 480);
+            SampleStream.EnableStream(StreamType.STREAM_TYPE_COLOR, WIDTH, HEIGHT, FPS);
+            SampleStream.EnableStream(StreamType.STREAM_TYPE_DEPTH, WIDTH, HEIGHT, FPS);
             SMInstance.Init();
         }
 
