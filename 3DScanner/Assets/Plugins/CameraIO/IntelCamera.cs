@@ -1,5 +1,6 @@
 ﻿using Intel.RealSense;
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace UnityScanner3D.CameraIO
@@ -50,6 +51,10 @@ namespace UnityScanner3D.CameraIO
 
             //Release the acquired frame
             SMInstance.ReleaseFrame();
+
+            //Save the images
+            File.WriteAllBytes("color.png", colorTex.EncodeToPNG());
+            File.WriteAllBytes("depth.png", depthTex.EncodeToPNG());
     
             return new ColorDepthImage(colorTex, depthTex);
         }

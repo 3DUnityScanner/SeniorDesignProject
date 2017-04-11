@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using UnityScanner3D.CameraIO;
 
@@ -11,7 +10,19 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
-        private const float COLOR_THRESHOLD = 1.0f;
+        private struct Pixel
+        {
+            public Pixel(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
+
+            public int X { get; private set; }
+            public int Y { get; private set; }
+        }
+
+        private const float DIFFERENCE_THRESHOLD = 0.4f;
 
         public void ClearShapes()
         {
@@ -38,38 +49,33 @@ namespace UnityScanner3D.ComputerVision
 
         public void ProcessImage(ColorDepthImage image)
         {
-            //Save Images
-            File.WriteAllBytes("color.jpg", image.ColorImage.EncodeToJPG());
-            File.WriteAllBytes("depth.jpg", image.DepthImage.EncodeToJPG());
-            File.WriteAllBytes("color.png", image.ColorImage.EncodeToPNG());
-            File.WriteAllBytes("depth.png", image.DepthImage.EncodeToPNG());
-
-            //The color image to be used for processing
             Texture2D colorImage = image.ColorImage;
-            int colorWidth = colorImage.width;
             int colorHeight = colorImage.height;
+            int colorWidth = colorImage.width;
 
-            //Sum total of each of the color channels
-            float averageRed = 0, averageGreen = 0, averageBlue = 0;
-            for (int y = 0; y < colorImage.width; y++)
+            //Calculate the initial average color
+            Color averageColor = CalculateAverageColor(image.ColorImage);
+
+            //Calculate the standard deviation of color
+            float stdDev = CalculateStandardColorDeviation(image.ColorImage, averageColor);
+
+            //Refine average color
+            averageColor = CalculateAverageColor(colorImage, averageColor, stdDev, 2.0f);
+
+            //Maximize contrast in image
+            for(int y = 0; y < colorHeight; y++)
             {
-                for (int x = 0; x < colorImage.height; x++)
+                for(int x = 0; x < colorWidth; x++)
                 {
-                    averageRed += colorImage.GetPixel(x, y).r;
-                    averageGreen += colorImage.GetPixel(x, y).g;
-                    averageBlue += colorImage.GetPixel(x, y).b;
+                    Color currColor = colorImage.GetPixel(x, y);
+                    Color newColor = !AreColorsDifferent(averageColor, currColor) ? Color.white : Color.black;
+                    colorImage.SetPixel(x, y, newColor);
                 }
             }
 
-            //Calculates average color
-            float numOfPixels = colorImage.height * colorImage.width;
-            averageRed /= numOfPixels;
-            averageGreen /= numOfPixels;
-            averageBlue /= numOfPixels;
-            Color averageColor = new Color(averageRed, averageGreen, averageBlue);
-
-            //TODO: Refine average color by removing outliers
-
+            //Save image
+            File.WriteAllBytes("contrast.png", colorImage.EncodeToPNG());
+            
             //Identify clumps
             for(int y = 0; y < colorHeight; y++)
             {
@@ -77,10 +83,10 @@ namespace UnityScanner3D.ComputerVision
                 {
                     //Checks if the difference in color is within the threshold
                     Color thisColor = colorImage.GetPixel(x, y);
-                    if(AreColorsDifferent(thisColor, averageColor))
+                    if(AreColorsDifferent(thisColor, Color.white))
                     {
                         //Perform flood fill
-                        List<Point> clump = FloodFill(image, x, y, averageColor);
+                        List<Point> clump = FloodFill(image, x, y, Color.white);
 
                         //Save clump
                         clumpQueue.Enqueue(clump);
@@ -91,7 +97,89 @@ namespace UnityScanner3D.ComputerVision
 
         private bool AreColorsDifferent(Color u, Color v)
         {
-            return ColorDifference(u, v) > COLOR_THRESHOLD;
+            return ColorDifference(u, v) > DIFFERENCE_THRESHOLD;
+        }
+
+        private Color CalculateAverageColor(Texture2D colorImage)
+        {
+            int colorWidth = colorImage.width;
+            int colorHeight = colorImage.height;
+            float numOfPixels = colorHeight * colorWidth;
+
+            //Sum total of each of the color channels
+            float averageRed = 0, averageGreen = 0, averageBlue = 0;
+            for (int y = 0; y < colorImage.height; y++)
+            {
+                for (int x = 0; x < colorImage.width; x++)
+                {
+                    averageRed += colorImage.GetPixel(x, y).r;
+                    averageGreen += colorImage.GetPixel(x, y).g;
+                    averageBlue += colorImage.GetPixel(x, y).b;
+                }
+            }
+
+            //Calculates average color
+            averageRed /= numOfPixels;
+            averageGreen /= numOfPixels;
+            averageBlue /= numOfPixels;
+            return new Color(averageRed, averageGreen, averageBlue);
+        }
+
+        private Color CalculateAverageColor(Texture2D colorImage, Color oldAverage, float stdDev, float range)
+        {
+            float r = 0.0f;
+            float g = 0.0f;
+            float b = 0.0f;
+
+            int numPixels = 0;
+
+            for (int y = 0; y < colorImage.height; y++)
+            {
+                for (int x = 0; x < colorImage.width; x++)
+                {
+                    Color thisColor = colorImage.GetPixel(x, y);
+                    if (ColorDifference(oldAverage, thisColor) < range * stdDev)
+                    {
+                        r += thisColor.r;
+                        g += thisColor.g;
+                        b += thisColor.b;
+                        numPixels++;
+                    }
+                }
+            }
+
+            r /= numPixels;
+            g /= numPixels;
+            b /= numPixels;
+
+            return new Color(r, g, b);
+        }
+
+        private float CalculateStandardColorDeviation(Texture2D colorImage, Color average)
+        {
+            int colorHeight = colorImage.height;
+            int colorWidth = colorImage.width;
+            int numOfPixels = colorHeight * colorWidth;
+
+            //Calculate the standard deviation
+            double stdDev = 0;
+            for (int y = 0; y < colorHeight; y++)
+            {
+                for (int x = 0; x < colorWidth; x++)
+                {
+                    //Get the color of the pixel
+                    Color currentColor = colorImage.GetPixel(x, y);
+
+                    //Calculate the difference
+                    float diff = ColorDifference(currentColor, average);
+
+                    //Update the stdDev
+                    stdDev += Math.Pow(diff, 2);
+                }
+            }
+
+            stdDev /= numOfPixels;
+            return (float) stdDev;
         }
 
         private float ColorDifference(Color u, Color v)
@@ -102,47 +190,57 @@ namespace UnityScanner3D.ComputerVision
             double b = Math.Pow(u.b - v.b, 2.0);
 
             //Returns the square root
-            return (float)Math.Sqrt(r + g + b);
+            float distance = (float)Math.Sqrt(r + g + b);
+            return distance;
         }
 
         private List<Point> FloodFill(ColorDepthImage image, int x, int y, Color stopColor)
         {
-            //Gets the color of the current pixel
-            Color currentPixelColor = image.ColorImage.GetPixel(x, y);
+            //Images
+            Texture2D color = image.ColorImage;
+            Texture2D depth = image.DepthImage;
 
-            //Stop if the current color is the stop color
-            if (!AreColorsDifferent(currentPixelColor, stopColor))
-                return null;
-
+            //Collections
             List<Point> toRet = new List<Point>();
-            Texture2D colorImage = image.ColorImage;
-            int leftBound = x - 1;
-            int rightBound = x + 1;
+            Queue<Pixel> pixelQueue = new Queue<Pixel>();
+            pixelQueue.Enqueue(new Pixel(x, y));
 
-            //Get all pixels to the left which aren't the stop color
-            while(AreColorsDifferent(colorImage.GetPixel(leftBound, y), stopColor))
+            do
             {
-                colorImage.SetPixel(leftBound, y, stopColor);
-                toRet.Add(new Point(leftBound, y, image.DepthImage.GetPixel(leftBound, y).grayscale));
-                leftBound--;
-            }
+                //Get the pixel out of the queue
+                Pixel p = pixelQueue.Dequeue();
 
-            //Get all pixels to the right which aren't the stop color
-            while(AreColorsDifferent(colorImage.GetPixel(rightBound, y), stopColor))
-            {
-                colorImage.SetPixel(rightBound, y, stopColor);
-                toRet.Add(new Point(rightBound, y, image.DepthImage.GetPixel(rightBound, y).grayscale));
-                rightBound++;
-            }
+                //Check if the current pixel is the stop color
+                if (AreColorsDifferent(color.GetPixel(p.X, p.Y), stopColor))
+                {
+                    //Add the current pixel as a point to return
+                    float Z = depth.GetPixel(p.X, p.Y).grayscale;
+                    toRet.Add(new Point(p.X, p.Y, Z));
 
-            //Perform same operation on the pixels above and below
-            for (int i = leftBound + 1; i < rightBound; i++)
-            {
-                toRet.AddRange(FloodFill(image, i, y - 1, stopColor) ?? Enumerable.Empty<Point>());
-                toRet.AddRange(FloodFill(image, i, y + 1, stopColor) ?? Enumerable.Empty<Point>());
-            }
+                    //Mark it as visited
+                    color.SetPixel(p.X, p.Y, stopColor);
 
-            //Return the results
+                    Pixel left = new Pixel(p.X - 1, p.Y);
+                    Pixel right = new Pixel(p.X + 1, p.Y);
+                    Pixel up = new Pixel(p.X, p.Y - 1);
+                    Pixel down = new Pixel(p.X, p.Y + 1);
+
+                    //Add its neighbors to the queue of pixels to be processed
+                    if (p.X - 1 >= 0 && !pixelQueue.Contains(left))
+                        pixelQueue.Enqueue(left);
+
+                    if (p.X + 1 < color.width && !pixelQueue.Contains(right))
+                        pixelQueue.Enqueue(right);
+
+                    if (p.Y - 1 >= 0 && !pixelQueue.Contains(up))
+                        pixelQueue.Enqueue(up);
+
+                    if (p.Y + 1 < color.height && !pixelQueue.Contains(down))
+                        pixelQueue.Enqueue(down);
+                }
+
+            } while (pixelQueue.Count > 0);
+
             return toRet;
         }
 
