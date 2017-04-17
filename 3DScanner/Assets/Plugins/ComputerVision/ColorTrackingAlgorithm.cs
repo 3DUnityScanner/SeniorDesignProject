@@ -64,7 +64,7 @@ namespace UnityScanner3D.ComputerVision
             float stdDev = CalculateStandardColorDeviation(image.ColorImage, averageColor);
 
             //Refine average color
-            averageColor = CalculateAverageColor(colorImage, averageColor, stdDev, STDEV);
+            averageColor = CalculateAverageColor(image.ColorImage, averageColor, stdDev, STDEV);
 
             //Maximize contrast in image and save the new image
             Contrastify(image.ColorImage, averageColor);
@@ -199,20 +199,20 @@ namespace UnityScanner3D.ComputerVision
                     vectorTailPixel = new Pixel(ranX, ranY);
             }
 
-            Vector3 tail = new Vector3(vectorTailPixel.X, vectorTailPixel.Y, );
-            for(int thisY = 0; thisY < image.ColorImage.height; thisY++)
-            {
-                for(int thisX = 0; thisX < image.ColorImage.width; thisX++)
-                {
-                    //Gets the color of the given pixel
-                    Color c = image.ColorImage.GetPixel(thisX, thisY);
+            //Vector3 tail = new Vector3(vectorTailPixel.X, vectorTailPixel.Y, );
+            //for(int thisY = 0; thisY < image.ColorImage.height; thisY++)
+            //{
+            //    for(int thisX = 0; thisX < image.ColorImage.width; thisX++)
+            //    {
+            //        //Gets the color of the given pixel
+            //        Color c = image.ColorImage.GetPixel(thisX, thisY);
 
-                    if (c == Color.black)
-                        continue;
+            //        if (c == Color.black)
+            //            continue;
 
-                    //Determine
-                }
-            }
+            //        //Determine
+            //    }
+            //}
 
             do
             {
