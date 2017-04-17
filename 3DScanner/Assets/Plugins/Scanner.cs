@@ -13,15 +13,18 @@ public class Scanner : EditorWindow
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
     //UI Backing Fields
-    Texture2D feedTex;
+    string cameraName;
+    Type cameraType;
+    Texture2D feedTex, colorStream, depthStream;
     bool updateGUI;
     Rect imgRect = new Rect(300, 300, 200, 200);
     ColorDepthImage cameraImage = null;
-    bool isRecording = false;
+    bool isStreaming = false;
     bool snapEnabled = false;
     int selectedCameraIndex = 0;
     string statusLabelText = "Idle";
-    string buttonText = "Scan";
+    string streamText = "Start Stream";
+    string captureText = "Capture";
     string[] cameraOptions = new string[]
     {
         "Dummy Camera",
@@ -53,20 +56,28 @@ public class Scanner : EditorWindow
         //Creates the camera selection drop down menu
         selectedCameraIndex = EditorGUILayout.Popup("Choose a Camera", selectedCameraIndex, cameraOptions);
 
+        GUILayout.BeginVertical();
+
         //Draws the button that switches between capturing and scanning
-        GUILayout.BeginArea(new Rect(0, 50, 100, 100));
-        if (GUILayout.Button(buttonText, GUILayout.Width(100)))
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button(streamText, GUILayout.Width(100)))
         {
-            //Click handler while recording
-            if (isRecording)
+            //if streaming, stop it
+            if (isStreaming)
             {
-                statusLabelText = "Idle...";
-                buttonText = "Scan";
+                isStreaming = false;
+                statusLabelText = "Idle";
+                streamText = "Start Stream";
+                if (camera != null)
+                    camera.StopCapture();
             }
 
-            //Click handler while not recording
+            //if not streaming, start it
             else
             {
+                isStreaming = true;
+                statusLabelText = "Streaming!";
+                streamText = "Stop Stream";
 
                 //Create an instance of the camera
                 string cameraName = cameraOptions[selectedCameraIndex];
@@ -76,24 +87,20 @@ public class Scanner : EditorWindow
                 {
                     camera = (ICamera)Activator.CreateInstance(cameraType);
                     camera.StartCapture();
-                    cameraImage = camera.GetImage();
-                    algorithm.ProcessImage(cameraImage);
-                } else
-                {
-                    /*if(cameraName == "Cube")
-                    {
-                        algorithm.ProcessPLY("Assets/Resources/cube_testmesh.ply");
-                    }
-                    else if (cameraName == "Cube on Plane")
-                    {
-                        algorithm.ProcessPLY("Assets/Resources/cube-plane_testmesh.ply");
-                    }*/
                 }
-                
+            }
+        }
+
+        if (GUILayout.Button(captureText, GUILayout.Width(100)))
+        {
+            if (cameraType != null)
+            {
+                cameraImage = camera.GetImage();
+                algorithm.ProcessImage(cameraImage);
 
                 IEnumerable<Shape> poseList = algorithm.GetShapes();
 
-                foreach(Shape p in poseList)
+                foreach (Shape p in poseList)
                 {
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     cube.transform.rotation = p.Rotation;
@@ -101,19 +108,34 @@ public class Scanner : EditorWindow
                 }
 
                 algorithm.ClearShapes();
-
             }
         }
-        GUILayout.EndArea();
-
-        //Draws the status label
-        EditorGUILayout.LabelField("Status: ", statusLabelText);
 
         //Creates the snap to toggle
         snapEnabled = GUILayout.Toggle(snapEnabled, "Snap to Objects");
 
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+
+        //Draws the status label
+        GUILayout.Label("Status: " + statusLabelText);
+
+        GUILayout.EndHorizontal();
+
+        if(camera != null && isStreaming)
+        {
+            ColorDepthImage camStream = camera.GetImage();
+
+            colorStream = camStream.ColorImage;
+            depthStream = camStream.DepthImage;
+
+            colorStream.Apply();
+            depthStream.Apply();
+        }
+
         //Convoluted GUI drawing
-        GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
+        GUILayout.BeginArea(new Rect(0, -40, Screen.width, Screen.height));
         GUILayout.FlexibleSpace();
 
         GUILayout.BeginHorizontal();
@@ -122,13 +144,18 @@ public class Scanner : EditorWindow
         GUILayout.BeginVertical();
 
         GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
         GUILayout.Label("RGB Feed");
+        GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
-        if (feedTex != null)
-            GUILayout.Label(feedTex, GUILayout.MaxWidth(Screen.width - 130), GUILayout.MaxHeight(Screen.height - 150), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+        if (colorStream == null || !isStreaming)
+            GUILayout.Box("COLOR STREAM", GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+        else
+            GUILayout.Box(colorStream, GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
 
@@ -137,13 +164,17 @@ public class Scanner : EditorWindow
         GUILayout.BeginVertical();
 
         GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
         GUILayout.Label("Depth Feed");
+        GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
-        if (feedTex != null)
-            GUILayout.Label(feedTex, GUILayout.MaxWidth(Screen.width - 130), GUILayout.MaxHeight(Screen.height - 150), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+        if (depthStream == null || !isStreaming)
+            GUILayout.Box("DEPTH STREAM", GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+        else
+            GUILayout.Box(depthStream, GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
 
@@ -151,6 +182,8 @@ public class Scanner : EditorWindow
 
         GUILayout.FlexibleSpace();
         GUILayout.EndArea();
+
+        GUILayout.EndVertical();
 
         updateGUI = false;
     }
@@ -158,20 +191,21 @@ public class Scanner : EditorWindow
     //Load Necessary resources (point cloud, etc..)
     void Awake()
     {
-        feedTex = new Texture2D(2, 2);
-        feedTex = Resources.Load("scannerBlocks", (typeof(Texture2D))) as Texture2D;
+        //feedTex = new Texture2D(2, 2);
+        //feedTex = Resources.Load("scannerBlocks", (typeof(Texture2D))) as Texture2D;
         updateGUI = true;
     }
 
     private void Update()
     {
-        if (isRecording && camera != null)
+        if (isStreaming && camera != null)
         {
-            //cameraImage = camera.GetImage();
-            //algorithm.ProcessImage(cameraImage);
+            updateGUI = true;
         }
 
         if (updateGUI)
-            EditorUtility.SetDirty(this);
+        {
+            EditorUtility.SetDirty(GetWindow(typeof(Scanner)));
+        }
     }
 }
