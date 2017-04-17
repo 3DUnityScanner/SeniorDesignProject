@@ -4,14 +4,14 @@ using System.IO;
 using UnityEngine;
 using UnityScanner3D.CameraIO;
 
-using Point = UnityEngine.Vector3;
-
 namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
         public const float STDEV = 2.0f;
         public const int CLUMPTHRESH = 10;
+        public const float PIXEL_3D_CONVERSION = 1.0f;
+
         private struct Pixel
         {
             public Pixel(int x, int y)
@@ -37,10 +37,10 @@ namespace UnityScanner3D.ComputerVision
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
-                List<Point> clump = clumpQueue.Dequeue();
+                List<Vector3> clump = clumpQueue.Dequeue();
                 if (clump.Count >= CLUMPTHRESH)
                 {
-                        Point averagePoint = AveragePoint(clump);
+                        Vector3 averagePoint = AveragePoint(clump);
                 
                     //set all poses to lie on the ground (y = 0.5)
                     averagePoint.y = 0.5f;
@@ -172,14 +172,14 @@ namespace UnityScanner3D.ComputerVision
             return distance;
         }
 
-        private List<Point> FloodFill(ColorDepthImage image, int x, int y, Color stopColor)
+        private List<Vector3> FloodFill(ColorDepthImage image, int x, int y, Color stopColor)
         {
             //Images
             Texture2D color = image.ColorImage;
             Texture2D depth = image.DepthImage;
 
             //Collections
-            List<Point> toRet = new List<Point>();
+            List<Vector3> toRet = new List<Vector3>();
             Queue<Pixel> pixelQueue = new Queue<Pixel>();
             pixelQueue.Enqueue(new Pixel(x, y));
 
@@ -188,15 +188,28 @@ namespace UnityScanner3D.ComputerVision
             float averageY = 0;
             float averageZ = 0;
 
-            for(int thisY = 0; y < image.ColorImage.height; thisY++)
+            Pixel vectorTailPixel = new Pixel(-1, -1);
+            while(vectorTailPixel.X == -1 && vectorTailPixel.Y == -1)
             {
-                for(int thisX = 0; x < image.ColorImage.width; thisX++)
+                int ranX = (int) Math.Round((double)UnityEngine.Random.Range(0, image.ColorImage.width));
+                int ranY = (int) Math.Round((double)UnityEngine.Random.Range(0, image.ColorImage.height));
+
+                if (image.ColorImage.GetPixel(ranX, ranY) == Color.white)
+                    vectorTailPixel = new Pixel(ranX, ranY);
+            }
+
+            Vector3 tail = new Vector3(vectorTailPixel.X, vectorTailPixel.Y, );
+            for(int thisY = 0; thisY < image.ColorImage.height; thisY++)
+            {
+                for(int thisX = 0; thisX < image.ColorImage.width; thisX++)
                 {
                     //Gets the color of the given pixel
                     Color c = image.ColorImage.GetPixel(thisX, thisY);
 
                     if (c == Color.black)
                         continue;
+
+                    //Determine
                 }
             }
 
@@ -210,7 +223,7 @@ namespace UnityScanner3D.ComputerVision
                 {
                     //Add the current pixel as a point to return
                     float Z = depth.GetPixel(p.X, p.Y).grayscale;
-                    toRet.Add(new Point(p.X, p.Y, Z));
+                    toRet.Add(new Vector3(p.X, p.Y, Z));
 
                     //Mark it as visited
                     color.SetPixel(p.X, p.Y, stopColor);
@@ -239,13 +252,13 @@ namespace UnityScanner3D.ComputerVision
             return toRet;
         }
 
-        private Point AveragePoint(List<Point> points)
+        private Vector3 AveragePoint(List<Vector3> points)
         {
             float averageX = 0;
             float averageY = 0;
             float averageZ = 0;
 
-            foreach(Point p in points)
+            foreach(Vector3 p in points)
             {
                 averageX += p.x;
                 averageY += p.y;
@@ -256,10 +269,10 @@ namespace UnityScanner3D.ComputerVision
             averageY /= points.Count;
             averageZ /= points.Count;
 
-            return new Point(averageX, averageY, averageZ);
+            return new Vector3(averageX, averageY, averageZ);
         }
 
-        private Queue<List<Point>> clumpQueue = new Queue<List<Point>>();
+        private Queue<List<Vector3>> clumpQueue = new Queue<List<Vector3>>();
 
         private void Contrastify(Texture2D colorImage, Color averageColor)
         {
@@ -285,13 +298,25 @@ namespace UnityScanner3D.ComputerVision
                     if (AreColorsDifferent(thisColor, Color.white))
                     {
                         //Perform flood fill
-                        List<Point> clump = FloodFill(image, x, y, Color.white);
+                        List<Vector3> clump = FloodFill(image, x, y, Color.white);
 
                         //Save clump
                         clumpQueue.Enqueue(clump);
                     }
                 }
             }
+        }
+
+        private Vector3 ConvertCoordinates(Vector3 point, Vector3 table)
+        {
+            float angle = Vector3.Angle(new Vector3(0, 0, 1), table);
+
+            float newX, newY, newZ;
+            newX = point.x;
+            newY = (float) (Math.Sin(angle) * point.y + Math.Cos(angle) * point.z);
+            newZ = (float) (Math.Cos(angle) * point.y - Math.Sin(angle) * point.z);
+
+            return new Vector3(newX, newY, newZ);
         }
     }
 }
