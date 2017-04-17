@@ -10,6 +10,8 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
+        public const float STDEV = 2.0f;
+        public const int CLUMPTHRESH = 10;
         private struct Pixel
         {
             public Pixel(int x, int y)
@@ -31,68 +33,45 @@ namespace UnityScanner3D.ComputerVision
 
         public IEnumerable<Shape> GetShapes()
         {
+
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
                 List<Point> clump = clumpQueue.Dequeue();
-                Point averagePoint = AveragePoint(clump);
-
-                //Return shape at the given point
-                yield return new Shape()
+                //check for little clumps to ignore
+                if (clump.Count >= CLUMPTHRESH)
                 {
-                    Type = ShapeType.Cube,
-                    Translation = averagePoint,
-                    Rotation = new Quaternion(0, 0, 0, 0)
-                };
+                        Point averagePoint = AveragePoint(clump);
+                
+                    //set all poses to lie on the ground (y = 0.5)
+                    averagePoint.y = 0.5f;
+
+                    //Return shape at the given point
+                    yield return new Shape()
+                    {
+                        Type = ShapeType.Cube,
+                        Translation = averagePoint,
+                        Rotation = new Quaternion(0, 0, 0, 0)
+                    };
+                }
             }
         }
 
         public void ProcessImage(ColorDepthImage image)
         {
-            Texture2D colorImage = image.ColorImage;
-            int colorHeight = colorImage.height;
-            int colorWidth = colorImage.width;
-
-            //Calculate the initial average color
+            //Calculate the initial average color and standard deviation
             Color averageColor = CalculateAverageColor(image.ColorImage);
-
-            //Calculate the standard deviation of color
             float stdDev = CalculateStandardColorDeviation(image.ColorImage, averageColor);
 
             //Refine average color
-            averageColor = CalculateAverageColor(colorImage, averageColor, stdDev, 2.0f);
+            averageColor = CalculateAverageColor(colorImage, averageColor, stdDev, STDEV);
 
-            //Maximize contrast in image
-            for(int y = 0; y < colorHeight; y++)
-            {
-                for(int x = 0; x < colorWidth; x++)
-                {
-                    Color currColor = colorImage.GetPixel(x, y);
-                    Color newColor = !AreColorsDifferent(averageColor, currColor) ? Color.white : Color.black;
-                    colorImage.SetPixel(x, y, newColor);
-                }
-            }
+            //Maximize contrast in image and save the new image
+            Contrastify(image.ColorImage, averageColor);
+            File.WriteAllBytes("contrast.png", image.ColorImage.EncodeToPNG());
 
-            //Save image
-            File.WriteAllBytes("contrast.png", colorImage.EncodeToPNG());
-            
             //Identify clumps
-            for(int y = 0; y < colorHeight; y++)
-            {
-                for(int x = 0; x < colorWidth; x++)
-                {
-                    //Checks if the difference in color is within the threshold
-                    Color thisColor = colorImage.GetPixel(x, y);
-                    if(AreColorsDifferent(thisColor, Color.white))
-                    {
-                        //Perform flood fill
-                        List<Point> clump = FloodFill(image, x, y, Color.white);
-
-                        //Save clump
-                        clumpQueue.Enqueue(clump);
-                    }
-                }
-            }
+            Clumpify(image);
         }
 
         private bool AreColorsDifferent(Color u, Color v)
@@ -205,13 +184,30 @@ namespace UnityScanner3D.ComputerVision
             Queue<Pixel> pixelQueue = new Queue<Pixel>();
             pixelQueue.Enqueue(new Pixel(x, y));
 
+            //Calculates the normal vector of the table
+            float averageX = 0;
+            float averageY = 0;
+            float averageZ = 0;
+
+            for(int thisY = 0; y < image.ColorImage.height; thisY++)
+            {
+                for(int thisX = 0; x < image.ColorImage.width; thisX++)
+                {
+                    //Gets the color of the given pixel
+                    Color c = image.ColorImage.GetPixel(thisX, thisY);
+
+                    if (c == Color.black)
+                        continue;
+                }
+            }
+
             do
             {
                 //Get the pixel out of the queue
                 Pixel p = pixelQueue.Dequeue();
 
                 //Check if the current pixel is the stop color
-                if (AreColorsDifferent(color.GetPixel(p.X, p.Y), stopColor))
+                if (color.GetPixel(p.X, p.Y) == stopColor)
                 {
                     //Add the current pixel as a point to return
                     float Z = depth.GetPixel(p.X, p.Y).grayscale;
@@ -265,5 +261,38 @@ namespace UnityScanner3D.ComputerVision
         }
 
         private Queue<List<Point>> clumpQueue = new Queue<List<Point>>();
+
+        private void Contrastify(Texture2D colorImage, Color averageColor)
+        {
+            for (int y = 0; y < colorImage.height; y++)
+            {
+                for (int x = 0; x < colorImage.width; x++)
+                {
+                    Color currColor = colorImage.GetPixel(x, y);
+                    Color newColor = !AreColorsDifferent(averageColor, currColor) ? Color.white : Color.black;
+                    colorImage.SetPixel(x, y, newColor);
+                }
+            }
+        }
+
+        private void Clumpify(ColorDepthImage image)
+        {
+            for (int y = 0; y < image.ColorImage.height; y++)
+            {
+                for (int x = 0; x < image.ColorImage.width; x++)
+                {
+                    //Checks if the difference in color is within the threshold
+                    Color thisColor = image.ColorImage.GetPixel(x, y);
+                    if (AreColorsDifferent(thisColor, Color.white))
+                    {
+                        //Perform flood fill
+                        List<Point> clump = FloodFill(image, x, y, Color.white);
+
+                        //Save clump
+                        clumpQueue.Enqueue(clump);
+                    }
+                }
+            }
+        }
     }
 }
