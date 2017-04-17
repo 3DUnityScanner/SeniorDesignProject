@@ -1,8 +1,6 @@
 ﻿
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
-using UnityEngine.Windows;
 using UnityScanner3D.CameraIO;
 using System.Collections.Generic;
 using System;
@@ -15,32 +13,32 @@ public class Scanner : EditorWindow
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
     //UI Backing Fields
+    Texture2D feedTex;
+    bool updateGUI;
     Rect imgRect = new Rect(300, 300, 200, 200);
     ColorDepthImage cameraImage = null;
     bool isRecording = false;
     bool snapEnabled = false;
-    bool showPosition = true;
     int selectedCameraIndex = 0;
     string statusLabelText = "Idle";
     string buttonText = "Scan";
-    string stat = "Advanced Options";
     string[] cameraOptions = new string[]
     {
         "Dummy Camera",
-        "Intel Camera",
+        "Intel F200",
         "Kinect",
-        "Cube",
-        "Cube on Plane"
+        "Cube [TEST]",
+        "Cube on Plane [TEST]"
     };
 
     //A lookup that maps camera names to classes
     Dictionary<string, Type> cameraNameLookup = new Dictionary<string, Type>
     {
         { "Dummy Camera", typeof(DummyCamera) },
-        { "Intel Camera", typeof(IntelCamera) },
-        {"Kinect", null },
-        {"Cube", null },
-        {"Cube on Plane", null }
+        { "Intel F200", typeof(IntelCamera) },
+        { "Kinect", null },
+        { "Cube [TEST]", null },
+        { "Cube on Plane [TEST]", null }
     };
 
     //Shows the plugin when the user clicks the Window > 3DScanner option
@@ -56,7 +54,7 @@ public class Scanner : EditorWindow
         selectedCameraIndex = EditorGUILayout.Popup("Choose a Camera", selectedCameraIndex, cameraOptions);
 
         //Draws the button that switches between capturing and scanning
-        GUILayout.BeginArea(new Rect((Screen.width / 2) - 50, 50, 100, 100));
+        GUILayout.BeginArea(new Rect(0, 50, 100, 100));
         if (GUILayout.Button(buttonText, GUILayout.Width(100)))
         {
             //Click handler while recording
@@ -114,16 +112,55 @@ public class Scanner : EditorWindow
         //Creates the snap to toggle
         snapEnabled = GUILayout.Toggle(snapEnabled, "Snap to Objects");
 
-        //Draws the label for the camera feed
-        GUILayout.BeginArea(new Rect(195, 195, 100, 100));
-            EditorGUILayout.LabelField("Camera Feed:");
+        //Convoluted GUI drawing
+        GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
+        GUILayout.FlexibleSpace();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+
+        GUILayout.BeginVertical();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("RGB Feed");
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        if (feedTex != null)
+            GUILayout.Label(feedTex, GUILayout.MaxWidth(Screen.width - 130), GUILayout.MaxHeight(Screen.height - 150), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+
+        GUILayout.EndVertical();
+
+        GUILayout.BeginVertical();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Depth Feed");
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        if (feedTex != null)
+            GUILayout.Label(feedTex, GUILayout.MaxWidth(Screen.width - 130), GUILayout.MaxHeight(Screen.height - 150), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+
+        GUILayout.EndVertical();
+
+        GUILayout.FlexibleSpace();
         GUILayout.EndArea();
 
-        //Draws the image from the camera
-        if (cameraImage != null && isRecording)
-        {
-            EditorGUI.DrawPreviewTexture(imgRect, cameraImage.ColorImage);
-        }
+        updateGUI = false;
+    }
+
+    //Load Necessary resources (point cloud, etc..)
+    void Awake()
+    {
+        feedTex = new Texture2D(2, 2);
+        feedTex = Resources.Load("scannerBlocks", (typeof(Texture2D))) as Texture2D;
+        updateGUI = true;
     }
 
     private void Update()
@@ -133,5 +170,8 @@ public class Scanner : EditorWindow
             //cameraImage = camera.GetImage();
             //algorithm.ProcessImage(cameraImage);
         }
+
+        if (updateGUI)
+            EditorUtility.SetDirty(this);
     }
 }
