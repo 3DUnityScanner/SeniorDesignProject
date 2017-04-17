@@ -10,6 +10,8 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
+        public const float STDEV = 2.0f;
+        public const int CLUMPTHRESH = 10;
         private struct Pixel
         {
             public Pixel(int x, int y)
@@ -31,19 +33,26 @@ namespace UnityScanner3D.ComputerVision
 
         public IEnumerable<Shape> GetShapes()
         {
+
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
                 List<Point> clump = clumpQueue.Dequeue();
-                Point averagePoint = AveragePoint(clump);
-
-                //Return shape at the given point
-                yield return new Shape()
+                if (clump.Count >= CLUMPTHRESH)
                 {
-                    Type = ShapeType.Cube,
-                    Translation = averagePoint,
-                    Rotation = new Quaternion(0, 0, 0, 0)
-                };
+                        Point averagePoint = AveragePoint(clump);
+                
+                    //set all poses to lie on the ground (y = 0.5)
+                    averagePoint.y = 0.5f;
+
+                    //Return shape at the given point
+                    yield return new Shape()
+                    {
+                        Type = ShapeType.Cube,
+                        Translation = averagePoint,
+                        Rotation = new Quaternion(0, 0, 0, 0)
+                    };
+                }
             }
         }
 
