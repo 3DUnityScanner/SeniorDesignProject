@@ -9,20 +9,39 @@ namespace UnityScanner3D.CameraIO
 
         public ColorDepthImage GetImage()
         {
+            //isBlack = (UnityEngine.Random.Range(0, 2) == 1);
+
             if (Status != CameraStatus.Running)
                 throw new Exception("The camera must be running before images can be captured.");
 
-            const int WIDTH = 200;
-            const int HEIGHT = 200;
+            const int WIDTH = 400;
+            const int HEIGHT = 400;
 
             Texture2D color = new Texture2D(WIDTH, HEIGHT);
             Texture2D depth = new Texture2D(WIDTH, HEIGHT);
 
-            for (int i = 0; i < HEIGHT; i++)
-                for (int j = 0; j < WIDTH; j++)
-                    color.SetPixel(i, j, isBlack ? Color.yellow : Color.red);
+            Color cColor, dColor;
 
-            isBlack = !isBlack;
+            if ((UnityEngine.Random.Range(0, 2) == 1))
+            {
+                cColor = new Color(255, 255, 0, 1.0f);
+                dColor = new Color(255, 255, 255, 1.0f);
+            } else
+            {
+                cColor = new Color(0, 255, 0, 1.0f);
+                dColor = new Color(0, 0, 0, 1.0f);
+            }
+
+            for (int i = 0; i < HEIGHT; i++)
+            {
+                for (int j = 0; j < WIDTH; j++)
+                {
+                    color.SetPixel(i, j, cColor);
+                    depth.SetPixel(i, j, dColor);
+
+                }
+            }
+
             return new ColorDepthImage(color, depth);
         }
 
@@ -39,7 +58,5 @@ namespace UnityScanner3D.CameraIO
                 throw new Exception("A camera can't be stopped if it is already stopped.");
             Status = CameraStatus.Stopped;
         }
-
-        private bool isBlack = true;
     }
 }
