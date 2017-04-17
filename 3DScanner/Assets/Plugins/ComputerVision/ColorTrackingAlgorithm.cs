@@ -38,6 +38,7 @@ namespace UnityScanner3D.ComputerVision
             {
                 //Calculate average position
                 List<Point> clump = clumpQueue.Dequeue();
+                //check for little clumps to ignore
                 if (clump.Count >= CLUMPTHRESH)
                 {
                         Point averagePoint = AveragePoint(clump);
@@ -69,7 +70,7 @@ namespace UnityScanner3D.ComputerVision
             float stdDev = CalculateStandardColorDeviation(image.ColorImage, averageColor);
 
             //Refine average color
-            averageColor = CalculateAverageColor(colorImage, averageColor, stdDev, 2.0f);
+            averageColor = CalculateAverageColor(colorImage, averageColor, stdDev, STDEV);
 
             //Maximize contrast in image
             for(int y = 0; y < colorHeight; y++)
