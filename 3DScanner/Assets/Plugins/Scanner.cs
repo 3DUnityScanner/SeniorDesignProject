@@ -12,7 +12,7 @@ public class Scanner : EditorWindow
 {
     //Object used to access the camera
     ICamera camera;
-    IAlgorithm algorithm = new icp();
+    IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
     //UI Backing Fields
     Rect imgRect = new Rect(300, 300, 200, 200);
@@ -82,14 +82,14 @@ public class Scanner : EditorWindow
                     algorithm.ProcessImage(cameraImage);
                 } else
                 {
-                    if(cameraName == "Cube")
+                    /*if(cameraName == "Cube")
                     {
                         algorithm.ProcessPLY("Assets/Resources/cube_testmesh.ply");
                     }
                     else if (cameraName == "Cube on Plane")
                     {
                         algorithm.ProcessPLY("Assets/Resources/cube-plane_testmesh.ply");
-                    }
+                    }*/
                 }
                 
 
