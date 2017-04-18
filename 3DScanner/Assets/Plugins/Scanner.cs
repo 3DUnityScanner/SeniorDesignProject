@@ -15,23 +15,20 @@ public class Scanner : EditorWindow
     //UI Backing Fields
     string cameraName;
     Type cameraType;
-    Texture2D feedTex, colorStream, depthStream;
+    Texture2D colorStream, depthStream;
     bool updateGUI;
-    Rect imgRect = new Rect(300, 300, 200, 200);
     ColorDepthImage cameraImage = null;
     bool isStreaming = false;
-    bool snapEnabled = false;
     int selectedCameraIndex = 0;
     string statusLabelText = "Idle";
     string streamText = "Start Stream";
     string captureText = "Capture";
+    private bool snapEnabled;
     string[] cameraOptions = new string[]
     {
         "Dummy Camera",
         "Intel F200",
         "Kinect",
-        "Cube [TEST]",
-        "Cube on Plane [TEST]"
     };
 
     //A lookup that maps camera names to classes
@@ -40,8 +37,6 @@ public class Scanner : EditorWindow
         { "Dummy Camera", typeof(DummyCamera) },
         { "Intel F200", typeof(IntelCamera) },
         { "Kinect", null },
-        { "Cube [TEST]", null },
-        { "Cube on Plane [TEST]", null }
     };
 
     //Shows the plugin when the user clicks the Window > 3DScanner option
@@ -53,14 +48,28 @@ public class Scanner : EditorWindow
 
     void OnGUI()
     {
-        //Creates the camera selection drop down menu
-        selectedCameraIndex = EditorGUILayout.Popup("Choose a Camera", selectedCameraIndex, cameraOptions);
-
         GUILayout.BeginVertical();
 
-        //Draws the button that switches between capturing and scanning
+        //Creates the camera selection drop down menu
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button(streamText, GUILayout.Width(100)))
+        selectedCameraIndex = EditorGUILayout.Popup("Choose a Camera", selectedCameraIndex, cameraOptions, EditorStyles.popup);
+        GUILayout.EndHorizontal();
+
+        //Buttons and status
+        GUILayout.BeginHorizontal();
+        bool streamButton = GUILayout.Button(streamText, GUILayout.Width(100));
+        bool captureButton = GUILayout.Button(captureText, GUILayout.Width(100));
+        GUILayout.FlexibleSpace();
+        GUILayout.Box("Status: " + statusLabelText);
+        GUILayout.EndHorizontal();
+
+        //Options
+        GUILayout.BeginHorizontal();
+        snapEnabled = GUILayout.Toggle(snapEnabled, "Snap to Objects");
+        GUILayout.EndHorizontal();
+
+        //We interrupt this gross UI stuff to bring you some logic
+        if (streamButton)
         {
             //if streaming, stop it
             if (isStreaming)
@@ -71,7 +80,6 @@ public class Scanner : EditorWindow
                 if (camera != null)
                     camera.StopCapture();
             }
-
             //if not streaming, start it
             else
             {
@@ -80,8 +88,8 @@ public class Scanner : EditorWindow
                 streamText = "Stop Stream";
 
                 //Create an instance of the camera
-                string cameraName = cameraOptions[selectedCameraIndex];
-                Type cameraType = cameraNameLookup[cameraName];
+                cameraName = cameraOptions[selectedCameraIndex];
+                cameraType = cameraNameLookup[cameraName];
 
                 if (cameraType != null)
                 {
@@ -91,9 +99,9 @@ public class Scanner : EditorWindow
             }
         }
 
-        if (GUILayout.Button(captureText, GUILayout.Width(100)))
+        if (captureButton)
         {
-            if (cameraType != null)
+            if (camera != null)
             {
                 cameraImage = camera.GetImage();
                 algorithm.ProcessImage(cameraImage);
@@ -111,77 +119,34 @@ public class Scanner : EditorWindow
             }
         }
 
-        //Creates the snap to toggle
-        snapEnabled = GUILayout.Toggle(snapEnabled, "Snap to Objects");
-
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-
-        //Draws the status label
-        GUILayout.Label("Status: " + statusLabelText);
-
-        GUILayout.EndHorizontal();
-
-        if(camera != null && isStreaming)
+        //Update ColorDepthImage
+        if (camera != null && isStreaming)
         {
-            ColorDepthImage camStream = camera.GetImage();
+            cameraImage = camera.GetImage();
 
-            colorStream = camStream.ColorImage;
-            depthStream = camStream.DepthImage;
-
-            colorStream.Apply();
-            depthStream.Apply();
+            colorStream = cameraImage.ColorImage;
+            depthStream = cameraImage.DepthImage;
         }
 
-        //Convoluted GUI drawing
-        GUILayout.BeginArea(new Rect(0, -40, Screen.width, Screen.height));
-        GUILayout.FlexibleSpace();
+        //We now return to our regularly scheduled GUI mess
 
         GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-
         GUILayout.BeginVertical();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        GUILayout.Label("RGB Feed");
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
+        GUILayout.Label("RGB Stream");
         if (colorStream == null || !isStreaming)
-            GUILayout.Box("COLOR STREAM", GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+            GUILayout.Box("No RGB Data Detected", GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
         else
             GUILayout.Box(colorStream, GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
         GUILayout.EndVertical();
 
         GUILayout.BeginVertical();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        GUILayout.Label("Depth Feed");
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
+        GUILayout.Label("Depth Stream");
         if (depthStream == null || !isStreaming)
-            GUILayout.Box("DEPTH STREAM", GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+            GUILayout.Box("No Depth Data Detected", GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
         else
             GUILayout.Box(depthStream, GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
         GUILayout.EndVertical();
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndArea();
+        GUILayout.EndHorizontal();
 
         GUILayout.EndVertical();
 

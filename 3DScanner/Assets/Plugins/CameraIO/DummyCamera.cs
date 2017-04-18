@@ -38,9 +38,11 @@ namespace UnityScanner3D.CameraIO
                 {
                     color.SetPixel(i, j, cColor);
                     depth.SetPixel(i, j, dColor);
-
                 }
             }
+
+            color.Apply();
+            depth.Apply();
 
             return new ColorDepthImage(color, depth);
         }
