@@ -36,8 +36,13 @@ namespace UnityScanner3D.CameraIO
             {
                 for (int j = 0; j < WIDTH; j++)
                 {
-                    color.SetPixel(i, j, cColor);
-                    depth.SetPixel(i, j, dColor);
+                    //color.SetPixel(i, j, cColor);
+                    //depth.SetPixel(i, j, dColor);
+
+                    color.SetPixel(i, j, new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value));
+                    depth.SetPixel(i, j, new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value));
+
+
                 }
             }
 
