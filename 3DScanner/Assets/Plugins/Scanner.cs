@@ -20,7 +20,7 @@ public class Scanner : EditorWindow
     string cameraName;
     Type cameraType;
     Texture2D colorStream, depthStream;
-    bool updateGUI;
+    bool updateGUI, showAlgorithm;
     ColorDepthImage cameraImage = null;
     bool isStreaming = false;
     int selectedCameraIndex = 0;
@@ -76,7 +76,7 @@ public class Scanner : EditorWindow
         if (streamButton)
         {
             //if streaming, stop it
-            if (isStreaming)
+            if (isStreaming && !showAlgorithm)
             {
                 isStreaming = false;
                 statusLabelText = "Idle";
@@ -87,6 +87,7 @@ public class Scanner : EditorWindow
             //if not streaming, start it
             else
             {
+                showAlgorithm = false;
                 isStreaming = true;
                 statusLabelText = "Streaming!";
                 streamText = "Stop Stream";
@@ -120,11 +121,15 @@ public class Scanner : EditorWindow
                 }
 
                 algorithm.ClearShapes();
+
+                showAlgorithm = true;
+                statusLabelText = "Showing Algorithm Result";
+                streamText = "Start Stream";
             }
         }
 
         //Update ColorDepthImage
-        if (isStreaming)
+        if (isStreaming && !showAlgorithm)
             updateCam();
 
         //We now return to our regularly scheduled GUI mess
@@ -184,7 +189,7 @@ public class Scanner : EditorWindow
 
     private void Update()
     {
-        if (isStreaming && camera != null)
+        if (isStreaming && camera != null && !showAlgorithm)
         {
             updateGUI = true;
         }
