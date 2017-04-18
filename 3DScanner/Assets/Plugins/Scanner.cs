@@ -5,12 +5,16 @@ using UnityScanner3D.CameraIO;
 using System.Collections.Generic;
 using System;
 using UnityScanner3D.ComputerVision;
+using System.Diagnostics;
 
 public class Scanner : EditorWindow
 {
     //Object used to access the camera
     ICamera camera;
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
+
+    Stopwatch lastCameraUpdate = new Stopwatch();
+    int CAPTURELIMIT = 50;
 
     //UI Backing Fields
     string cameraName;
@@ -103,7 +107,7 @@ public class Scanner : EditorWindow
         {
             if (camera != null)
             {
-                cameraImage = camera.GetImage();
+                updateCam();
                 algorithm.ProcessImage(cameraImage);
 
                 IEnumerable<Shape> poseList = algorithm.GetShapes();
@@ -120,16 +124,8 @@ public class Scanner : EditorWindow
         }
 
         //Update ColorDepthImage
-        if (camera != null && isStreaming)
-        {
-            cameraImage = camera.GetImage();
-
-            colorStream = cameraImage.ColorImage;
-            depthStream = cameraImage.DepthImage;
-
-            colorStream.Apply();
-            depthStream.Apply();
-        }
+        if (isStreaming)
+            updateCam();
 
         //We now return to our regularly scheduled GUI mess
 
@@ -162,6 +158,28 @@ public class Scanner : EditorWindow
         //feedTex = new Texture2D(2, 2);
         //feedTex = Resources.Load("scannerBlocks", (typeof(Texture2D))) as Texture2D;
         updateGUI = true;
+    }
+
+    private void updateCam()
+    {
+        if (camera != null)
+        {
+            if (lastCameraUpdate.ElapsedMilliseconds > CAPTURELIMIT || cameraImage == null)
+            {
+                cameraImage = camera.GetImage();
+
+                colorStream = cameraImage.ColorImage;
+                depthStream = cameraImage.DepthImage;
+
+                colorStream.Apply();
+                depthStream.Apply();
+
+                lastCameraUpdate.Reset();
+                lastCameraUpdate.Start();
+            }
+            else if (!lastCameraUpdate.IsRunning)
+                lastCameraUpdate.Start();
+        }
     }
 
     private void Update()
