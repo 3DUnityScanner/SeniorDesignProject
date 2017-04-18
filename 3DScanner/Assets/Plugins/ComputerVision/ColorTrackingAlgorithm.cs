@@ -33,7 +33,7 @@ namespace UnityScanner3D.ComputerVision
 
         public IEnumerable<Shape> GetShapes()
         {
-
+            float angle = Vector3.Angle(normalVector, new Vector3(0, 0, -1));
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
@@ -41,7 +41,7 @@ namespace UnityScanner3D.ComputerVision
                 //check for little clumps to ignore
                 if (clump.Count >= CLUMPTHRESH)
                 {
-                        Vector3 averagePoint = AveragePoint(clump);
+                    Vector3 averagePoint = ConvertCoordinates(AveragePoint(clump), angle);
                 
                     //set all poses to lie on the ground (y = 0.5)
                     averagePoint.y = 0.5f;
@@ -71,6 +71,7 @@ namespace UnityScanner3D.ComputerVision
             File.WriteAllBytes("contrast.png", image.ColorImage.EncodeToPNG());
 
             //Identify clumps
+            CalculateTableNormal(image);
             Clumpify(image);
         }
 
@@ -161,6 +162,56 @@ namespace UnityScanner3D.ComputerVision
             return (float) stdDev;
         }
 
+        private Vector3 CalculateTableNormal(ColorDepthImage image)
+        {
+            //Calculates the normal vector of the table
+            Vector3 toRet;
+            float averageX = 0;
+            float averageY = 0;
+            float averageZ = 0;
+
+            //Picks an arbitrary starting point
+            Pixel tail = GetTablePixel(image.ColorImage);
+
+            //Constructs vectors
+            List<Vector3> vectors = new List<Vector3>(10);
+            for (int i = 0; i < 10; i++)
+            {
+                Pixel head = GetTablePixel(image.ColorImage);
+                float headZ = image.DepthImage.GetPixel(head.X, head.Y).grayscale;
+                float tailZ = image.DepthImage.GetPixel(tail.X, tail.Y).grayscale;
+
+                vectors.Add(new Vector3(
+                    PIXEL_3D_CONVERSION * (head.X - tail.X),
+                    PIXEL_3D_CONVERSION * (head.Y - tail.Y),
+                    headZ - tailZ));
+                
+            }
+
+            Vector3 camView = new Vector3(0, 0, 1);
+            foreach(Vector3 u in vectors)
+            {
+                foreach(Vector3 v in vectors)
+                {
+                    //Calculates the normal
+                    Vector3 n = Vector3.Cross(u, v);
+
+                    //Ensures the normal is pointing above the table
+                    if (Vector3.Dot(n, camView) < 0)
+                        n *= -1;
+
+                    //Increments the average
+                    averageX += n.x;
+                    averageY += n.y;
+                    averageZ += n.z;
+                }
+            }
+
+            toRet = new Vector3(averageX, averageY, averageZ);
+            toRet.Normalize();
+            return toRet;
+        }
+
         private float ColorDifference(Color u, Color v)
         {
             //Calculates the squared difference of each component
@@ -184,43 +235,13 @@ namespace UnityScanner3D.ComputerVision
             Queue<Pixel> pixelQueue = new Queue<Pixel>();
             pixelQueue.Enqueue(new Pixel(x, y));
 
-            //Calculates the normal vector of the table
-            float averageX = 0;
-            float averageY = 0;
-            float averageZ = 0;
-
-            Pixel vectorTailPixel = new Pixel(-1, -1);
-            while(vectorTailPixel.X == -1 && vectorTailPixel.Y == -1)
-            {
-                int ranX = (int) Math.Round((double)UnityEngine.Random.Range(0, image.ColorImage.width));
-                int ranY = (int) Math.Round((double)UnityEngine.Random.Range(0, image.ColorImage.height));
-
-                if (image.ColorImage.GetPixel(ranX, ranY) == Color.white)
-                    vectorTailPixel = new Pixel(ranX, ranY);
-            }
-
-            //Vector3 tail = new Vector3(vectorTailPixel.X, vectorTailPixel.Y, );
-            //for(int thisY = 0; thisY < image.ColorImage.height; thisY++)
-            //{
-            //    for(int thisX = 0; thisX < image.ColorImage.width; thisX++)
-            //    {
-            //        //Gets the color of the given pixel
-            //        Color c = image.ColorImage.GetPixel(thisX, thisY);
-
-            //        if (c == Color.black)
-            //            continue;
-
-            //        //Determine
-            //    }
-            //}
-
             do
             {
                 //Get the pixel out of the queue
                 Pixel p = pixelQueue.Dequeue();
 
                 //Check if the current pixel is the stop color
-                if (color.GetPixel(p.X, p.Y) == stopColor)
+                if (color.GetPixel(p.X, p.Y) != stopColor)
                 {
                     //Add the current pixel as a point to return
                     float Z = depth.GetPixel(p.X, p.Y).grayscale;
@@ -275,6 +296,8 @@ namespace UnityScanner3D.ComputerVision
 
         private Queue<List<Vector3>> clumpQueue = new Queue<List<Vector3>>();
 
+        private Vector3 normalVector;
+
         private void Contrastify(Texture2D colorImage, Color averageColor)
         {
             for (int y = 0; y < colorImage.height; y++)
@@ -308,16 +331,30 @@ namespace UnityScanner3D.ComputerVision
             }
         }
 
-        private Vector3 ConvertCoordinates(Vector3 point, Vector3 table)
+        private Vector3 ConvertCoordinates(Vector3 point, float angle)
         {
-            float angle = Vector3.Angle(new Vector3(0, 0, 1), table);
-
             float newX, newY, newZ;
             newX = point.x;
             newY = (float) (Math.Sin(angle) * point.y + Math.Cos(angle) * point.z);
             newZ = (float) (Math.Cos(angle) * point.y - Math.Sin(angle) * point.z);
 
             return new Vector3(newX, newY, newZ);
+        }
+
+        private Pixel GetTablePixel(Texture2D colorImage)
+        {
+            Pixel p = new Pixel(-1, -1);
+
+            while (p.X == -1 && p.Y == -1)
+            {
+                int ranX = (int)Math.Round((double)UnityEngine.Random.Range(0, colorImage.width));
+                int ranY = (int)Math.Round((double)UnityEngine.Random.Range(0, colorImage.height));
+
+                if (colorImage.GetPixel(ranX, ranY) == Color.white)
+                    p = new Pixel(ranX, ranY);
+            }
+
+            return p;
         }
     }
 }
