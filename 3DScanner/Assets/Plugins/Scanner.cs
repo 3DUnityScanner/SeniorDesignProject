@@ -126,6 +126,9 @@ public class Scanner : EditorWindow
 
             colorStream = cameraImage.ColorImage;
             depthStream = cameraImage.DepthImage;
+
+            colorStream.Apply();
+            depthStream.Apply();
         }
 
         //We now return to our regularly scheduled GUI mess
