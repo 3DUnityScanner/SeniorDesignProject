@@ -28,6 +28,7 @@ public class Scanner : EditorWindow
     string streamText = "Start Stream";
     string captureText = "Capture";
     private bool snapEnabled;
+    GameObject lastScanned = null;
     string[] cameraOptions = new string[]
     {
         "Dummy Camera",
@@ -63,6 +64,7 @@ public class Scanner : EditorWindow
         GUILayout.BeginHorizontal();
         bool streamButton = GUILayout.Button(streamText, GUILayout.Width(100));
         bool captureButton = GUILayout.Button(captureText, GUILayout.Width(100));
+        bool undoButton = GUILayout.Button("Undo Last", GUILayout.Width(100));
         GUILayout.FlexibleSpace();
         GUILayout.Box("Status: " + statusLabelText);
         GUILayout.EndHorizontal();
@@ -113,18 +115,36 @@ public class Scanner : EditorWindow
 
                 IEnumerable<Shape> poseList = algorithm.GetShapes();
 
+                //Set parent for group objects as empty GameObject
+                var parent = new GameObject() { name="Scanned Objects" };
+
                 foreach (Shape p in poseList)
                 {
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     cube.transform.rotation = p.Rotation;
                     cube.transform.position = p.Translation;
+                    cube.transform.parent = parent.transform;//grouping spawned objects
                 }
+
+                lastScanned = parent;//pass to lastScanned for the undo button
 
                 algorithm.ClearShapes();
 
                 showAlgorithm = true;
                 statusLabelText = "Showing Algorithm Result";
                 streamText = "Start Stream";
+            }
+        }
+
+        if (undoButton)
+        {
+            if (lastScanned != null)
+            {
+                DestroyImmediate(lastScanned);
+            }
+            else
+            {
+                UnityEngine.Debug.Log("Must scan before undoing");
             }
         }
 
