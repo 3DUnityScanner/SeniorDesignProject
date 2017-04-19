@@ -28,7 +28,8 @@ public class Scanner : EditorWindow
     string streamText = "Start Stream";
     string captureText = "Capture";
     private bool snapEnabled;
-    GameObject lastScanned = null;
+    Stack<GameObject> scans = new Stack<GameObject>();
+    int scanCount = 0;
     string[] cameraOptions = new string[]
     {
         "Dummy Camera",
@@ -64,7 +65,7 @@ public class Scanner : EditorWindow
         GUILayout.BeginHorizontal();
         bool streamButton = GUILayout.Button(streamText, GUILayout.Width(100));
         bool captureButton = GUILayout.Button(captureText, GUILayout.Width(100));
-        bool undoButton = GUILayout.Button("Undo Last", GUILayout.Width(100));
+        bool undoButton = GUILayout.Button("Undo", GUILayout.Width(100));
         GUILayout.FlexibleSpace();
         GUILayout.Box("Status: " + statusLabelText);
         GUILayout.EndHorizontal();
@@ -110,13 +111,14 @@ public class Scanner : EditorWindow
         {
             if (camera != null)
             {
+                scanCount++;
                 updateCam();
                 algorithm.ProcessImage(cameraImage);
 
                 IEnumerable<Shape> poseList = algorithm.GetShapes();
 
                 //Set parent for group objects as empty GameObject
-                var parent = new GameObject() { name="Scanned Objects" };
+                var parent = new GameObject() { name="Scanned Objects "+scanCount };
 
                 foreach (Shape p in poseList)
                 {
@@ -126,7 +128,7 @@ public class Scanner : EditorWindow
                     cube.transform.parent = parent.transform;//grouping spawned objects
                 }
 
-                lastScanned = parent;//pass to lastScanned for the undo button
+                scans.Push(parent);//pass to lastScanned for the undo button
 
                 algorithm.ClearShapes();
 
@@ -138,13 +140,14 @@ public class Scanner : EditorWindow
 
         if (undoButton)
         {
-            if (lastScanned != null)
+            if (scans.Count > 0)
             {
+                var lastScanned = scans.Pop();
                 DestroyImmediate(lastScanned);
             }
             else
             {
-                UnityEngine.Debug.Log("Must scan before undoing");
+                UnityEngine.Debug.Log("Must have scanned before undoing");
             }
         }
 
