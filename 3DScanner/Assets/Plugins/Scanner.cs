@@ -18,8 +18,9 @@ public class Scanner : EditorWindow
 
     //UI Backing Fields
     string cameraName;
+    string logText = "";
     Type cameraType;
-    Texture2D colorStream, depthStream;
+    Texture2D leftStream, rightStream;
     bool updateGUI, showAlgorithm;
     ColorDepthImage cameraImage = null;
     bool isStreaming = false;
@@ -111,22 +112,40 @@ public class Scanner : EditorWindow
         {
             if (camera != null)
             {
+                logText = "Running Algorithm: Color Tracking\n\n";
+
                 scanCount++;
                 updateCam();
                 algorithm.ProcessImage(cameraImage);
 
                 IEnumerable<Shape> poseList = algorithm.GetShapes();
+                
 
                 //Set parent for group objects as empty GameObject
                 var parent = new GameObject() { name="Scanned Objects "+scanCount };
 
+                Vector3 centerVector = new Vector3();
+                bool vFlag = false;
+                int i = 0;
                 foreach (Shape p in poseList)
                 {
+                    i++;
+                    if (!vFlag)
+                    {
+                        centerVector = p.Translation;
+                        vFlag = true;
+                    }
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     cube.transform.rotation = p.Rotation;
-                    cube.transform.position = p.Translation;
+                    cube.transform.position = p.Translation - centerVector;
+                    cube.transform.localScale = new Vector3(70, 70, 70);
                     cube.transform.parent = parent.transform;//grouping spawned objects
+
+                    logText += "Object " + i + " :\n";
+                    logText += "Position: " + cube.transform.position.ToString() + "\nRotation: " + cube.transform.rotation + "\n\n";
                 }
+
+                logText += "Objects Found: " + i + "\n\n";
 
                 scans.Push(parent);//pass to lastScanned for the undo button
 
@@ -160,20 +179,22 @@ public class Scanner : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.BeginVertical();
         GUILayout.Label("RGB Stream");
-        if (colorStream == null || !isStreaming)
-            GUILayout.Box("No RGB Data Detected", GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+        if (leftStream == null || !isStreaming)
+            GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         else
-            GUILayout.Box(colorStream, GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+            GUILayout.Box(leftStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         GUILayout.EndVertical();
 
         GUILayout.BeginVertical();
         GUILayout.Label("Depth Stream");
-        if (depthStream == null || !isStreaming)
-            GUILayout.Box("No Depth Data Detected", GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+        if (rightStream == null || !isStreaming)
+            GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         else
-            GUILayout.Box(depthStream, GUILayout.MaxWidth(300), GUILayout.MaxHeight(300), GUILayout.MinWidth(50), GUILayout.MinHeight(50));
+            GUILayout.Box(rightStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
+
+        GUILayout.TextArea(logText, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
 
         GUILayout.EndVertical();
 
@@ -183,8 +204,6 @@ public class Scanner : EditorWindow
     //Load Necessary resources (point cloud, etc..)
     void Awake()
     {
-        //feedTex = new Texture2D(2, 2);
-        //feedTex = Resources.Load("scannerBlocks", (typeof(Texture2D))) as Texture2D;
         updateGUI = true;
     }
 
@@ -196,11 +215,11 @@ public class Scanner : EditorWindow
             {
                 cameraImage = camera.GetImage();
 
-                colorStream = cameraImage.ColorImage;
-                depthStream = cameraImage.DepthImage;
+                leftStream = cameraImage.ColorImage;
+                rightStream = cameraImage.DepthImage;
 
-                colorStream.Apply();
-                depthStream.Apply();
+                leftStream.Apply();
+                rightStream.Apply();
 
                 lastCameraUpdate.Reset();
                 lastCameraUpdate.Start();

@@ -9,13 +9,11 @@ namespace UnityScanner3D.CameraIO
 
         public ColorDepthImage GetImage()
         {
-            //isBlack = (UnityEngine.Random.Range(0, 2) == 1);
-
             if (Status != CameraStatus.Running)
                 throw new Exception("The camera must be running before images can be captured.");
 
-            const int WIDTH = 400;
-            const int HEIGHT = 400;
+            const int WIDTH = 640 / 2;
+            const int HEIGHT = 480 / 2;
 
             Texture2D color = new Texture2D(WIDTH, HEIGHT);
             Texture2D depth = new Texture2D(WIDTH, HEIGHT);
@@ -36,13 +34,8 @@ namespace UnityScanner3D.CameraIO
             {
                 for (int j = 0; j < WIDTH; j++)
                 {
-                    //color.SetPixel(i, j, cColor);
-                    //depth.SetPixel(i, j, dColor);
-
                     color.SetPixel(i, j, new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value));
                     depth.SetPixel(i, j, new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value));
-
-
                 }
             }
 
