@@ -8,9 +8,11 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
+        public const int OBJSCALE = 25;
         public const float STDEV = 2.0f;
-        public const int CLUMPTHRESH = 10;
+        public const int CLUMPTHRESH = 1700;
         public const float PIXEL_3D_CONVERSION = 1.0f;
+        private const float DIFFERENCE_THRESHOLD = 0.3f;
 
         private struct Pixel
         {
@@ -23,8 +25,6 @@ namespace UnityScanner3D.ComputerVision
             public int X { get; private set; }
             public int Y { get; private set; }
         }
-
-        private const float DIFFERENCE_THRESHOLD = 0.4f;
 
         public void ClearShapes()
         {
@@ -44,7 +44,7 @@ namespace UnityScanner3D.ComputerVision
                     Vector3 averagePoint = ConvertCoordinates(AveragePoint(clump), angle);
                 
                     //set all poses to lie on the ground (y = 0.5)
-                    averagePoint.y = 0.5f;
+                    averagePoint.y = 0.5f * OBJSCALE;
 
                     //Return shape at the given point
                     yield return new Shape()
