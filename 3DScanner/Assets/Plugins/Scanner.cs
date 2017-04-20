@@ -44,6 +44,7 @@ public class Scanner : EditorWindow
         { "Intel F200", typeof(IntelCamera) },
         { "Kinect", null },
     };
+    private bool runningAlgorithm;
 
     //Shows the plugin when the user clicks the Window > 3DScanner option
     [MenuItem("Window/3D Scanner")]
@@ -71,6 +72,8 @@ public class Scanner : EditorWindow
         bool captureButton = false;
         GUILayout.BeginHorizontal();
         bool streamButton = GUILayout.Button(streamText, GUILayout.Width(100));
+        if (GUIKeyDown(KeyCode.Space))
+            streamButton = true;
         if (!isStreaming)
             GUI.enabled = false;
         captureButton = GUILayout.Button(captureText, GUILayout.Width(100));
@@ -80,6 +83,8 @@ public class Scanner : EditorWindow
         bool undoButton = GUILayout.Button("Undo Last", GUILayout.Width(100));
         bool clearButton = GUILayout.Button("Clear All", GUILayout.Width(100));//Implement this
         GUILayout.EndHorizontal();
+
+
 
         //Options
         GUILayout.BeginHorizontal();
@@ -125,53 +130,8 @@ public class Scanner : EditorWindow
             }
         }
 
-        if (captureButton)
-        {
-            if (camera != null)
-            {
-                logText = "Running Algorithm: Color Tracking\n\n";
-
-                scanCount++;
-                updateCam();
-                algorithm.ProcessImage(cameraImage);
-
-                IEnumerable<Shape> poseList = algorithm.GetShapes();
-                
-                //Set parent for group objects as empty GameObject
-                var parent = new GameObject() { name="Scanned Objects "+scanCount };
-
-                Vector3 centerVector = new Vector3();
-                bool vFlag = false;
-                int i = 0;
-                foreach (Shape p in poseList)
-                {
-                    i++;
-                    if (!vFlag)
-                    {
-                        centerVector = new Vector3(p.Translation.x,0.0f,p.Translation.z);
-                        vFlag = true;
-                    }
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.rotation = p.Rotation;
-                    cube.transform.position = p.Translation - centerVector;
-                    cube.transform.localScale = new Vector3(70, 70, 70);
-                    cube.transform.parent = parent.transform;//grouping spawned objects
-
-                    logText += "Object " + i + " :\n";
-                    logText += "Position: " + cube.transform.position.ToString() + "\nRotation: " + cube.transform.rotation + "\n\n";
-                }
-
-                logText += "Objects Found: " + i + "\n\n";
-
-                scans.Push(parent);//pass to lastScanned for the undo button
-
-                algorithm.ClearShapes();
-
-                showAlgorithm = true;
-                statusLabelText = "Showing Algorithm Result";
-                streamText = "Start Stream";
-            }
-        }
+        if (captureButton && camera != null)
+                runningAlgorithm = true;
 
         if (undoButton)
         {
@@ -188,13 +148,8 @@ public class Scanner : EditorWindow
         }
 
         //Update ColorDepthImage
-        if (isStreaming && !showAlgorithm)
+        if (isStreaming)
             updateCam();
-        if (showAlgorithm)
-        {
-            rightStream = cameraImage.ColorImage;
-            //rightStream.Apply();
-        }
 
         drawBottom();
 
@@ -228,7 +183,7 @@ public class Scanner : EditorWindow
         if (leftStream == null || !isStreaming)
             GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         else
-            GUILayout.Box(leftStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
+            GUILayout.Box(bleftStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         GUILayout.EndVertical();
 
         GUILayout.BeginVertical();
@@ -236,7 +191,7 @@ public class Scanner : EditorWindow
         if (leftStream == null || !isStreaming)
             GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         else
-            GUILayout.Box(leftStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
+            GUILayout.Box(brightStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
 
@@ -281,10 +236,14 @@ public class Scanner : EditorWindow
                 cameraImage = camera.GetImage();
 
                 leftStream = cameraImage.ColorImage;
-                rightStream = cameraImage.DepthImage;
+                rightStream = cameraImage.ColorImage;
+                brightStream = cameraImage.DepthImage;
+                bleftStream = algorithm.PreviewImage(cameraImage);
 
                 leftStream.Apply();
                 rightStream.Apply();
+                brightStream.Apply();
+                bleftStream.Apply();
 
                 lastCameraUpdate.Reset();
                 lastCameraUpdate.Start();
@@ -293,6 +252,13 @@ public class Scanner : EditorWindow
                 lastCameraUpdate.Start();
         }
     }
+
+    bool GUIKeyDown(KeyCode key)
+    {
+        if (Event.current.type == EventType.KeyDown)
+            return (Event.current.keyCode == key);
+        return false;
+    }   
 
     private void Update()
     {
@@ -307,6 +273,51 @@ public class Scanner : EditorWindow
         if (updateGUI)
         {
             EditorUtility.SetDirty(GetWindow(typeof(Scanner)));
+        }
+
+        if (runningAlgorithm)
+        {
+            logText = "Algorithm: Color Tracking\n";
+
+            scanCount++;
+            updateCam();
+            algorithm.ProcessImage(cameraImage);
+
+            IEnumerable<Shape> poseList = algorithm.GetShapes();
+
+            //Set parent for group objects as empty GameObject
+            var parent = new GameObject() { name = "Scanned Objects " + scanCount };
+
+            Vector3 centerVector = new Vector3();
+            bool vFlag = false;
+            int i = 0;
+            foreach (Shape p in poseList)
+            {
+                i++;
+                if (!vFlag)
+                {
+                    centerVector = p.Translation;
+                    vFlag = true;
+                }
+                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.transform.rotation = p.Rotation;
+                cube.transform.position = p.Translation - centerVector;
+                cube.transform.localScale = new Vector3(70, 70, 70);
+                cube.transform.parent = parent.transform;//grouping spawned objects
+
+                logText += "Object " + i + " : ";
+                logText += "Position: " + cube.transform.position.ToString() + " - Rotation: " + cube.transform.rotation + "\n";
+            }
+
+            logText += "Objects Found: " + i + "\n\n";
+
+            scans.Push(parent);//pass to lastScanned for the undo button
+            algorithm.ClearShapes();
+
+            showAlgorithm = true;
+            statusLabelText = "Showing Algorithm Result";
+            streamText = "Start Stream";
+            runningAlgorithm = false;
         }
     }
 }
