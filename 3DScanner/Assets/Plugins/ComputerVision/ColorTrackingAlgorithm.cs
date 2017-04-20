@@ -8,7 +8,7 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
-        public const int OBJSCALE = 25;//scale of spawned GameObjects
+        public const int OBJSCALE = 70;//scale of spawned GameObjects
         public const float STDEV = 2.0f;//standard deviation for
         public const int CLUMPTHRESH = 1700;//minimum size of clumps
         private const float DIFFERENCE_THRESHOLD = 0.3f;//threshold for color difference
@@ -42,8 +42,8 @@ namespace UnityScanner3D.ComputerVision
                 {
                     Vector3 averagePoint = ConvertCoordinates(AveragePoint(clump), angle);
                 
-                    //set all poses to lie on the ground (y = 0.5)
-                    averagePoint.y = 0.5f * OBJSCALE;
+                    //set all poses to lie on the ground (y = 0.5) times the scale
+                    averagePoint.y = OBJSCALE*0.5f;
 
                     //Return shape at the given point
                     yield return new Shape()
