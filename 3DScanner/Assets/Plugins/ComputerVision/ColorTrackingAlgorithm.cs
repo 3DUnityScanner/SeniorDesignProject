@@ -52,7 +52,7 @@ namespace UnityScanner3D.ComputerVision
                     //Return shape at the given point
                     yield return new Shape()
                     {
-                        Type = ShapeType.Cube,
+                        Type = ImageUtils.AreColorsDifferent(clump.Color, Color.blue) ? ShapeType.Cylinder:ShapeType.Cube,
                         Translation = averagePoint,
                         Rotation = new Quaternion(0, 0, 0, 0)
                     };
