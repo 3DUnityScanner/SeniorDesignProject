@@ -292,7 +292,7 @@ public class Scanner : EditorWindow
                     centerVector = new Vector3(p.Translation.x,0.0f,p.Translation.z);
                     vFlag = true;
                 }
-                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                GameObject cube = GameObject.CreatePrimitive( p.Type == ShapeType.Cube ? PrimitiveType.Cube : PrimitiveType.Cylinder);
                 cube.transform.rotation = p.Rotation;
                 cube.transform.position = p.Translation - centerVector;
                 cube.transform.localScale = new Vector3(70, 70, 70);
