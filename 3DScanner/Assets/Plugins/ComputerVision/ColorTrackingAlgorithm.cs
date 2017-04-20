@@ -64,8 +64,8 @@ namespace UnityScanner3D.ComputerVision
 
 
             //Calculate the initial average color and standard deviation
-            averageColor = CalculateAverageColor(image.ColorImage);
-            float stdDev = CalculateStandardColorDeviation(image.ColorImage, averageColor);
+            averageColor = ImageUtils.CalculateAverageColor(image.ColorImage);
+            float stdDev = ImageUtils.CalculateStandardColorDeviation(image.ColorImage, averageColor);
 
             //Refine average color
             averageColor = ImageUtils.CalculateAverageColor(image.ColorImage, averageColor, stdDev, STDEV);
@@ -83,7 +83,7 @@ namespace UnityScanner3D.ComputerVision
         {
             Texture2D workingCopy = Texture2D.Instantiate(image.ColorImage);
             var averageColor = ImageUtils.CalculateAverageColor(workingCopy);
-            averageColor = CalculateAverageColor(workingCopy);
+            averageColor = ImageUtils.CalculateAverageColor(workingCopy);
             //var stdDev = CalculateStandardColorDeviation(workingCopy, averageColor);
             //averageColor = CalculateAverageColor(workingCopy, averageColor, stdDev, STDEV);
             Contrastify(workingCopy, averageColor);
@@ -142,7 +142,6 @@ namespace UnityScanner3D.ComputerVision
             return toRet;
         }
 
-        private List<Vector3> FloodFill(ColorDepthImage image, int x, int y, Color stopColor)
         private float ColorDifference(Color u, Color v)
         {
             //Calculates the squared difference of each component
@@ -246,10 +245,10 @@ namespace UnityScanner3D.ComputerVision
                 for (int x = 0; x < colorImage.width; x += constratifyInt)
                 {
                     Color currColor = colorImage.GetPixel(x, y);
-                    if (AreColorsDifferent(averageColor, currColor))
+                    if (ImageUtils.AreColorsDifferent(averageColor, currColor))
                     {
                         int i = 0;
-                        while (AreColorsDifferent(averageColor, currColor))
+                        while (ImageUtils.AreColorsDifferent(averageColor, currColor))
                         {
                             contrastImage.SetPixel(x - i, y, Color.black);
                             currColor = colorImage.GetPixel(x - i, y);
@@ -259,7 +258,7 @@ namespace UnityScanner3D.ComputerVision
                         i = 0;
                         currColor = colorImage.GetPixel(x, y);
 
-                        while (AreColorsDifferent(averageColor, currColor))
+                        while (ImageUtils.AreColorsDifferent(averageColor, currColor))
                         {
                             contrastImage.SetPixel(x + i, y, Color.black);
                             currColor = colorImage.GetPixel(x + i, y);
@@ -281,7 +280,7 @@ namespace UnityScanner3D.ComputerVision
                 {
                     //Checks if the difference in color is within the threshold
                     Color thisColor = ColorImage.GetPixel(x, y);
-                    if (AreColorsDifferent(thisColor, Color.white))
+                    if (ImageUtils.AreColorsDifferent(thisColor, Color.white))
                     {
                         //Perform flood fill
                         List<Vector3> clump = FloodFill(ColorImage, DepthImage, x, y, Color.white);
