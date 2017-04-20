@@ -8,7 +8,7 @@ namespace UnityScanner3D.ComputerVision
 {
     class Clump
     {
-        public Clump(IEnumerable<Vector3> points)
+        public Clump(List<Vector3> points)
         {
             Points = points;
         }
@@ -19,7 +19,7 @@ namespace UnityScanner3D.ComputerVision
         public IEnumerable<Color> GetClumpPixels(Texture2D image)
         {
             foreach (var p in Points)
-                yield return image.GetPixel(p.x, p.y);
+                yield return image.GetPixel((int)p.x, (int)p.y);
         }
     }
 }
