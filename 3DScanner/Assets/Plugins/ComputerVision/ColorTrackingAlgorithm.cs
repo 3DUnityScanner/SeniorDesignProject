@@ -13,6 +13,8 @@ namespace UnityScanner3D.ComputerVision
         public const int CLUMPTHRESH = 1700;
         public const float PIXEL_3D_CONVERSION = 1.0f;
         private const float DIFFERENCE_THRESHOLD = 0.3f;
+        private Texture2D whiteImage;
+        public Texture2D contrastImage;
 
         private struct Pixel
         {
@@ -59,8 +61,10 @@ namespace UnityScanner3D.ComputerVision
 
         public void ProcessImage(ColorDepthImage image)
         {
+
+
             //Calculate the initial average color and standard deviation
-            Color averageColor = CalculateAverageColor(image.ColorImage);
+            averageColor = CalculateAverageColor(image.ColorImage);
             float stdDev = CalculateStandardColorDeviation(image.ColorImage, averageColor);
 
             //Refine average color
@@ -68,21 +72,21 @@ namespace UnityScanner3D.ComputerVision
 
             //Maximize contrast in image and save the new image
             Contrastify(image.ColorImage, averageColor);
-            File.WriteAllBytes("contrast.png", image.ColorImage.EncodeToPNG());
+            File.WriteAllBytes("contrast.png", contrastImage.EncodeToPNG());
 
             //Identify clumps
             normalVector = CalculateTableNormal(image);
-            Clumpify(image);
+            Clumpify(contrastImage, image.DepthImage);
         }
 
         public Texture2D PreviewImage(ColorDepthImage image)
         {
             Texture2D workingCopy = Texture2D.Instantiate(image.ColorImage);
-            var averageColor = CalculateAverageColor(workingCopy);
+            averageColor = CalculateAverageColor(workingCopy);
             //var stdDev = CalculateStandardColorDeviation(workingCopy, averageColor);
             //averageColor = CalculateAverageColor(workingCopy, averageColor, stdDev, STDEV);
             Contrastify(workingCopy, averageColor);
-            return workingCopy;
+            return contrastImage;
         }
 
         private bool AreColorsDifferent(Color u, Color v)
@@ -234,11 +238,11 @@ namespace UnityScanner3D.ComputerVision
             return distance;
         }
 
-        private List<Vector3> FloodFill(ColorDepthImage image, int x, int y, Color stopColor)
+        private List<Vector3> FloodFill(Texture2D ColorImage, Texture2D DepthImage, int x, int y, Color stopColor)
         {
             //Images
-            Texture2D color = image.ColorImage;
-            Texture2D depth = image.DepthImage;
+            Texture2D color = ColorImage;
+            Texture2D depth = DepthImage;
 
             //Collections
             List<Vector3> toRet = new List<Vector3>();
@@ -307,32 +311,63 @@ namespace UnityScanner3D.ComputerVision
         private Queue<List<Vector3>> clumpQueue = new Queue<List<Vector3>>();
 
         private Vector3 normalVector;
+        private int constratifyInt = 5;
+        private Color averageColor;
 
         private void Contrastify(Texture2D colorImage, Color averageColor)
         {
+            if (whiteImage == null) { 
+            whiteImage = new Texture2D(colorImage.width, colorImage.height);
+            for (int y = 0; y < colorImage.height; y++)
+                for (int x = 0; x < colorImage.width; x++)
+                    whiteImage.SetPixel(x, y, Color.white);
+            }
+            contrastImage = Texture2D.Instantiate(whiteImage);
+
             for (int y = 0; y < colorImage.height; y++)
             {
-                for (int x = 0; x < colorImage.width; x++)
+                for (int x = 0; x < colorImage.width; x += constratifyInt)
                 {
                     Color currColor = colorImage.GetPixel(x, y);
-                    Color newColor = !AreColorsDifferent(averageColor, currColor) ? Color.white : Color.black;
-                    colorImage.SetPixel(x, y, newColor);
+                    if (AreColorsDifferent(averageColor, currColor))
+                    {
+                        int i = 0;
+                        while (AreColorsDifferent(averageColor, currColor))
+                        {
+                            contrastImage.SetPixel(x - i, y, Color.black);
+                            currColor = colorImage.GetPixel(x - i, y);
+                            i--;
+                        }
+
+                        i = 0;
+                        currColor = colorImage.GetPixel(x, y);
+
+                        while (AreColorsDifferent(averageColor, currColor))
+                        {
+                            contrastImage.SetPixel(x + i, y, Color.black);
+                            currColor = colorImage.GetPixel(x + i, y);
+                            i++;
+                        }
+
+                        x += i;
+                    }
+
                 }
             }
         }
 
-        private void Clumpify(ColorDepthImage image)
+        private void Clumpify(Texture2D ColorImage, Texture2D DepthImage)
         {
-            for (int y = 0; y < image.ColorImage.height; y++)
+            for (int y = 0; y < ColorImage.height; y++)
             {
-                for (int x = 0; x < image.ColorImage.width; x++)
+                for (int x = 0; x < ColorImage.width; x++)
                 {
                     //Checks if the difference in color is within the threshold
-                    Color thisColor = image.ColorImage.GetPixel(x, y);
+                    Color thisColor = ColorImage.GetPixel(x, y);
                     if (AreColorsDifferent(thisColor, Color.white))
                     {
                         //Perform flood fill
-                        List<Vector3> clump = FloodFill(image, x, y, Color.white);
+                        List<Vector3> clump = FloodFill(ColorImage, DepthImage, x, y, Color.white);
 
                         //Save clump
                         clumpQueue.Enqueue(clump);
