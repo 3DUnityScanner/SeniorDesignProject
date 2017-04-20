@@ -289,7 +289,7 @@ public class Scanner : EditorWindow
                 i++;
                 if (!vFlag)
                 {
-                    centerVector = p.Translation;
+                    centerVector = new Vector3(p.Translation.x,0.0f,p.Translation.z);
                     vFlag = true;
                 }
                 GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
