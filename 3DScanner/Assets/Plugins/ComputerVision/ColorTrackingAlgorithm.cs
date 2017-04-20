@@ -8,11 +8,9 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
-        public const int OBJSCALE = 25;
-        public const float STDEV = 2.0f;
-        public const int CLUMPTHRESH = 1700;
-        public const float PIXEL_3D_CONVERSION = 1.0f;
-        
+        public const int OBJSCALE = 70;//scale of spawned GameObjects
+        public const float STDEV = 2.0f;//standard deviation for
+        public const int CLUMPTHRESH = 1700;//minimum size of clumps
 
         private struct Pixel
         {
@@ -43,8 +41,8 @@ namespace UnityScanner3D.ComputerVision
                 {
                     Vector3 averagePoint = ConvertCoordinates(AveragePoint(clump), angle);
                 
-                    //set all poses to lie on the ground (y = 0.5)
-                    averagePoint.y = 0.5f * OBJSCALE;
+                    //set all poses to lie on the ground (y = 0.5) times the scale
+                    averagePoint.y = OBJSCALE*0.5f;
 
                     //Return shape at the given point
                     yield return new Shape()
@@ -105,8 +103,8 @@ namespace UnityScanner3D.ComputerVision
                 float tailZ = image.DepthImage.GetPixel(tail.X, tail.Y).grayscale;
 
                 vectors.Add(new Vector3(
-                    PIXEL_3D_CONVERSION * (head.X - tail.X),
-                    PIXEL_3D_CONVERSION * (head.Y - tail.Y),
+                    (head.X - tail.X),
+                    (head.Y - tail.Y),
                     headZ - tailZ));
                 
             }
