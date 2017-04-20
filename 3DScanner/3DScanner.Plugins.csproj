@@ -91,6 +91,7 @@
     <Compile Include="Assets\Plugins\ComputerVision\ColorTrackingAlgorithm.cs" />
     <Compile Include="Assets\Plugins\ComputerVision\IAlgorithm.cs" />
     <Compile Include="Assets\Plugins\ComputerVision\Shape.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\TextureFilter.cs" />
     <Compile Include="Assets\Plugins\Scanner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
