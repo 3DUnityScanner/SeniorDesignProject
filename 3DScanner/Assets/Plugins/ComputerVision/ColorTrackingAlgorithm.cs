@@ -8,11 +8,10 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
-        public const int OBJSCALE = 25;
-        public const float STDEV = 2.0f;
-        public const int CLUMPTHRESH = 1700;
-        public const float PIXEL_3D_CONVERSION = 1.0f;
-        private const float DIFFERENCE_THRESHOLD = 0.3f;
+        public const int OBJSCALE = 25;//scale of spawned GameObjects
+        public const float STDEV = 2.0f;//standard deviation for
+        public const int CLUMPTHRESH = 1700;//minimum size of clumps
+        private const float DIFFERENCE_THRESHOLD = 0.3f;//threshold for color difference
 
         private struct Pixel
         {
@@ -182,8 +181,8 @@ namespace UnityScanner3D.ComputerVision
                 float tailZ = image.DepthImage.GetPixel(tail.X, tail.Y).grayscale;
 
                 vectors.Add(new Vector3(
-                    PIXEL_3D_CONVERSION * (head.X - tail.X),
-                    PIXEL_3D_CONVERSION * (head.Y - tail.Y),
+                    (head.X - tail.X),
+                    (head.Y - tail.Y),
                     headZ - tailZ));
                 
             }
