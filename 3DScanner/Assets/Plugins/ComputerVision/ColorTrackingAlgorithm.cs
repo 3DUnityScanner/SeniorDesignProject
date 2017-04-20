@@ -227,7 +227,7 @@ namespace UnityScanner3D.ComputerVision
         private Queue<List<Vector3>> clumpQueue = new Queue<List<Vector3>>();
 
         private Vector3 normalVector;
-        private int constratifyInt = 5;
+        private int constratifyInt = 10;
         private Color averageColor;
 
         private void Contrastify(Texture2D colorImage, Color averageColor)
@@ -247,25 +247,30 @@ namespace UnityScanner3D.ComputerVision
                     Color currColor = colorImage.GetPixel(x, y);
                     if (ImageUtils.AreColorsDifferent(averageColor, currColor))
                     {
-                        int i = 0;
+                        int i = 1;
+                        currColor = colorImage.GetPixel(x - i, y);
                         while (ImageUtils.AreColorsDifferent(averageColor, currColor))
                         {
                             contrastImage.SetPixel(x - i, y, Color.black);
                             currColor = colorImage.GetPixel(x - i, y);
-                            i--;
+                            i++;
+                            if (x - i < 0)
+                                break;
                         }
 
-                        i = 0;
-                        currColor = colorImage.GetPixel(x, y);
+                        i = 1;
+                        currColor = colorImage.GetPixel(x + i, y);
 
                         while (ImageUtils.AreColorsDifferent(averageColor, currColor))
                         {
                             contrastImage.SetPixel(x + i, y, Color.black);
                             currColor = colorImage.GetPixel(x + i, y);
                             i++;
+                            if (x + i > colorImage.width)
+                                break;
                         }
 
-                        x += i;
+                        x += i - 1;
                     }
 
                 }

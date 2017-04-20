@@ -18,18 +18,20 @@ public class Scanner : EditorWindow
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
     Stopwatch lastCameraUpdate = new Stopwatch();
-    const int CAPTURELIMIT = 50;
+    const int CAPTURELIMIT = 200;
 
     //UI Backing Fields
     string cameraName;
     string logText = "", statusLabelText, streamText, captureText;
     Type cameraType;
-    Texture2D leftStream, rightStream, bleftStream, brightStream;
-    bool updateGUI, showAlgorithm, isStreaming, snapEnabled;
+    Texture2D leftStream, rightStream;
+    bool updateGUI, showAlgorithm, isStreaming, snapEnabled, showContrast;
     ColorDepthImage cameraImage;
     Stack<GameObject> scans;
     int scanCount;
     int selectedCameraIndex = 0;
+    private bool runningAlgorithm;
+    private string rightStreamLabel = "Depth Stream";
     string[] cameraOptions = new string[]
     {
         "Dummy Camera",
@@ -44,7 +46,6 @@ public class Scanner : EditorWindow
         { "Intel F200", typeof(IntelCamera) },
         { "Kinect", null },
     };
-    private bool runningAlgorithm;
 
     //Shows the plugin when the user clicks the Window > 3DScanner option
     [MenuItem("Window/3D Scanner")]
@@ -169,29 +170,20 @@ public class Scanner : EditorWindow
         GUILayout.EndVertical();
 
         GUILayout.BeginVertical();
-        GUILayout.Label("Pretty Stream");
-        if (rightStream == null || !isStreaming)
+
+        if (GUILayout.Button(rightStreamLabel, GUILayout.Width(150)))
+        {
+            showContrast = !showContrast;
+            if (showContrast)
+                rightStreamLabel = "Processed Stream";
+            else
+                rightStreamLabel = "Depth Stream";
+        }
+
+        if (leftStream == null || !isStreaming)
             GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         else
             GUILayout.Box(rightStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
-        GUILayout.EndVertical();
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical();
-        GUILayout.Label("Contrast Stream");
-        if (leftStream == null || !isStreaming)
-            GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
-        else
-            GUILayout.Box(bleftStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
-        GUILayout.EndVertical();
-
-        GUILayout.BeginVertical();
-        GUILayout.Label("Depth Stream");
-        if (leftStream == null || !isStreaming)
-            GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
-        else
-            GUILayout.Box(brightStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
 
@@ -225,6 +217,8 @@ public class Scanner : EditorWindow
         scans = new Stack<GameObject>();
         scanCount = 0;
         justRecompiled = false;
+        showContrast = false;
+        rightStreamLabel = "Depth Stream";
     }
 
     private void updateCam()
@@ -236,14 +230,13 @@ public class Scanner : EditorWindow
                 cameraImage = camera.GetImage();
 
                 leftStream = cameraImage.ColorImage;
-                rightStream = cameraImage.ColorImage;
-                brightStream = cameraImage.DepthImage;
-                bleftStream = algorithm.PreviewImage(cameraImage);
+                if (showContrast)
+                    rightStream = algorithm.PreviewImage(cameraImage);
+                else
+                    rightStream = cameraImage.DepthImage;
 
                 leftStream.Apply();
                 rightStream.Apply();
-                brightStream.Apply();
-                bleftStream.Apply();
 
                 lastCameraUpdate.Reset();
                 lastCameraUpdate.Start();

@@ -53,8 +53,8 @@ namespace UnityScanner3D.CameraIO
             SMInstance.ReleaseFrame();
 
             //Save the images
-            File.WriteAllBytes("color.png", colorTex.EncodeToPNG());
-            File.WriteAllBytes("depth.png", depthTex.EncodeToPNG());
+            //File.WriteAllBytes("color.png", colorTex.EncodeToPNG());
+            //File.WriteAllBytes("depth.png", depthTex.EncodeToPNG());
     
             return new ColorDepthImage(colorTex, depthTex);
         }
