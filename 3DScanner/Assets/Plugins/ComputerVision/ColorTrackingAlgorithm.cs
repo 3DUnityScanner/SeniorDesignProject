@@ -35,11 +35,12 @@ namespace UnityScanner3D.ComputerVision
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
-                List<Vector3> clump = clumpQueue.Dequeue();
+                Clump clump = clumpQueue.Dequeue();
+                
                 //check for little clumps to ignore
-                if (clump.Count >= CLUMPTHRESH)
+                if (clump.Points.Count >= CLUMPTHRESH)
                 {
-                    Vector3 averagePoint = ConvertCoordinates(AveragePoint(clump), angle);
+                    Vector3 averagePoint = ConvertCoordinates(AveragePoint(clump.Points), angle);
                 
                     //set all poses to lie on the ground (y = 0.5) times the scale
                     averagePoint.y = OBJSCALE*0.5f;
@@ -203,7 +204,7 @@ namespace UnityScanner3D.ComputerVision
             return new Vector3(averageX, averageY, averageZ);
         }
 
-        private Queue<List<Vector3>> clumpQueue = new Queue<List<Vector3>>();
+        private Queue<Clump> clumpQueue = new Queue<Clump>();
 
         private Vector3 normalVector;
 
@@ -231,7 +232,10 @@ namespace UnityScanner3D.ComputerVision
                     if (ImageUtils.AreColorsDifferent(thisColor, Color.white))
                     {
                         //Perform flood fill
-                        List<Vector3> clump = FloodFill(image, x, y, Color.white);
+                        Clump clump = new Clump(FloodFill(image, x, y, Color.white));
+
+                        //Calculate average color of clump
+                        clump.Color = ImageUtils.CalculateAverageColor(clump.GetClumpPixels(image.ColorImage));
 
                         //Save clump
                         clumpQueue.Enqueue(clump);
