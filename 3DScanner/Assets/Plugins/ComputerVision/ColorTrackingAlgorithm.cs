@@ -45,8 +45,8 @@ namespace UnityScanner3D.ComputerVision
                 {
                     Vector3 averagePoint = ConvertCoordinates(AveragePoint(clump), angle);
                 
-                    //set all poses to lie on the ground (y = 0.5)
-                    averagePoint.y = 0.5f * OBJSCALE;
+                    //set all poses to lie on the ground (y = 0.5) times the scale
+                    averagePoint.y = OBJSCALE*0.5f;
 
                     //Return shape at the given point
                     yield return new Shape()
@@ -68,7 +68,7 @@ namespace UnityScanner3D.ComputerVision
             float stdDev = CalculateStandardColorDeviation(image.ColorImage, averageColor);
 
             //Refine average color
-            averageColor = CalculateAverageColor(image.ColorImage, averageColor, stdDev, STDEV);
+            averageColor = ImageUtils.CalculateAverageColor(image.ColorImage, averageColor, stdDev, STDEV);
 
             //Maximize contrast in image and save the new image
             Contrastify(image.ColorImage, averageColor);
@@ -82,6 +82,7 @@ namespace UnityScanner3D.ComputerVision
         public Texture2D PreviewImage(ColorDepthImage image)
         {
             Texture2D workingCopy = Texture2D.Instantiate(image.ColorImage);
+            var averageColor = ImageUtils.CalculateAverageColor(workingCopy);
             averageColor = CalculateAverageColor(workingCopy);
             //var stdDev = CalculateStandardColorDeviation(workingCopy, averageColor);
             //averageColor = CalculateAverageColor(workingCopy, averageColor, stdDev, STDEV);
@@ -89,92 +90,7 @@ namespace UnityScanner3D.ComputerVision
             return contrastImage;
         }
 
-        private bool AreColorsDifferent(Color u, Color v)
-        {
-            return ColorDifference(u, v) > DIFFERENCE_THRESHOLD;
-        }
-
-        private Color CalculateAverageColor(Texture2D colorImage)
-        {
-            int colorWidth = colorImage.width;
-            int colorHeight = colorImage.height;
-            float numOfPixels = colorHeight * colorWidth;
-
-            //Sum total of each of the color channels
-            float averageRed = 0, averageGreen = 0, averageBlue = 0;
-            for (int y = 0; y < colorImage.height; y++)
-            {
-                for (int x = 0; x < colorImage.width; x++)
-                {
-                    averageRed += colorImage.GetPixel(x, y).r;
-                    averageGreen += colorImage.GetPixel(x, y).g;
-                    averageBlue += colorImage.GetPixel(x, y).b;
-                }
-            }
-
-            //Calculates average color
-            averageRed /= numOfPixels;
-            averageGreen /= numOfPixels;
-            averageBlue /= numOfPixels;
-            return new Color(averageRed, averageGreen, averageBlue);
-        }
-
-        private Color CalculateAverageColor(Texture2D colorImage, Color oldAverage, float stdDev, float range)
-        {
-            float r = 0.0f;
-            float g = 0.0f;
-            float b = 0.0f;
-
-            int numPixels = 0;
-
-            for (int y = 0; y < colorImage.height; y++)
-            {
-                for (int x = 0; x < colorImage.width; x++)
-                {
-                    Color thisColor = colorImage.GetPixel(x, y);
-                    if (ColorDifference(oldAverage, thisColor) < range * stdDev)
-                    {
-                        r += thisColor.r;
-                        g += thisColor.g;
-                        b += thisColor.b;
-                        numPixels++;
-                    }
-                }
-            }
-
-            r /= numPixels;
-            g /= numPixels;
-            b /= numPixels;
-
-            return new Color(r, g, b);
-        }
-
-        private float CalculateStandardColorDeviation(Texture2D colorImage, Color average)
-        {
-            int colorHeight = colorImage.height;
-            int colorWidth = colorImage.width;
-            int numOfPixels = colorHeight * colorWidth;
-
-            //Calculate the standard deviation
-            double stdDev = 0;
-            for (int y = 0; y < colorHeight; y++)
-            {
-                for (int x = 0; x < colorWidth; x++)
-                {
-                    //Get the color of the pixel
-                    Color currentColor = colorImage.GetPixel(x, y);
-
-                    //Calculate the difference
-                    float diff = ColorDifference(currentColor, average);
-
-                    //Update the stdDev
-                    stdDev += Math.Pow(diff, 2);
-                }
-            }
-
-            stdDev /= numOfPixels;
-            return (float) stdDev;
-        }
+        
 
         private Vector3 CalculateTableNormal(ColorDepthImage image)
         {
@@ -196,8 +112,8 @@ namespace UnityScanner3D.ComputerVision
                 float tailZ = image.DepthImage.GetPixel(tail.X, tail.Y).grayscale;
 
                 vectors.Add(new Vector3(
-                    PIXEL_3D_CONVERSION * (head.X - tail.X),
-                    PIXEL_3D_CONVERSION * (head.Y - tail.Y),
+                    (head.X - tail.X),
+                    (head.Y - tail.Y),
                     headZ - tailZ));
                 
             }
@@ -226,6 +142,7 @@ namespace UnityScanner3D.ComputerVision
             return toRet;
         }
 
+        private List<Vector3> FloodFill(ColorDepthImage image, int x, int y, Color stopColor)
         private float ColorDifference(Color u, Color v)
         {
             //Calculates the squared difference of each component
