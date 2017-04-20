@@ -7,30 +7,29 @@ using System;
 using UnityScanner3D.ComputerVision;
 using System.Diagnostics;
 
+[InitializeOnLoad]
 public class Scanner : EditorWindow
 {
+    private static bool justRecompiled;
+
     //Object used to access the camera
     ICamera camera;
+
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
     Stopwatch lastCameraUpdate = new Stopwatch();
-    int CAPTURELIMIT = 50;
+    const int CAPTURELIMIT = 50;
 
     //UI Backing Fields
     string cameraName;
-    string logText = "";
+    string logText = "", statusLabelText, streamText, captureText;
     Type cameraType;
-    Texture2D leftStream, rightStream;
-    bool updateGUI, showAlgorithm;
-    ColorDepthImage cameraImage = null;
-    bool isStreaming = false;
+    Texture2D leftStream, rightStream, bleftStream, brightStream;
+    bool updateGUI, showAlgorithm, isStreaming, snapEnabled;
+    ColorDepthImage cameraImage;
+    Stack<GameObject> scans;
+    int scanCount;
     int selectedCameraIndex = 0;
-    string statusLabelText = "Idle";
-    string streamText = "Start Stream";
-    string captureText = "Capture";
-    private bool snapEnabled;
-    Stack<GameObject> scans = new Stack<GameObject>();
-    int scanCount = 0;
     string[] cameraOptions = new string[]
     {
         "Dummy Camera",
@@ -53,6 +52,12 @@ public class Scanner : EditorWindow
         GetWindow(typeof(Scanner));
     }
 
+    static Scanner()
+    {
+        //Clean it up
+        justRecompiled = true;
+    }
+
     void OnGUI()
     {
         GUILayout.BeginVertical();
@@ -63,25 +68,37 @@ public class Scanner : EditorWindow
         GUILayout.EndHorizontal();
 
         //Buttons and status
+        bool captureButton = false;
         GUILayout.BeginHorizontal();
         bool streamButton = GUILayout.Button(streamText, GUILayout.Width(100));
-        bool captureButton = GUILayout.Button(captureText, GUILayout.Width(100));
-        bool undoButton = GUILayout.Button("Undo", GUILayout.Width(100));
+        if (!isStreaming)
+            GUI.enabled = false;
+        captureButton = GUILayout.Button(captureText, GUILayout.Width(100));
+        if (!isStreaming)
+            GUI.enabled = true;
         GUILayout.FlexibleSpace();
-        GUILayout.Box("Status: " + statusLabelText);
+        bool undoButton = GUILayout.Button("Undo Last", GUILayout.Width(100));
+        bool clearButton = GUILayout.Button("Clear All", GUILayout.Width(100));//Implement this
         GUILayout.EndHorizontal();
 
         //Options
         GUILayout.BeginHorizontal();
         snapEnabled = GUILayout.Toggle(snapEnabled, "Snap to Objects");
+        snapEnabled = GUILayout.Toggle(snapEnabled, "Woah Look at");
+        snapEnabled = GUILayout.Toggle(snapEnabled, "All These Options");
+        GUILayout.FlexibleSpace();
+        GUILayout.Box("Status: " + statusLabelText);
         GUILayout.EndHorizontal();
+        GUILayout.EndVertical();
 
         //We interrupt this gross UI stuff to bring you some logic
         if (streamButton)
         {
+
             //if streaming, stop it
-            if (isStreaming && !showAlgorithm)
+            if (isStreaming)
             {
+                showAlgorithm = false;
                 isStreaming = false;
                 statusLabelText = "Idle";
                 streamText = "Start Stream";
@@ -120,7 +137,6 @@ public class Scanner : EditorWindow
 
                 IEnumerable<Shape> poseList = algorithm.GetShapes();
                 
-
                 //Set parent for group objects as empty GameObject
                 var parent = new GameObject() { name="Scanned Objects "+scanCount };
 
@@ -163,6 +179,7 @@ public class Scanner : EditorWindow
             {
                 var lastScanned = scans.Pop();
                 DestroyImmediate(lastScanned);
+                scanCount--;
             }
             else
             {
@@ -173,9 +190,20 @@ public class Scanner : EditorWindow
         //Update ColorDepthImage
         if (isStreaming && !showAlgorithm)
             updateCam();
+        if (showAlgorithm)
+        {
+            rightStream = cameraImage.ColorImage;
+            //rightStream.Apply();
+        }
 
-        //We now return to our regularly scheduled GUI mess
+        drawBottom();
 
+        updateGUI = false;
+    }
+
+    private void drawBottom()
+    {
+        GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
         GUILayout.BeginVertical();
         GUILayout.Label("RGB Stream");
@@ -186,7 +214,7 @@ public class Scanner : EditorWindow
         GUILayout.EndVertical();
 
         GUILayout.BeginVertical();
-        GUILayout.Label("Depth Stream");
+        GUILayout.Label("Pretty Stream");
         if (rightStream == null || !isStreaming)
             GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         else
@@ -194,17 +222,54 @@ public class Scanner : EditorWindow
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
 
-        GUILayout.TextArea(logText, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-
+        GUILayout.BeginHorizontal();
+        GUILayout.BeginVertical();
+        GUILayout.Label("Contrast Stream");
+        if (leftStream == null || !isStreaming)
+            GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
+        else
+            GUILayout.Box(leftStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
         GUILayout.EndVertical();
 
-        updateGUI = false;
+        GUILayout.BeginVertical();
+        GUILayout.Label("Depth Stream");
+        if (leftStream == null || !isStreaming)
+            GUILayout.Box("", GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
+        else
+            GUILayout.Box(leftStream, GUILayout.MaxWidth(640 / 2), GUILayout.MaxHeight(480 / 2), GUILayout.MinWidth(640 / 6), GUILayout.MinHeight(480 / 6));
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginVertical();
+        GUILayout.Label("Algorithm Log");
+        GUILayout.TextArea(logText, GUILayout.MaxHeight(150));
+        GUILayout.EndVertical();
+
+        GUILayout.EndVertical();
     }
 
-    //Load Necessary resources (point cloud, etc..)
-    void Awake()
+    //Reset all the goods
+    public void OnRecompile()
     {
-        updateGUI = true;
+        //
+        if (camera != null)
+            camera.StopCapture();
+        camera = null;
+        algorithm = new ColorTrackingAlgorithm();
+        lastCameraUpdate = new Stopwatch();
+        logText = "";
+        leftStream = null;
+        rightStream = null;
+        showAlgorithm = false;
+        cameraImage = null;
+        isStreaming = false;
+        statusLabelText = "Idle";
+        streamText = "Start Stream";
+        captureText = "Place Objects";
+        snapEnabled = true;
+        scans = new Stack<GameObject>();
+        scanCount = 0;
+        justRecompiled = false;
     }
 
     private void updateCam()
@@ -231,6 +296,9 @@ public class Scanner : EditorWindow
 
     private void Update()
     {
+        if (justRecompiled)
+            OnRecompile();
+
         if (isStreaming && camera != null && !showAlgorithm)
         {
             updateGUI = true;

@@ -70,8 +70,18 @@ namespace UnityScanner3D.ComputerVision
             File.WriteAllBytes("contrast.png", image.ColorImage.EncodeToPNG());
 
             //Identify clumps
-            CalculateTableNormal(image);
+            normalVector = CalculateTableNormal(image);
             Clumpify(image);
+        }
+
+        public Texture2D PreviewImage(ColorDepthImage image)
+        {
+            Texture2D workingCopy = Texture2D.Instantiate(image.ColorImage);
+            var averageColor = CalculateAverageColor(workingCopy);
+            //var stdDev = CalculateStandardColorDeviation(workingCopy, averageColor);
+            //averageColor = CalculateAverageColor(workingCopy, averageColor, stdDev, STDEV);
+            Contrastify(workingCopy, averageColor);
+            return workingCopy;
         }
 
         private bool AreColorsDifferent(Color u, Color v)
