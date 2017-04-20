@@ -17,57 +17,47 @@ namespace UnityScanner3D.ComputerVision
 
         public static Color CalculateAverageColor(Texture2D colorImage)
         {
-            int colorWidth = colorImage.width;
-            int colorHeight = colorImage.height;
-            float numOfPixels = colorHeight * colorWidth;
-
-            //Sum total of each of the color channels
-            float averageRed = 0, averageGreen = 0, averageBlue = 0;
-            for (int y = 0; y < colorImage.height; y++)
-            {
-                for (int x = 0; x < colorImage.width; x++)
-                {
-                    averageRed += colorImage.GetPixel(x, y).r;
-                    averageGreen += colorImage.GetPixel(x, y).g;
-                    averageBlue += colorImage.GetPixel(x, y).b;
-                }
-            }
-
-            //Calculates average color
-            averageRed /= numOfPixels;
-            averageGreen /= numOfPixels;
-            averageBlue /= numOfPixels;
-            return new Color(averageRed, averageGreen, averageBlue);
+            return CalculateAverageColor(GetPixels(colorImage));
         }
 
         public static Color CalculateAverageColor(Texture2D colorImage, Color oldAverage, float stdDev, float range)
         {
-            float r = 0.0f;
-            float g = 0.0f;
-            float b = 0.0f;
+            return CalculateAverageColor(GetPixels(colorImage), oldAverage, stdDev, range);
+        }
 
-            int numPixels = 0;
+        public static Color CalculateAverageColor(IEnumerable<Color> colors)
+        {
+            float r = 0, g = 0, b = 0;
+            int num = 0;
 
-            for (int y = 0; y < colorImage.height; y++)
+            foreach(var c in colors)
             {
-                for (int x = 0; x < colorImage.width; x++)
+                r += c.r;
+                g += c.g;
+                b += c.b;
+                num++;
+            }
+
+            return new Color(r / num, g / num, b / num);
+        }
+
+        public static Color CalculateAverageColor(IEnumerable<Color> colors, Color oldAverage, float stdDev, float range)
+        {
+            float r = 0, g = 0, b = 0;
+            int num = 0;
+
+            foreach(var c in colors)
+            {
+                if (ColorDifference(oldAverage, c) < stdDev * range)
                 {
-                    Color thisColor = colorImage.GetPixel(x, y);
-                    if (ColorDifference(oldAverage, thisColor) < range * stdDev)
-                    {
-                        r += thisColor.r;
-                        g += thisColor.g;
-                        b += thisColor.b;
-                        numPixels++;
-                    }
+                    r += c.r;
+                    g += c.g;
+                    b += c.b;
+                    num++;
                 }
             }
 
-            r /= numPixels;
-            g /= numPixels;
-            b /= numPixels;
-
-            return new Color(r, g, b);
+            return new Color(r / num, g / num, b / num);
         }
 
         public static float ColorDifference(Color u, Color v)
@@ -107,6 +97,17 @@ namespace UnityScanner3D.ComputerVision
 
             stdDev /= numOfPixels;
             return (float)stdDev;
+        }
+
+        private static IEnumerable<Color> GetPixels(Texture2D image)
+        {
+            for(int y = 0; y < image.height; y++)
+            {
+                for(int x = 0; x < image.width; x++)
+                {
+                    yield return image.GetPixel(x, y);
+                }
+            }
         }
     }
 }
