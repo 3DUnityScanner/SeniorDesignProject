@@ -18,7 +18,7 @@ public class Scanner : EditorWindow
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
     Stopwatch lastCameraUpdate = new Stopwatch();
-    const int CAPTURELIMIT = 200;
+    const int CAPTURELIMIT = 100;
 
     //UI Backing Fields
     string cameraName;
@@ -93,7 +93,6 @@ public class Scanner : EditorWindow
         snapEnabled = GUILayout.Toggle(snapEnabled, "Woah Look at");
         snapEnabled = GUILayout.Toggle(snapEnabled, "All These Options");
         GUILayout.FlexibleSpace();
-        GUILayout.Box("Status: " + statusLabelText);
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
 
@@ -188,9 +187,15 @@ public class Scanner : EditorWindow
         GUILayout.EndHorizontal();
 
         GUILayout.BeginVertical();
+
+        GUILayout.BeginHorizontal();
         GUILayout.Label("Algorithm Log");
+        GUILayout.FlexibleSpace();
+        GUILayout.Label("Status: " + statusLabelText);
+        GUILayout.EndHorizontal();
         GUILayout.TextArea(logText, GUILayout.MaxHeight(150));
         GUILayout.EndVertical();
+
 
         GUILayout.EndVertical();
     }
@@ -258,7 +263,7 @@ public class Scanner : EditorWindow
         if (justRecompiled)
             OnRecompile();
 
-        if (isStreaming && camera != null && !showAlgorithm)
+        if (isStreaming && camera != null)
         {
             updateGUI = true;
         }
@@ -309,8 +314,9 @@ public class Scanner : EditorWindow
 
             showAlgorithm = true;
             statusLabelText = "Showing Algorithm Result";
-            streamText = "Start Stream";
+            //streamText = "Start Stream";
             runningAlgorithm = false;
+            isStreaming = true;
         }
     }
 }
