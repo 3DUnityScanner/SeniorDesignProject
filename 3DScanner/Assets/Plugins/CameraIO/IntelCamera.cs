@@ -38,12 +38,14 @@ namespace UnityScanner3D.CameraIO
             ImageData colorImageData;
             colorImage.AcquireAccess(ImageAccess.ACCESS_READ, PixelFormat.PIXEL_FORMAT_RGB32, out colorImageData);
             colorImageData.ToTexture2D(0, colorTex);
+            colorImage.ReleaseAccess(colorImageData);
 
             //Extract the depth image
             Image depthImage = SampleStream.Sample.Depth;
             ImageData depthImageData;
             depthImage.AcquireAccess(ImageAccess.ACCESS_READ, PixelFormat.PIXEL_FORMAT_RGB32, out depthImageData);
             depthImageData.ToTexture2D(0, depthTex);
+            depthImage.ReleaseAccess(depthImageData);
 
             //Clean up image data
             colorImage.Dispose();
