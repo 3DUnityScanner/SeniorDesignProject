@@ -28,14 +28,14 @@ namespace UnityScanner3D.ComputerVision
         public static Color CalculateAverageColor(IEnumerable<Color> colors)
         {
             float r = 0, g = 0, b = 0;
-            int num = 0;
+            float num = 0.0f;
 
             foreach(var c in colors)
             {
                 r += c.r;
                 g += c.g;
                 b += c.b;
-                num++;
+                num += 1.0f;
             }
 
             return new Color(r / num, g / num, b / num);
