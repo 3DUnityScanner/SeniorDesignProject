@@ -50,9 +50,10 @@ namespace UnityScanner3D.ComputerVision
                     averagePoint.y = OBJSCALE*0.5f;
 
                     //Return shape at the given point
+                    Debug.Log(clump.Color);
                     yield return new Shape()
                     {
-                        Type = ImageUtils.AreColorsDifferent(clump.Color, Color.blue) ? ShapeType.Cube:ShapeType.Cylinder,
+                        Type = clump.Color.b > clump.Color.r && clump.Color.b > clump.Color.g ? ShapeType.Cylinder:ShapeType.Cube,
                         Translation = averagePoint,
                         Rotation = new Quaternion(0, 0, 0, 0)
                     };
@@ -76,8 +77,8 @@ namespace UnityScanner3D.ComputerVision
             File.WriteAllBytes("contrast.png", contrastImage.EncodeToPNG());
 
             //Identify clumps
-            normalVector = CalculateTableNormal(image);
-            Clumpify(contrastImage, image.DepthImage);
+            normalVector = CalculateTableNormal(contrastImage, image.DepthImage);
+            Clumpify(image.ColorImage, image.DepthImage, contrastImage);
         }
 
         public Texture2D PreviewImage(ColorDepthImage image)
@@ -93,7 +94,7 @@ namespace UnityScanner3D.ComputerVision
 
         
 
-        private Vector3 CalculateTableNormal(ColorDepthImage image)
+        private Vector3 CalculateTableNormal(Texture2D ColorImage, Texture2D DepthImage)
         {
             //Calculates the normal vector of the table
             Vector3 toRet;
@@ -102,15 +103,15 @@ namespace UnityScanner3D.ComputerVision
             float averageZ = 0;
 
             //Picks an arbitrary starting point
-            Pixel tail = GetTablePixel(image.ColorImage);
+            Pixel tail = GetTablePixel(ColorImage);
 
             //Constructs vectors
             List<Vector3> vectors = new List<Vector3>(10);
             for (int i = 0; i < 10; i++)
             {
-                Pixel head = GetTablePixel(image.ColorImage);
-                float headZ = image.DepthImage.GetPixel(head.X, head.Y).grayscale;
-                float tailZ = image.DepthImage.GetPixel(tail.X, tail.Y).grayscale;
+                Pixel head = GetTablePixel(ColorImage);
+                float headZ = DepthImage.GetPixel(head.X, head.Y).grayscale;
+                float tailZ = DepthImage.GetPixel(tail.X, tail.Y).grayscale;
 
                 vectors.Add(new Vector3(
                     (head.X - tail.X),
@@ -277,18 +278,18 @@ namespace UnityScanner3D.ComputerVision
             }
         }
 
-        private void Clumpify(Texture2D ColorImage, Texture2D DepthImage)
+        private void Clumpify(Texture2D ColorImage, Texture2D DepthImage, Texture2D ContrastImage)
         {
             for (int y = 0; y < ColorImage.height; y++)
             {
                 for (int x = 0; x < ColorImage.width; x++)
                 {
                     //Checks if the difference in color is within the threshold
-                    Color thisColor = ColorImage.GetPixel(x, y);
+                    Color thisColor = contrastImage.GetPixel(x, y);
                     if (ImageUtils.AreColorsDifferent(thisColor, Color.white))
                     {
                         //Perform flood fill
-                        Clump clump = new Clump(FloodFill(ColorImage, DepthImage, x, y, Color.white));
+                        Clump clump = new Clump(FloodFill(ContrastImage, DepthImage, x, y, Color.white));
 
                         //Calculate average color of clump
                         clump.Color = ImageUtils.CalculateAverageColor(clump.GetClumpPixels(ColorImage));
