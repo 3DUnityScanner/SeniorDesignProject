@@ -22,7 +22,7 @@ public class Scanner : EditorWindow
 
     //UI Backing Fields
     string cameraName;
-    string logText = "", statusLabelText, streamText, captureText;
+    string logText, statusLabelText, streamText, captureText;
     Type cameraType;
     Texture2D leftStream, rightStream;
     bool updateGUI, showAlgorithm, isStreaming, snapEnabled, showContrast;
@@ -314,7 +314,6 @@ public class Scanner : EditorWindow
 
             showAlgorithm = true;
             statusLabelText = "Showing Algorithm Result";
-            //streamText = "Start Stream";
             runningAlgorithm = false;
             isStreaming = true;
         }
