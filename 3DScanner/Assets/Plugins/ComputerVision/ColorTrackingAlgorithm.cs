@@ -249,8 +249,7 @@ namespace UnityScanner3D.ComputerVision
                     Color currColor = colorImage.GetPixel(x, y);
                     if (ImageUtils.AreColorsDifferent(averageColor, currColor))
                     {
-                        int i = 1;
-                        currColor = colorImage.GetPixel(x - i, y);
+                        int i = 0;
                         while (ImageUtils.AreColorsDifferent(averageColor, currColor))
                         {
                             contrastImage.SetPixel(x - i, y, Color.black);
