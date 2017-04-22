@@ -309,7 +309,7 @@ public class Scanner : EditorWindow
             updateCam();
             algorithm.ProcessImage(cameraImage);
 
-            IEnumerable<Shape> poseList = algorithm.GetShapes();
+            IEnumerable<GameObject> poseList = algorithm.GetShapes();
 
             Material blackMaterial = new Material(Shader.Find("Standard"));
             blackMaterial.color = Color.black;
@@ -325,7 +325,7 @@ public class Scanner : EditorWindow
             Vector3 centerVector = new Vector3();
             bool vFlag = false;
             int i = 0;
-            foreach (Shape p in poseList)
+            foreach (GameObject p in poseList)
             {
                 Material redMaterial = new Material(Shader.Find("Standard"));
                 blackMaterial.color = Color.red;
@@ -334,22 +334,22 @@ public class Scanner : EditorWindow
                 i++;
                 if (!vFlag)
                 {
-                    centerVector = new Vector3(p.Translation.x,0.0f,p.Translation.z);
+                    centerVector = new Vector3(p.transform.position.x,0.0f,p.transform.position.z);
                     vFlag = true;
                 }
-                GameObject thing = GameObject.CreatePrimitive( p.Type == ShapeType.Cube ? PrimitiveType.Cube : PrimitiveType.Cylinder);
+                GameObject thing = p;
 
-                thing.transform.rotation = p.Rotation;
-                thing.transform.position = p.Translation - centerVector;
+                thing.transform.rotation = p.transform.rotation;
+                thing.transform.position = p.transform.position - centerVector;
                 thing.transform.localScale = new Vector3(70, 70, 70);
                 thing.transform.parent = parent.transform;//grouping spawned objects
 
-                if (p.Type == ShapeType.Cube)
+                if (thing.tag == "cube")
                 {
                     thing.GetComponent<Renderer>().material = redMaterial;
                     thing.GetComponent<Renderer>().material.color = Color.red;
                 }
-                else
+                else if (thing.tag == "cylinder")
                 {
                     thing.GetComponent<Renderer>().material = blueMaterial;
                     thing.GetComponent<Renderer>().material.color = Color.blue;

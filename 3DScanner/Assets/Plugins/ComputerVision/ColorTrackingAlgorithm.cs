@@ -37,7 +37,7 @@ namespace UnityScanner3D.ComputerVision
             clumpQueue.Clear();
         }
 
-        public IEnumerable<Shape> GetShapes()
+        public IEnumerable<GameObject> GetShapes()
         {
             float angle = Vector3.Angle(normalVector, new Vector3(0, 0, -1));
             while (clumpQueue.Count > 0)
@@ -53,13 +53,36 @@ namespace UnityScanner3D.ComputerVision
                     //set all poses to lie on the ground (y = 0.5) times the scale
                     averagePoint.y = OBJSCALE*0.5f;
 
-                    //Return shape at the given point
-                    yield return new Shape()
+                    //Game object init
+                    GameObject obj = new GameObject();
+                    obj.transform.position = averagePoint;
+                    obj.transform.rotation = new Quaternion(0,0,0,0);
+                    //check for object types
+                    //blue
+                    if (clump.Color.b > clump.Color.r && clump.Color.b > clump.Color.g)
                     {
-                        Type = clump.Color.b > clump.Color.r && clump.Color.b > clump.Color.g ? ShapeType.Cylinder:ShapeType.Cube,
-                        Translation = averagePoint,
-                        Rotation = new Quaternion(0, 0, 0, 0)
-                    };
+                        if (enableBlueObj)
+                            obj = GameObject.Instantiate(Resources.Load(blueFilename)) as GameObject;
+                    }
+                    //red
+                    else if (clump.Color.r > clump.Color.b && clump.Color.r > clump.Color.g)
+                    {
+                        if (enableRedObj)
+                            obj = GameObject.Instantiate(Resources.Load(redFilename)) as GameObject;
+                    }
+                    //green
+                    else if (clump.Color.g > clump.Color.b && clump.Color.g > clump.Color.r)
+                    {
+                        if (enableGreenObj)
+                            obj = GameObject.Instantiate(Resources.Load(greenFilename)) as GameObject;
+                    }
+                    //default behavior
+                    else
+                    {
+                        obj = clump.Color.b > clump.Color.r && clump.Color.b > clump.Color.g ? GameObject.CreatePrimitive(PrimitiveType.Cylinder) : GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    }
+                    //Return shape at the given point
+                    yield return obj;
                 }
             }
         }
