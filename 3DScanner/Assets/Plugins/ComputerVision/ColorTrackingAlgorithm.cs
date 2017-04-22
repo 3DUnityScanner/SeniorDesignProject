@@ -29,6 +29,11 @@ namespace UnityScanner3D.ComputerVision
             clumpQueue.Clear();
         }
 
+        public void DrawSettings()
+        {
+
+        }
+
         public IEnumerable<Shape> GetShapes()
         {
             float angle = Vector3.Angle(normalVector, new Vector3(0, 0, -1));

@@ -10,5 +10,6 @@ namespace UnityScanner3D.ComputerVision
         Texture2D PreviewImage(ColorDepthImage image);
         IEnumerable<Shape> GetShapes();
         void ClearShapes();
+        void DrawSettings();
     }
 }
