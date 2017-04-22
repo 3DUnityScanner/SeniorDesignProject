@@ -38,7 +38,7 @@ public class Scanner : EditorWindow
     {
         "Dummy Camera",
         "Intel F200",
-        "Kinect",
+        //"Kinect",
     };
 
     //A lookup that maps camera names to classes
@@ -46,7 +46,7 @@ public class Scanner : EditorWindow
     {
         { "Dummy Camera", typeof(DummyCamera) },
         { "Intel F200", typeof(IntelCamera) },
-        { "Kinect", null },
+        //{ "Kinect", null },
     };
 
 

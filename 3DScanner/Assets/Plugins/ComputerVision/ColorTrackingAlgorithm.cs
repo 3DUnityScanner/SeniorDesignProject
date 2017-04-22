@@ -313,6 +313,9 @@ namespace UnityScanner3D.ComputerVision
         public void DrawSettings()
         {
             GUILayout.BeginVertical();
+            GUILayout.Label("Algorithm Settings (Color Tracking)", EditorStyles.boldLabel);
+            GUILayout.Label("Custom Models", EditorStyles.centeredGreyMiniLabel);
+
             GUILayout.BeginHorizontal();//Red
 
             enableRedObj = GUILayout.Toggle(enableRedObj, "Red", GUILayout.Width(60));
@@ -369,16 +372,17 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.TextField(blueObjString);
 
             GUILayout.EndHorizontal();
+            GUILayout.Space(10);
             GUILayout.EndVertical();
 
             //////////////////////////
 
-            GUILayout.Label("Algorithm Settings (Color Tracking)", EditorStyles.boldLabel);
-            GUILayout.BeginVertical();
 
+            GUILayout.BeginVertical();
+            GUILayout.Label("Constants", EditorStyles.centeredGreyMiniLabel);
             GUILayout.BeginHorizontal();
             GUILayout.Label("STDEV", GUILayout.Width(100));
-            STDEV = GUILayout.HorizontalSlider(STDEV, 1.0F, 3.0F);
+            STDEV = GUILayout.HorizontalSlider(STDEV, 0.1F, 3.0F);
             GUILayout.Box("" + STDEV, GUILayout.Width(70));
             if (GUILayout.Button("Reset", GUILayout.Width(60)))
                 STDEV = STDEV_D;
@@ -386,16 +390,17 @@ namespace UnityScanner3D.ComputerVision
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("CLUMPTHRESH", GUILayout.Width(100));
-            CLUMPTHRESH = (int)GUILayout.HorizontalSlider(CLUMPTHRESH, 1500, 2000);
+            CLUMPTHRESH = (int)GUILayout.HorizontalSlider(CLUMPTHRESH, 1400, 2100);
             GUILayout.Box("" + CLUMPTHRESH, GUILayout.Width(70));
             if (GUILayout.Button("Reset", GUILayout.Width(60)))
                 CLUMPTHRESH = CLUMPTHRESH_D;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical();
+
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            GUILayout.Label("Algorithm Log");
+            GUILayout.Label("Algorithm Log", EditorStyles.centeredGreyMiniLabel);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.TextArea(logText, GUILayout.ExpandHeight(true));//GUILayout.MaxHeight(150));
