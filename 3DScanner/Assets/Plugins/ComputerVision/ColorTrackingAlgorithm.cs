@@ -173,14 +173,14 @@ namespace UnityScanner3D.ComputerVision
                 Pixel p = pixelQueue.Dequeue();
 
                 //Check if the current pixel is the stop color
-                if (colorImage.GetPixel(p.X, p.Y) != stopColor)
+                if (contrastImage.GetPixel(p.X, p.Y) != stopColor)
                 {
                     //Add the current pixel as a point to return
                     float Z = depthImage.GetPixel(p.X, p.Y).grayscale;
                     toRet.Add(new Vector3(p.X, p.Y, Z));
 
                     //Mark it as visited
-                    colorImage.SetPixel(p.X, p.Y, stopColor);
+                    contrastImage.SetPixel(p.X, p.Y, stopColor);
 
                     //Gets the neighboring pixels
                     Pixel left = new Pixel(p.X - 1, p.Y);
@@ -192,13 +192,13 @@ namespace UnityScanner3D.ComputerVision
                     if (p.X - 1 >= 0 && !pixelQueue.Contains(left))
                         pixelQueue.Enqueue(left);
 
-                    if (p.X + 1 < colorImage.width && !pixelQueue.Contains(right))
+                    if (p.X + 1 < contrastImage.width && !pixelQueue.Contains(right))
                         pixelQueue.Enqueue(right);
 
                     if (p.Y - 1 >= 0 && !pixelQueue.Contains(up))
                         pixelQueue.Enqueue(up);
 
-                    if (p.Y + 1 < colorImage.height && !pixelQueue.Contains(down))
+                    if (p.Y + 1 < contrastImage.height && !pixelQueue.Contains(down))
                         pixelQueue.Enqueue(down);
                 }
 
@@ -221,6 +221,7 @@ namespace UnityScanner3D.ComputerVision
             contrastImage = Texture2D.Instantiate(whiteImage);
 
             var colorPixels = colorImage.GetPixels();
+            var depthPixels = depthImage.GetPixels();
             var contrastPixels = contrastImage.GetPixels();
             for (int y = 0; y < colorImage.height; y++)
             {
@@ -228,7 +229,7 @@ namespace UnityScanner3D.ComputerVision
                 {
                     //Test if the current color is different from the background color
                     Color currColor = colorPixels[y * colorImage.width + x];
-                    if (ImageUtils.AreColorsDifferent(backgroundColor, currColor))
+                    if (ImageUtils.AreColorsDifferent(backgroundColor, currColor) && depthPixels[y * colorImage.width + x] != Color.black)
                     {
                         //Continue checking to the left until a background pixel is encountered
                         int i = 0;
