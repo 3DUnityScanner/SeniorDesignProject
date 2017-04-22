@@ -12,8 +12,8 @@ namespace UnityScanner3D.CameraIO
             if (Status != CameraStatus.Running)
                 throw new Exception("The camera must be running before images can be captured.");
 
-            const int WIDTH = 640 / 2;
-            const int HEIGHT = 480 / 2;
+            const int WIDTH = 640;
+            const int HEIGHT = 480;
 
             Texture2D color = new Texture2D(WIDTH, HEIGHT);
             Texture2D depth = new Texture2D(WIDTH, HEIGHT);
