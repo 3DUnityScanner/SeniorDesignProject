@@ -99,7 +99,7 @@ namespace UnityScanner3D.ComputerVision
             return (float)stdDev;
         }
 
-        private static IEnumerable<Color> GetPixels(Texture2D image)
+        public static IEnumerable<Color> GetPixels(Texture2D image)
         {
             for(int y = 0; y < image.height; y++)
             {
@@ -108,6 +108,22 @@ namespace UnityScanner3D.ComputerVision
                     yield return image.GetPixel(x, y);
                 }
             }
+        }
+
+        public static Pixel GetRandomPixel(Texture2D colorImage, Func<Color, bool> condition)
+        {
+            Color c;
+            int x;
+            int y;
+
+            do
+            {
+                x = UnityEngine.Random.Range(0, colorImage.width);
+                y = UnityEngine.Random.Range(0, colorImage.height);
+                c = colorImage.GetPixel(x, y);
+            } while (!condition(c));
+
+            return new Pixel(x, y);
         }
     }
 }
