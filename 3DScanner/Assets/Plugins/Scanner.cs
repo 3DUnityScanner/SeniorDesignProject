@@ -17,16 +17,12 @@ public class Scanner : EditorWindow
 
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
-    ScannerOptions myOptions;
-
     Stopwatch lastCameraUpdate = new Stopwatch();
     const int CAPTURELIMIT = 100;
 
     //UI Backing Fields
     string cameraName;
     string logText = "", statusLabelText, streamText, captureText;
-    string redObjString = "", greenObjString = "", blueObjString = "";
-    string redFilename = "", greenFilename = "", blueFilename = "";
     Type cameraType;
     Texture2D leftStream, rightStream;
     bool updateGUI, isStreaming, snapEnabled, showContrast;
@@ -36,7 +32,6 @@ public class Scanner : EditorWindow
     int selectedCameraIndex = 1;
     private bool runningAlgorithm;
     private bool showCool;
-    private bool enableRedObj = false, enableGreenObj = false, enableBlueObj = false;
     private string leftStreamLabel = "RGB Stream";
     private string rightStreamLabel = "Depth Stream";
     string[] cameraOptions = new string[]
@@ -81,9 +76,7 @@ public class Scanner : EditorWindow
         //Buttons and status
         bool captureButton = false;
         GUILayout.BeginHorizontal();
-        bool streamButton = GUILayout.Button(streamText, GUILayout.Width(100));
-        if (GUILayout.Button("Options Menu", GUILayout.Width(100)))
-            myOptions.toggleWindow();
+        bool streamButton = GUILayout.Button(streamText, GUILayout.Width(200));
         GUILayout.Space(5);
         if (GUIKeyDown(KeyCode.Space))
             streamButton = true;
@@ -184,9 +177,8 @@ public class Scanner : EditorWindow
         if (isStreaming)
             updateCam();
 
-        drawColorSelect();
         drawStreams();
-        drawLog();
+        algorithm.DrawSettings();
 
         updateGUI = false;
     }
@@ -230,84 +222,6 @@ public class Scanner : EditorWindow
         GUILayout.EndVertical();
     }
 
-    private void drawColorSelect()
-    {
-        GUILayout.BeginVertical();
-        GUILayout.BeginHorizontal();//Red
-
-        enableRedObj = GUILayout.Toggle(enableRedObj, "Red", GUILayout.Width(60));
-        GUILayout.Label("Model:", GUILayout.Width(40));
-        GUILayout.TextField(redFilename, GUILayout.Width(152));
-        if (GUILayout.Button("Browse", GUILayout.Width(60)))
-        {
-            redFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File","",
-                new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
-        }
-        GUILayout.Space(81);
-        GUILayout.Label("Scale:", GUILayout.Width(40));
-        GUILayout.TextField(redObjString);
-        GUILayout.Space(10);
-        GUILayout.Label("Count:", GUILayout.Width(42));
-        GUILayout.TextField(redObjString);
-
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();//Green
-
-        enableGreenObj = GUILayout.Toggle(enableGreenObj, "Green", GUILayout.Width(60));
-        GUILayout.Label("Model:", GUILayout.Width(40));
-        GUILayout.TextField(greenFilename, GUILayout.Width(152));
-        if (GUILayout.Button("Browse", GUILayout.Width(60)))
-        {
-            greenFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "", 
-                new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
-        }
-        GUILayout.Space(81);
-        GUILayout.Label("Scale:", GUILayout.Width(40));
-        GUILayout.TextField(greenObjString);
-        GUILayout.Space(10);
-        GUILayout.Label("Count:", GUILayout.Width(42));
-        GUILayout.TextField(greenObjString);
-
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();//Blue
-
-        enableBlueObj = GUILayout.Toggle(enableBlueObj, "Blue", GUILayout.Width(60));
-        GUILayout.Label("Model:", GUILayout.Width(40));
-        GUILayout.TextField(blueFilename, GUILayout.Width(152));
-        if (GUILayout.Button("Browse", GUILayout.Width(60)))
-        {
-            blueFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "", 
-                new string[] { "Object Files","fbx,dae,3ds,dxf,obj,skp" });
-        }
-        GUILayout.Space(81);
-        GUILayout.Label("Scale:", GUILayout.Width(40));
-        GUILayout.TextField(blueObjString);
-        GUILayout.Space(10);
-        GUILayout.Label("Count:", GUILayout.Width(42));
-        GUILayout.TextField(blueObjString);
-
-        GUILayout.EndHorizontal();
-        GUILayout.EndVertical();
-    }
-
-    private void drawLog()
-    {
-        GUILayout.BeginVertical();
-
-        GUILayout.BeginVertical();
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Algorithm Log");
-        GUILayout.FlexibleSpace();
-        GUILayout.Label("Status: " + statusLabelText);
-        GUILayout.EndHorizontal();
-        GUILayout.TextArea(logText, GUILayout.ExpandHeight(true));//GUILayout.MaxHeight(150));
-        GUILayout.EndVertical();
-
-        GUILayout.EndVertical();
-    } 
-
     //Reset all the goods
     public void OnRecompile()
     {
@@ -334,7 +248,6 @@ public class Scanner : EditorWindow
         leftStreamLabel = "RGB Stream";
         updateGUI = true;
         selectedCameraIndex = 1;
-        myOptions = new ScannerOptions();
     }
 
     private void updateCam()

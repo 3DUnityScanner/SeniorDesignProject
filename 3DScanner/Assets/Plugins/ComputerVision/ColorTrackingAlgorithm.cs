@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityScanner3D.CameraIO;
 
@@ -10,8 +11,10 @@ namespace UnityScanner3D.ComputerVision
     public class ColorTrackingAlgorithm : IAlgorithm
     {
         public const int OBJSCALE = 25;
-        public const float STDEV = 2.0f;
-        public const int CLUMPTHRESH = 1700;
+        public float STDEV = 2.0f;
+        public const float STDEV_D = 2.0f;
+        public int CLUMPTHRESH = 1700;
+        public const int CLUMPTHRESH_D = 1700;
         private const float DIFFERENCE_THRESHOLD = 0.3f;
         private const int HOPSCOTCH_VALUE = 10;
 
@@ -19,19 +22,19 @@ namespace UnityScanner3D.ComputerVision
         private Vector3 normalVector;
         private Color averageColor;
         private Queue<Clump> clumpQueue = new Queue<Clump>();
+        private string logText = "";
 
         private Texture2D contrastImage = null;
         private Texture2D colorImage = null;
         private Texture2D depthImage = null;
 
+        string redObjString = "", greenObjString = "", blueObjString = "";
+        string redFilename = "", greenFilename = "", blueFilename = "";
+        private bool enableRedObj = false, enableGreenObj = false, enableBlueObj = false;
+
         public void ClearShapes()
         {
             clumpQueue.Clear();
-        }
-
-        public void DrawSettings()
-        {
-
         }
 
         public IEnumerable<Shape> GetShapes()
@@ -294,6 +297,101 @@ namespace UnityScanner3D.ComputerVision
             newZ = (float) (Math.Cos(angle) * point.y - Math.Sin(angle) * point.z);
 
             return new Vector3(newX, newY, newZ);
+        }
+
+
+        public void DrawSettings()
+        {
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();//Red
+
+            enableRedObj = GUILayout.Toggle(enableRedObj, "Red", GUILayout.Width(60));
+            GUILayout.Label("Model:", GUILayout.Width(40));
+            GUILayout.TextField(redFilename, GUILayout.Width(152));
+            if (GUILayout.Button("Browse", GUILayout.Width(60)))
+            {
+                redFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
+                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
+            }
+            GUILayout.Space(81);
+            GUILayout.Label("Scale:", GUILayout.Width(40));
+            GUILayout.TextField(redObjString);
+            GUILayout.Space(10);
+            GUILayout.Label("Count:", GUILayout.Width(42));
+            GUILayout.TextField(redObjString);
+
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();//Green
+
+            enableGreenObj = GUILayout.Toggle(enableGreenObj, "Green", GUILayout.Width(60));
+            GUILayout.Label("Model:", GUILayout.Width(40));
+            GUILayout.TextField(greenFilename, GUILayout.Width(152));
+            if (GUILayout.Button("Browse", GUILayout.Width(60)))
+            {
+                greenFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
+                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
+            }
+            GUILayout.Space(81);
+            GUILayout.Label("Scale:", GUILayout.Width(40));
+            GUILayout.TextField(greenObjString);
+            GUILayout.Space(10);
+            GUILayout.Label("Count:", GUILayout.Width(42));
+            GUILayout.TextField(greenObjString);
+
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();//Blue
+
+            enableBlueObj = GUILayout.Toggle(enableBlueObj, "Blue", GUILayout.Width(60));
+            GUILayout.Label("Model:", GUILayout.Width(40));
+            GUILayout.TextField(blueFilename, GUILayout.Width(152));
+            if (GUILayout.Button("Browse", GUILayout.Width(60)))
+            {
+                blueFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
+                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
+            }
+            GUILayout.Space(81);
+            GUILayout.Label("Scale:", GUILayout.Width(40));
+            GUILayout.TextField(blueObjString);
+            GUILayout.Space(10);
+            GUILayout.Label("Count:", GUILayout.Width(42));
+            GUILayout.TextField(blueObjString);
+
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+
+            //////////////////////////
+
+            GUILayout.Label("Algorithm Settings (Color Tracking)", EditorStyles.boldLabel);
+            GUILayout.BeginVertical();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("STDEV", GUILayout.Width(100));
+            STDEV = GUILayout.HorizontalSlider(STDEV, 1.0F, 3.0F);
+            GUILayout.Box("" + STDEV, GUILayout.Width(70));
+            if (GUILayout.Button("Reset", GUILayout.Width(60)))
+                STDEV = STDEV_D;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("CLUMPTHRESH", GUILayout.Width(100));
+            CLUMPTHRESH = (int)GUILayout.HorizontalSlider(CLUMPTHRESH, 1500, 2000);
+            GUILayout.Box("" + CLUMPTHRESH, GUILayout.Width(70));
+            if (GUILayout.Button("Reset", GUILayout.Width(60)))
+                CLUMPTHRESH = CLUMPTHRESH_D;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Algorithm Log");
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.TextArea(logText, GUILayout.ExpandHeight(true));//GUILayout.MaxHeight(150));
+            GUILayout.EndVertical();
+
+            GUILayout.EndVertical();
         }
     }
 }
