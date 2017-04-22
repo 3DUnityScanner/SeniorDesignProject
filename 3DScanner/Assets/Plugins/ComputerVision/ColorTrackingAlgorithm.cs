@@ -17,6 +17,7 @@ namespace UnityScanner3D.ComputerVision
         public const int CLUMPTHRESH_D = 1700;
         private const float DIFFERENCE_THRESHOLD = 0.3f;
         private const int HOPSCOTCH_VALUE = 10;
+        private const float PIXEL_UNIT_CONVERSION = 1.0f;
 
         private Texture2D whiteImage;
         private Vector3 normalVector;
@@ -40,6 +41,8 @@ namespace UnityScanner3D.ComputerVision
         public IEnumerable<GameObject> GetShapes()
         {
             float angle = Vector3.Angle(normalVector, new Vector3(0, 0, -1));
+            Debug.Log("normalVector = " + normalVector);
+            Debug.Log("angle = " + angle);
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
@@ -113,6 +116,8 @@ namespace UnityScanner3D.ComputerVision
             colorImage = image.ColorImage;
             depthImage = image.DepthImage;
             averageColor = ImageUtils.CalculateAverageColor(image.ColorImage);
+            float stdDev = ImageUtils.CalculateStandardColorDeviation(colorImage, averageColor);
+            averageColor = ImageUtils.CalculateAverageColor(image.ColorImage, averageColor, stdDev, STDEV);
             Contrastify(averageColor);
             return contrastImage;
         }
@@ -152,15 +157,18 @@ namespace UnityScanner3D.ComputerVision
             List<Vector3> vectors = new List<Vector3>(10);
             for (int i = 0; i < 10; i++)
             {
-                Pixel head = ImageUtils.GetRandomPixel(colorImage, c => c == Color.white);
+                Pixel head;
+                do
+                    head = ImageUtils.GetRandomPixel(colorImage, c => c == Color.white);
+                while (depthImage.GetPixel(head.X, head.Y) == Color.black);
+
                 float headZ = depthImage.GetPixel(head.X, head.Y).grayscale;
                 float tailZ = depthImage.GetPixel(tail.X, tail.Y).grayscale;
 
                 vectors.Add(new Vector3(
-                    (head.X - tail.X),
-                    (head.Y - tail.Y),
-                    headZ - tailZ));
-                
+                    PIXEL_UNIT_CONVERSION * (head.X - tail.X),
+                    PIXEL_UNIT_CONVERSION * (head.Y - tail.Y),
+                    headZ - tailZ));    
             }
 
             Vector3 camView = new Vector3(0, 0, 1);
@@ -175,6 +183,8 @@ namespace UnityScanner3D.ComputerVision
                     if (Vector3.Dot(n, camView) < 0)
                         n *= -1;
 
+                    Debug.Log("normal candidate = " + n);
+
                     //Increments the average
                     averageX += n.x;
                     averageY += n.y;
@@ -183,7 +193,6 @@ namespace UnityScanner3D.ComputerVision
             }
 
             normalVector = new Vector3(averageX, averageY, averageZ);
-            normalVector.Normalize();
         }
 
         private List<Vector3> FloodFill(int x, int y, Color stopColor)
