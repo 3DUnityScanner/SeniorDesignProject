@@ -26,6 +26,7 @@ public class Scanner : EditorWindow
     string cameraName;
     string logText = "", statusLabelText, streamText, captureText;
     string redObjString = "", greenObjString = "", blueObjString = "";
+    string redFilename = "", greenFilename = "", blueFilename = "";
     Type cameraType;
     Texture2D leftStream, rightStream;
     bool updateGUI, isStreaming, snapEnabled, showContrast;
@@ -236,8 +237,13 @@ public class Scanner : EditorWindow
 
         enableRedObj = GUILayout.Toggle(enableRedObj, "Red", GUILayout.Width(60));
         GUILayout.Label("Model:", GUILayout.Width(40));
-        GUILayout.TextField(redObjString, GUILayout.Width(212));
-        GUILayout.Space(91);
+        GUILayout.TextField(redFilename, GUILayout.Width(152));
+        if (GUILayout.Button("Browse", GUILayout.Width(60)))
+        {
+            redFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File","",
+                new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
+        }
+        GUILayout.Space(81);
         GUILayout.Label("Scale:", GUILayout.Width(40));
         GUILayout.TextField(redObjString);
         GUILayout.Space(10);
@@ -250,8 +256,13 @@ public class Scanner : EditorWindow
 
         enableGreenObj = GUILayout.Toggle(enableGreenObj, "Green", GUILayout.Width(60));
         GUILayout.Label("Model:", GUILayout.Width(40));
-        GUILayout.TextField(greenObjString, GUILayout.Width(212));
-        GUILayout.Space(91);
+        GUILayout.TextField(greenFilename, GUILayout.Width(152));
+        if (GUILayout.Button("Browse", GUILayout.Width(60)))
+        {
+            greenFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "", 
+                new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
+        }
+        GUILayout.Space(81);
         GUILayout.Label("Scale:", GUILayout.Width(40));
         GUILayout.TextField(greenObjString);
         GUILayout.Space(10);
@@ -264,8 +275,13 @@ public class Scanner : EditorWindow
 
         enableBlueObj = GUILayout.Toggle(enableBlueObj, "Blue", GUILayout.Width(60));
         GUILayout.Label("Model:", GUILayout.Width(40));
-        GUILayout.TextField(blueObjString, GUILayout.Width(212));
-        GUILayout.Space(91);
+        GUILayout.TextField(blueFilename, GUILayout.Width(152));
+        if (GUILayout.Button("Browse", GUILayout.Width(60)))
+        {
+            blueFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "", 
+                new string[] { "Object Files","fbx,dae,3ds,dxf,obj,skp" });
+        }
+        GUILayout.Space(81);
         GUILayout.Label("Scale:", GUILayout.Width(40));
         GUILayout.TextField(blueObjString);
         GUILayout.Space(10);
