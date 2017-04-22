@@ -85,6 +85,8 @@ namespace UnityScanner3D.ComputerVision
         public Texture2D PreviewImage(ColorDepthImage image)
         {
             colorImage = image.ColorImage;
+            depthImage = image.DepthImage;
+            averageColor = ImageUtils.CalculateAverageColor(image.ColorImage);
             Contrastify(averageColor);
             return contrastImage;
         }
@@ -205,7 +207,7 @@ namespace UnityScanner3D.ComputerVision
             return toRet;
         }
 
-        private void Contrastify(Color averageColor)
+        private void Contrastify(Color backgroundColor)
         {
             //Creates the white image if it is uninitialized
             if (whiteImage == null) { 
@@ -218,34 +220,38 @@ namespace UnityScanner3D.ComputerVision
             //Makes a copy of the white image as the starting point for the contrast image
             contrastImage = Texture2D.Instantiate(whiteImage);
 
+            var colorPixels = colorImage.GetPixels();
+            var contrastPixels = contrastImage.GetPixels();
             for (int y = 0; y < colorImage.height; y++)
             {
                 for (int x = 0; x < colorImage.width; x += HOPSCOTCH_VALUE)
                 {
                     //Test if the current color is different from the background color
-                    Color currColor = colorImage.GetPixel(x, y);
-                    if (ImageUtils.AreColorsDifferent(averageColor, currColor))
+                    Color currColor = colorPixels[y * colorImage.width + x];
+                    if (ImageUtils.AreColorsDifferent(backgroundColor, currColor))
                     {
+                        //Continue checking to the left until a background pixel is encountered
                         int i = 0;
-                        while (ImageUtils.AreColorsDifferent(averageColor, currColor))
+                        while (ImageUtils.AreColorsDifferent(backgroundColor, currColor))
                         {
-                            contrastImage.SetPixel(x - i, y, Color.black);
-                            currColor = colorImage.GetPixel(x - i, y);
+                            contrastPixels[y * contrastImage.width + x - i] = Color.black;
                             i++;
                             if (x - i < 0)
                                 break;
+                            currColor = colorPixels[y * colorImage.width + x - i];
                         }
 
                         i = 1;
                         currColor = colorImage.GetPixel(x + i, y);
 
-                        while (ImageUtils.AreColorsDifferent(averageColor, currColor))
+                        //Continue checking to the right until a background pixel is encountered
+                        while (ImageUtils.AreColorsDifferent(backgroundColor, currColor))
                         {
-                            contrastImage.SetPixel(x + i, y, Color.black);
-                            currColor = colorImage.GetPixel(x + i, y);
+                            contrastPixels[y * contrastImage.width + x + i] = Color.black;
                             i++;
-                            if (x + i > colorImage.width)
+                            if (x + i >= colorImage.width)
                                 break;
+                            currColor = colorPixels[y * colorImage.width + x + i];
                         }
 
                         x += i - 1;
@@ -253,6 +259,8 @@ namespace UnityScanner3D.ComputerVision
 
                 }
             }
+
+            contrastImage.SetPixels(contrastPixels);
         }
 
         private void Clumpify()

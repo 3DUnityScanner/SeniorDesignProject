@@ -17,12 +17,12 @@ namespace UnityScanner3D.ComputerVision
 
         public static Color CalculateAverageColor(Texture2D colorImage)
         {
-            return CalculateAverageColor(GetPixels(colorImage));
+            return CalculateAverageColor(colorImage.GetPixels());
         }
 
         public static Color CalculateAverageColor(Texture2D colorImage, Color oldAverage, float stdDev, float range)
         {
-            return CalculateAverageColor(GetPixels(colorImage), oldAverage, stdDev, range);
+            return CalculateAverageColor(colorImage.GetPixels(), oldAverage, stdDev, range);
         }
 
         public static Color CalculateAverageColor(IEnumerable<Color> colors)
@@ -97,17 +97,6 @@ namespace UnityScanner3D.ComputerVision
 
             stdDev /= numOfPixels;
             return (float)stdDev;
-        }
-
-        public static IEnumerable<Color> GetPixels(Texture2D image)
-        {
-            for(int y = 0; y < image.height; y++)
-            {
-                for(int x = 0; x < image.width; x++)
-                {
-                    yield return image.GetPixel(x, y);
-                }
-            }
         }
 
         public static Pixel GetRandomPixel(Texture2D colorImage, Func<Color, bool> condition)
