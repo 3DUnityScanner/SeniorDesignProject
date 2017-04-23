@@ -32,7 +32,10 @@ namespace UnityScanner3D.CameraIO
             {
                 for (int j = n; j < n + 100; j++)
                 {
-                    color.SetPixel(i, j, Color.blue);
+                    if(n > 300)
+                        color.SetPixel(i, j, Color.blue);
+                    else
+                        color.SetPixel(i, j, Color.red);
                     depth.SetPixel(i, j, Color.white);
                 }
             }
