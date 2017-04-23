@@ -25,7 +25,7 @@ public class Scanner : EditorWindow
     string streamText, captureText;
     Type cameraType;
     Texture2D leftStream, rightStream;
-    bool updateGUI, isStreaming, snapEnabled, showContrast;
+    bool updateGUI, isStreaming, showContrast;
     ColorDepthImage cameraImage;
     int scanCount;
     int selectedCameraIndex = 1;
@@ -195,7 +195,6 @@ public class Scanner : EditorWindow
         isStreaming = false;
         streamText = "Start Stream";
         captureText = "Place Objects";
-        snapEnabled = true;
         scanCount = 0;
         justRecompiled = false;
         showContrast = false;
@@ -308,12 +307,14 @@ public class Scanner : EditorWindow
                 {
                     newObjMat(p);
                     p.GetComponent<Renderer>().sharedMaterial = redMaterial;
+                    //p.AddComponent<MeshCollider>();
                 }
                     
                 else if (p.name == "Cylinder")
                 {
                     newObjMat(p);
                     p.GetComponent<Renderer>().sharedMaterial = blueMaterial;
+                    //p.AddComponent<MeshCollider>(); 
                 }
                     
             }

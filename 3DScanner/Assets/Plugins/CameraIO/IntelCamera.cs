@@ -77,7 +77,7 @@ namespace UnityScanner3D.CameraIO
 
         public void SetImage(ColorDepthImage image)
         {
-            const float MM_UNITY_CONV = 1.0f;
+            const float MM_UNITY_CONV = 800.0f;
             
             //Creates the projection and array to populate
             imageProj = SMInstance.CaptureManager.Device.CreateProjection();

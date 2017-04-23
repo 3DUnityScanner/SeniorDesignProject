@@ -34,7 +34,6 @@ namespace UnityScanner3D.ComputerVision
         private Texture2D colorImage = null;
         private Texture2D depthImage = null;
 
-        string redObjString = "", greenObjString = "", blueObjString = "";
         string redFilename = "", greenFilename = "", blueFilename = "";
         private bool enableRedObj = false, enableGreenObj = false, enableBlueObj = false;
 
@@ -49,6 +48,9 @@ namespace UnityScanner3D.ComputerVision
             Debug.Log("normalVector = " + normalVector);
             Debug.Log("angle = " + angle);
 
+            logText = "Algorithm Log\n\n";
+
+            int i = 0;
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
@@ -62,6 +64,8 @@ namespace UnityScanner3D.ComputerVision
                 
                     //set all poses to lie on the ground (y = 0.5) times the scale
                     averagePoint.y = 0;
+
+                    logText += "Object " + i++ + ": Position = " + averagePoint.ToString() + "\n";
 
                     //check for object types
                     //blue
@@ -518,7 +522,7 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.BeginVertical();
             GUILayout.Label("Constants", EditorStyles.centeredGreyMiniLabel);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("STDEV", GUILayout.Width(100));
+            GUILayout.Label("Background Threshold", GUILayout.Width(140));
             STDEV = GUILayout.HorizontalSlider(STDEV, 0.1F, 3.0F);
             GUILayout.Box("" + STDEV, GUILayout.Width(70));
             if (GUILayout.Button("Reset", GUILayout.Width(60)))
@@ -526,7 +530,7 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("CLUMPTHRESH", GUILayout.Width(100));
+            GUILayout.Label("Grouping Threshold", GUILayout.Width(140));
             CLUMPTHRESH = (int)GUILayout.HorizontalSlider(CLUMPTHRESH, 1400, 2100);
             GUILayout.Box("" + CLUMPTHRESH, GUILayout.Width(70));
             if (GUILayout.Button("Reset", GUILayout.Width(60)))
@@ -534,7 +538,7 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("SCALE", GUILayout.Width(100));
+            GUILayout.Label("Overall Scaling", GUILayout.Width(140));
             OBJSCALE = (int)GUILayout.HorizontalSlider(OBJSCALE, 10, 130);
             GUILayout.Box("" + OBJSCALE, GUILayout.Width(70));
             if (GUILayout.Button("Reset", GUILayout.Width(60)))
