@@ -10,7 +10,8 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
-        public const int OBJSCALE = 70;
+        public int OBJSCALE = 70;
+        public const int OBJSCALE_D = 70;
         public float STDEV = 2.0f;
         public const float STDEV_D = 2.0f;
         public int CLUMPTHRESH = 1700;
@@ -29,7 +30,7 @@ namespace UnityScanner3D.ComputerVision
         private Texture2D colorImage = null;
         private Texture2D depthImage = null;
 
-        string redObjString = "", greenObjString = "", blueObjString = "";
+        string redObjScale = "", greenObjScale = "", blueObjScale = "";
         string redFilename = "", greenFilename = "", blueFilename = "";
         private bool enableRedObj = false, enableGreenObj = false, enableBlueObj = false;
 
@@ -44,6 +45,10 @@ namespace UnityScanner3D.ComputerVision
             Debug.Log("normalVector = " + normalVector);
             Debug.Log("angle = " + angle);
 
+            logText = "Algorithm: Color Tracking\n";
+
+            int i = 0;
+
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
@@ -56,6 +61,9 @@ namespace UnityScanner3D.ComputerVision
 
                     //set all poses to lie on the ground (y = 0.5) times the scale
                     averagePoint.y = 0;
+                    logText += "Object " + i + " : ";
+                    logText += "Position: " + averagePoint.ToString() + "\n";
+                    i++;
 
                     //check for object types
                     //blue
@@ -77,7 +85,7 @@ namespace UnityScanner3D.ComputerVision
                             GameObject cyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                             cyl.transform.position = averagePoint;
                             cyl.transform.rotation = new Quaternion(0, 0, 0, 0);
-                            cyl.transform.localScale = new Vector3(OBJSCALE, OBJSCALE, OBJSCALE);
+                            cyl.transform.localScale = new Vector3(OBJSCALE, OBJSCALE / 2, OBJSCALE);
                             Bounds b = cyl.GetComponent<MeshFilter>().mesh.bounds;
                             Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
                             cyl.transform.position = averagePoint - lowerCenter;
@@ -417,7 +425,8 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            GUILayout.TextField(redObjString);
+            GUILayout.TextField(redObjScale);
+
             GUILayout.Space(10);
             
             GUILayout.EndHorizontal();
@@ -434,7 +443,7 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            GUILayout.TextField(greenObjString);
+            GUILayout.TextField(greenObjScale);
             GUILayout.Space(10);
 
             GUILayout.EndHorizontal();
@@ -451,7 +460,7 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            GUILayout.TextField(blueObjString);
+            GUILayout.TextField(blueObjScale);
             GUILayout.Space(10);
 
             GUILayout.EndHorizontal();
@@ -477,6 +486,14 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Box("" + CLUMPTHRESH, GUILayout.Width(70));
             if (GUILayout.Button("Reset", GUILayout.Width(60)))
                 CLUMPTHRESH = CLUMPTHRESH_D;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("SCALE", GUILayout.Width(100));
+            OBJSCALE = (int)GUILayout.HorizontalSlider(OBJSCALE, 10, 130);
+            GUILayout.Box("" + OBJSCALE, GUILayout.Width(70));
+            if (GUILayout.Button("Reset", GUILayout.Width(60)))
+                OBJSCALE = OBJSCALE_D;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical();
