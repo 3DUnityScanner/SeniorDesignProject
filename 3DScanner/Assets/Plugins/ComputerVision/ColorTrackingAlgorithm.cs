@@ -10,7 +10,8 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
-        public const int OBJSCALE = 70;
+        public int OBJSCALE = 70;
+        public const int OBJSCALE_D = 70;
         public int REDSCALE = 25;
         public int GREENSCALE = 25;
         public int BLUESCALE = 25;
@@ -503,6 +504,14 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Box("" + CLUMPTHRESH, GUILayout.Width(70));
             if (GUILayout.Button("Reset", GUILayout.Width(60)))
                 CLUMPTHRESH = CLUMPTHRESH_D;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("SCALE", GUILayout.Width(100));
+            OBJSCALE = (int)GUILayout.HorizontalSlider(OBJSCALE, 10, 130);
+            GUILayout.Box("" + OBJSCALE, GUILayout.Width(70));
+            if (GUILayout.Button("Reset", GUILayout.Width(60)))
+                OBJSCALE = OBJSCALE_D;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical();

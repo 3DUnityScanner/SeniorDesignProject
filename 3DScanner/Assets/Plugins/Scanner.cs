@@ -22,12 +22,11 @@ public class Scanner : EditorWindow
 
     //UI Backing Fields
     string cameraName;
-    string logText = "", statusLabelText, streamText, captureText;
+    string streamText, captureText;
     Type cameraType;
     Texture2D leftStream, rightStream;
     bool updateGUI, isStreaming, snapEnabled, showContrast;
     ColorDepthImage cameraImage;
-    Stack<GameObject> scans;
     int scanCount;
     int selectedCameraIndex = 1;
     private bool runningAlgorithm;
@@ -85,15 +84,15 @@ public class Scanner : EditorWindow
         if (!isStreaming)
             GUI.enabled = true;
         GUILayout.Space(5);
-        bool undoButton = GUILayout.Button("Undo Last", GUILayout.Width(100));
-        bool clearButton = GUILayout.Button("Clear All", GUILayout.Width(100));
+        bool undoButton = GUILayout.Button("Undo Last", GUILayout.Width(200));
+        //bool clearButton = GUILayout.Button("Clear All", GUILayout.Width(100));
         GUILayout.EndHorizontal();
 
         GUILayout.EndVertical();
       
 
         //We interrupt this gross UI stuff to bring you some logic
-        if (clearButton){
+        if (undoButton){
             while (GameObject.FindWithTag("scanned_group") != null)
             { clearObjectsInScene(); }
             
@@ -106,7 +105,6 @@ public class Scanner : EditorWindow
             if (isStreaming)
             {
                 isStreaming = false;
-                statusLabelText = "Idle";
                 streamText = "Start Stream";
                 if (camera != null)
                     camera.StopCapture();
@@ -116,7 +114,6 @@ public class Scanner : EditorWindow
             else
             {
                 isStreaming = true;
-                statusLabelText = "Streaming!";
                 streamText = "Stop Stream";
 
                 //Create an instance of the camera
@@ -133,20 +130,6 @@ public class Scanner : EditorWindow
 
         if (captureButton && camera != null)
             runningAlgorithm = true;
-
-        if (undoButton)
-        {
-            if (scans.Count > 0)
-            {
-                var lastScanned = scans.Pop();
-                DestroyImmediate(lastScanned);
-                scanCount--;
-            }
-            else
-            {
-                UnityEngine.Debug.Log("Must have scanned before undoing");
-            }
-        }
 
         //Update ColorDepthImage
         if (isStreaming)
@@ -206,16 +189,13 @@ public class Scanner : EditorWindow
         camera = null;
         algorithm = new ColorTrackingAlgorithm();
         lastCameraUpdate = new Stopwatch();
-        logText = "";
         leftStream = null;
         rightStream = null;
         cameraImage = null;
         isStreaming = false;
-        statusLabelText = "Idle";
         streamText = "Start Stream";
         captureText = "Place Objects";
         snapEnabled = true;
-        scans = new Stack<GameObject>();
         scanCount = 0;
         justRecompiled = false;
         showContrast = false;
@@ -264,6 +244,12 @@ public class Scanner : EditorWindow
         thing = null;
     }
 
+    public static void newObjMat(GameObject input)
+    {
+        Material mat = input.GetComponent<MeshRenderer>().sharedMaterial;
+        input.GetComponent<MeshRenderer>().sharedMaterial = new Material(mat);
+    }
+
     private void Update()
     {
         if (justRecompiled)
@@ -278,7 +264,6 @@ public class Scanner : EditorWindow
         if (runningAlgorithm)
         {
             clearObjectsInScene();
-            logText = "Algorithm: Color Tracking\n";
 
             scanCount++;
             updateCam();
@@ -290,22 +275,24 @@ public class Scanner : EditorWindow
             blackMaterial.color = Color.black;
 
             //Set parent for group objects as empty GameObject
-            var parent = new GameObject() { name = "Scanned Objects " + scanCount };
+            var parent = new GameObject() { name = "Scanned Objects"};
             parent.tag = "scanned_group";
             GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            plane.transform.localScale = new Vector3(400, 1, 400);
+            plane.transform.localScale = new Vector3(300, 1, 300);
             plane.transform.parent = parent.transform;
-            plane.GetComponent<Renderer>().material = blackMaterial;
-            plane.GetComponent<Renderer>().material.color = Color.black;
+
+            newObjMat(plane);
+            plane.GetComponent<Renderer>().sharedMaterial = blackMaterial;
+
             Vector3 centerVector = new Vector3();
             bool vFlag = false;
             int i = 0;
             foreach (GameObject p in poseList)
             {
                 Material redMaterial = new Material(Shader.Find("Standard"));
-                blackMaterial.color = Color.red;
+                redMaterial.color = Color.red;
                 Material blueMaterial = new Material(Shader.Find("Standard"));
-                blackMaterial.color = Color.blue;
+                blueMaterial.color = Color.blue;
                 i++;
                 if (!vFlag)
                 {
@@ -317,27 +304,13 @@ public class Scanner : EditorWindow
                 p.transform.position -= centerVector;
                 p.transform.parent = parent.transform;//grouping spawned objects
 
+                newObjMat(p);
                 if (p.name == "Cube")
-                {
-                    p.GetComponent<Renderer>().material = redMaterial;
-                    p.GetComponent<Renderer>().material.color = Color.red;
-                }
+                    p.GetComponent<Renderer>().sharedMaterial = redMaterial;
                 else if (p.name == "Cylinder")
-                {
-                    p.GetComponent<Renderer>().material = blueMaterial;
-                    p.GetComponent<Renderer>().material.color = Color.blue;
-                    //p.transform.localScale = new Vector3(70, 35, 70);
-                    //thing.transform.position -= new Vector3(0, 35f, 0);
-                }
-
-
-                logText += "Object " + i + " : ";
-                logText += "Position: " + p.transform.position.ToString() + " - Rotation: " + p.transform.rotation + "\n";
+                    p.GetComponent<Renderer>().sharedMaterial = blueMaterial;
             }
 
-            logText += "Objects Found: " + i + "\n\n";
-
-            scans.Push(parent);//pass to lastScanned for the undo button
             algorithm.ClearShapes();
 
             runningAlgorithm = false;
