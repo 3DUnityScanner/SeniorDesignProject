@@ -10,8 +10,10 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
-        public int OBJSCALE = 70;
-        public const int OBJSCALE_D = 70;
+        public const int OBJSCALE = 70;
+        public int REDSCALE = 25;
+        public int GREENSCALE = 25;
+        public int BLUESCALE = 25;
         public float STDEV = 2.0f;
         public const float STDEV_D = 2.0f;
         public int CLUMPTHRESH = 1700;
@@ -30,7 +32,7 @@ namespace UnityScanner3D.ComputerVision
         private Texture2D colorImage = null;
         private Texture2D depthImage = null;
 
-        string redObjScale = "", greenObjScale = "", blueObjScale = "";
+        string redObjString = "", greenObjString = "", blueObjString = "";
         string redFilename = "", greenFilename = "", blueFilename = "";
         private bool enableRedObj = false, enableGreenObj = false, enableBlueObj = false;
 
@@ -45,10 +47,6 @@ namespace UnityScanner3D.ComputerVision
             Debug.Log("normalVector = " + normalVector);
             Debug.Log("angle = " + angle);
 
-            logText = "Algorithm: Color Tracking\n";
-
-            int i = 0;
-
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
@@ -61,9 +59,6 @@ namespace UnityScanner3D.ComputerVision
 
                     //set all poses to lie on the ground (y = 0.5) times the scale
                     averagePoint.y = 0;
-                    logText += "Object " + i + " : ";
-                    logText += "Position: " + averagePoint.ToString() + "\n";
-                    i++;
 
                     //check for object types
                     //blue
@@ -74,9 +69,14 @@ namespace UnityScanner3D.ComputerVision
                             GameObject blueMesh = (GameObject)UnityEngine.Object.Instantiate(Resources.Load(blueFilename));
                             blueMesh.transform.position = averagePoint;
                             blueMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
-                            blueMesh.transform.localScale *= OBJSCALE;
-                            Bounds b = blueMesh.GetComponent<MeshFilter>().mesh.bounds;
-                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            blueMesh.transform.localScale *= BLUESCALE;
+                            var meshes = blueMesh.GetComponentsInChildren<MeshFilter>();
+                            Bounds b = new Bounds();
+                            foreach (MeshFilter mf in meshes)
+                            {
+                                b.Encapsulate(mf.mesh.bounds);
+                            }
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * BLUESCALE, 0);
                             blueMesh.transform.position = averagePoint - lowerCenter;
                             yield return blueMesh;
                         }
@@ -85,7 +85,8 @@ namespace UnityScanner3D.ComputerVision
                             GameObject cyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                             cyl.transform.position = averagePoint;
                             cyl.transform.rotation = new Quaternion(0, 0, 0, 0);
-                            cyl.transform.localScale = new Vector3(OBJSCALE, OBJSCALE / 2, OBJSCALE);
+                            cyl.transform.localScale = new Vector3(OBJSCALE, OBJSCALE, OBJSCALE);
+                            cyl.AddComponent<MeshFilter>();
                             Bounds b = cyl.GetComponent<MeshFilter>().mesh.bounds;
                             Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
                             cyl.transform.position = averagePoint - lowerCenter;
@@ -100,9 +101,15 @@ namespace UnityScanner3D.ComputerVision
                             GameObject redMesh = (GameObject)UnityEngine.Object.Instantiate(Resources.Load(redFilename));
                             redMesh.transform.position = averagePoint;
                             redMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
-                            redMesh.transform.localScale *= OBJSCALE;
-                            Bounds b = redMesh.GetComponent<MeshFilter>().mesh.bounds;
-                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            redMesh.transform.localScale *= REDSCALE;
+                            var meshes = redMesh.GetComponentsInChildren<MeshFilter>();
+                            MeshFilter[] m = redMesh.GetComponentsInChildren<MeshFilter>();
+                            Bounds b = m[0].mesh.bounds;
+                            for (int i=1;i<m.Count(); i++ )
+                            {
+                                b.Encapsulate(m[i].mesh.bounds);
+                            }
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * REDSCALE, 0);
                             redMesh.transform.position = averagePoint - lowerCenter;
                             yield return redMesh;
                         }
@@ -112,6 +119,7 @@ namespace UnityScanner3D.ComputerVision
                             cube.transform.position = averagePoint;
                             cube.transform.rotation = new Quaternion(0, 0, 0, 0);
                             cube.transform.localScale *= OBJSCALE;
+                            cube.AddComponent<MeshFilter>();
                             Bounds b = cube.GetComponent<MeshFilter>().mesh.bounds;
                             Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
                             cube.transform.position = averagePoint - lowerCenter;
@@ -126,9 +134,14 @@ namespace UnityScanner3D.ComputerVision
                             GameObject greenMesh = (GameObject)UnityEngine.Object.Instantiate(Resources.Load(greenFilename));
                             greenMesh.transform.position = averagePoint;
                             greenMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
-                            greenMesh.transform.localScale *= OBJSCALE;
-                            Bounds b = greenMesh.GetComponent<MeshFilter>().mesh.bounds;
-                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            greenMesh.transform.localScale *= GREENSCALE;
+                            var meshes = greenMesh.GetComponentsInChildren<MeshFilter>();
+                            Bounds b = new Bounds();
+                            foreach (MeshFilter mf in meshes)
+                            {
+                                b.Encapsulate(mf.mesh.bounds);
+                            }
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * GREENSCALE, 0);
                             greenMesh.transform.position = averagePoint - lowerCenter;
                             yield return greenMesh;
                         }
@@ -138,6 +151,7 @@ namespace UnityScanner3D.ComputerVision
                             obj1.transform.position = averagePoint;
                             obj1.transform.rotation = new Quaternion(0, 0, 0, 0);
                             obj1.transform.localScale *= OBJSCALE;
+                            obj1.AddComponent<MeshFilter>();
                             Bounds b = obj1.GetComponent<MeshFilter>().mesh.bounds;
                             Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
                             obj1.transform.position = averagePoint - lowerCenter;
@@ -152,6 +166,7 @@ namespace UnityScanner3D.ComputerVision
                         obj.transform.position = averagePoint;
                         obj.transform.rotation = new Quaternion(0, 0, 0, 0);
                         obj.transform.localScale *= OBJSCALE;
+                        obj.AddComponent<MeshFilter>();
                         Bounds b = obj.GetComponent<MeshFilter>().mesh.bounds;
                         Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
                         obj.transform.position = averagePoint - lowerCenter;
@@ -425,8 +440,7 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            GUILayout.TextField(redObjScale);
-
+            redObjString = GUILayout.TextField(redObjString);
             GUILayout.Space(10);
             
             GUILayout.EndHorizontal();
@@ -443,7 +457,7 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            GUILayout.TextField(greenObjScale);
+            greenObjString = GUILayout.TextField(greenObjString);
             GUILayout.Space(10);
 
             GUILayout.EndHorizontal();
@@ -460,7 +474,7 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            GUILayout.TextField(blueObjScale);
+            blueObjString = GUILayout.TextField(blueObjString);
             GUILayout.Space(10);
 
             GUILayout.EndHorizontal();
@@ -486,14 +500,6 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Box("" + CLUMPTHRESH, GUILayout.Width(70));
             if (GUILayout.Button("Reset", GUILayout.Width(60)))
                 CLUMPTHRESH = CLUMPTHRESH_D;
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("SCALE", GUILayout.Width(100));
-            OBJSCALE = (int)GUILayout.HorizontalSlider(OBJSCALE, 10, 130);
-            GUILayout.Box("" + OBJSCALE, GUILayout.Width(70));
-            if (GUILayout.Button("Reset", GUILayout.Width(60)))
-                OBJSCALE = OBJSCALE_D;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical();

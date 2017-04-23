@@ -129,7 +129,7 @@ public class Scanner : EditorWindow
         }
 
         if (captureButton && camera != null)
-                runningAlgorithm = true;
+            runningAlgorithm = true;
 
         //Update ColorDepthImage
         if (isStreaming)
