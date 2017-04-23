@@ -6,7 +6,7 @@ namespace UnityScanner3D.ComputerVision
 {
     interface IAlgorithm
     {
-        void ProcessImage(ColorDepthImage image);
+        void ProcessImage(ICamera cam, ColorDepthImage image);
         Texture2D PreviewImage(ColorDepthImage image);
         IEnumerable<GameObject> GetShapes();
         void ClearShapes();
