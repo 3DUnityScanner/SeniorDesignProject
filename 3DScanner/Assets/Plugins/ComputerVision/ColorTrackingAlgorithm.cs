@@ -440,7 +440,8 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            redObjString = GUILayout.TextField(redObjString);
+            REDSCALE = (int)GUILayout.HorizontalSlider(REDSCALE, 1, 100);
+            GUILayout.Box("" + REDSCALE, GUILayout.Width(70));
             GUILayout.Space(10);
             
             GUILayout.EndHorizontal();
@@ -457,7 +458,8 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            greenObjString = GUILayout.TextField(greenObjString);
+            GREENSCALE = (int)GUILayout.HorizontalSlider(GREENSCALE, 1, 100);
+            GUILayout.Box("" + GREENSCALE, GUILayout.Width(70));
             GUILayout.Space(10);
 
             GUILayout.EndHorizontal();
@@ -474,7 +476,8 @@ namespace UnityScanner3D.ComputerVision
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
-            blueObjString = GUILayout.TextField(blueObjString);
+            BLUESCALE = (int)GUILayout.HorizontalSlider(BLUESCALE, 1, 100);
+            GUILayout.Box("" + BLUESCALE, GUILayout.Width(70));
             GUILayout.Space(10);
 
             GUILayout.EndHorizontal();
