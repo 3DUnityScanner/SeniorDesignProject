@@ -108,7 +108,8 @@ public class Scanner : EditorWindow
         //We interrupt this gross UI stuff to bring you some logic
         if (clearButton){
             while (GameObject.FindWithTag("scanned_group") != null)
-                clearObjectsInScene();
+            { clearObjectsInScene(); }
+            
         }
 
         if (streamButton)
@@ -337,29 +338,27 @@ public class Scanner : EditorWindow
                     centerVector = new Vector3(p.transform.position.x,0.0f,p.transform.position.z);
                     vFlag = true;
                 }
-                GameObject thing = p;
 
-                thing.transform.rotation = p.transform.rotation;
-                thing.transform.position = p.transform.position - centerVector;
-                thing.transform.localScale = new Vector3(70, 70, 70);
-                thing.transform.parent = parent.transform;//grouping spawned objects
+                //thing.transform.rotation = p.transform.rotation;
+                p.transform.position -= centerVector;
+                p.transform.parent = parent.transform;//grouping spawned objects
 
-                if (thing.tag == "cube")
+                if (p.name == "Cube")
                 {
-                    thing.GetComponent<Renderer>().material = redMaterial;
-                    thing.GetComponent<Renderer>().material.color = Color.red;
+                    p.GetComponent<Renderer>().material = redMaterial;
+                    p.GetComponent<Renderer>().material.color = Color.red;
                 }
-                else if (thing.tag == "cylinder")
+                else if (p.name == "Cylinder")
                 {
-                    thing.GetComponent<Renderer>().material = blueMaterial;
-                    thing.GetComponent<Renderer>().material.color = Color.blue;
-                    thing.transform.localScale = new Vector3(70, 35, 70);
+                    p.GetComponent<Renderer>().material = blueMaterial;
+                    p.GetComponent<Renderer>().material.color = Color.blue;
+                    //p.transform.localScale = new Vector3(70, 35, 70);
                     //thing.transform.position -= new Vector3(0, 35f, 0);
                 }
 
 
                 logText += "Object " + i + " : ";
-                logText += "Position: " + thing.transform.position.ToString() + " - Rotation: " + thing.transform.rotation + "\n";
+                logText += "Position: " + p.transform.position.ToString() + " - Rotation: " + p.transform.rotation + "\n";
             }
 
             logText += "Objects Found: " + i + "\n\n";
