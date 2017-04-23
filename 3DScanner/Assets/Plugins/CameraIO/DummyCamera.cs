@@ -7,6 +7,11 @@ namespace UnityScanner3D.CameraIO
     {
         public CameraStatus Status { get; private set; }
 
+        public Vector3 Get3DPointFromPixel(int x, int y)
+        {
+            throw new NotImplementedException();
+        }
+
         public ColorDepthImage GetImage()
         {
             if (Status != CameraStatus.Running)
@@ -41,6 +46,11 @@ namespace UnityScanner3D.CameraIO
             }
 
             return new ColorDepthImage(color, depth);
+        }
+
+        public void SetImage(ColorDepthImage image)
+        {
+            throw new NotImplementedException();
         }
 
         public void StartCapture()

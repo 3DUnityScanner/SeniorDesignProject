@@ -1,7 +1,8 @@
 ﻿using Intel.RealSense;
 using System;
-using System.IO;
+using System.Linq;
 using UnityEngine;
+using UnityScanner3D.ComputerVision;
 
 namespace UnityScanner3D.CameraIO
 {
@@ -11,12 +12,25 @@ namespace UnityScanner3D.CameraIO
         private const int HEIGHT = 480;
         private const float FPS = 30.0f;
 
+        private Projection imageProj = null;
+        Point3DF32[] depthArray = null;
+        Point3DF32[] pointArray = null;
+
         ~IntelCamera()
         {
             if(SampleStream != null)
                 SampleStream.Dispose();
             if(SMInstance != null)
                 SMInstance.Dispose();
+        }
+
+        public Vector3 Get3DPointFromPixel(int x, int y)
+        {
+
+            if (depthArray == null || pointArray == null)
+                throw new InvalidOperationException("SetImage must be called before a 3D point can be retrieved");
+
+            return pointArray[y * WIDTH + x];
         }
 
         public ColorDepthImage GetImage()
@@ -59,6 +73,39 @@ namespace UnityScanner3D.CameraIO
             SMInstance.ReleaseFrame();
 
             return new ColorDepthImage(colorTex, depthTex);
+        }
+
+        public void SetImage(ColorDepthImage image)
+        {
+            const float MM_UNITY_CONV = 1.0f;
+            
+            //Creates the projection and array to populate
+            imageProj = SMInstance.CaptureManager.Device.CreateProjection();
+            depthArray = new Point3DF32[image.DepthImage.height * image.DepthImage.width];
+
+            //Iterates through each of the pixels and places them in the appropriate array
+            var dImageArray = image.DepthImage.GetPixels();
+            for (int i = 0; i < depthArray.Length; i++)
+            {
+                depthArray[i].x = i % WIDTH;
+                depthArray[i].y = i / WIDTH;
+                depthArray[i].z = dImageArray[i].grayscale;
+            }
+
+            //Performs the conversion
+            pointArray = new Point3DF32[WIDTH * HEIGHT];
+            imageProj.ProjectDepthToCamera(depthArray, pointArray);
+
+            //Scales the units
+            for(int i = 0; i < pointArray.Length; i++)
+            {
+                pointArray[i].x *= MM_UNITY_CONV;
+                pointArray[i].y *= MM_UNITY_CONV;
+                pointArray[i].z *= MM_UNITY_CONV;
+            }
+
+            //Releases resources
+            imageProj.Dispose();
         }
 
         public void StartCapture()

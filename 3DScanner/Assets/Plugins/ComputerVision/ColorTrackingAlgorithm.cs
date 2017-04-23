@@ -29,6 +29,7 @@ namespace UnityScanner3D.ComputerVision
         private Queue<Clump> clumpQueue = new Queue<Clump>();
         private string logText = "";
 
+        private ICamera camera = null;
         private Texture2D contrastImage = null;
         private Texture2D colorImage = null;
         private Texture2D depthImage = null;
@@ -56,8 +57,9 @@ namespace UnityScanner3D.ComputerVision
                 //check for little clumps to ignore
                 if (clump.Points.Count >= CLUMPTHRESH)
                 {
-                    Vector3 averagePoint = ConvertCoordinates(AveragePoint(clump.Points), angle);
-
+                    IEnumerable<Vector3> points3D = clump.Points.Select(pix => camera.Get3DPointFromPixel((int)pix.x, (int)pix.y));
+                    Vector3 averagePoint = ConvertCoordinates(AveragePoint(points3D), angle);
+                
                     //set all poses to lie on the ground (y = 0.5) times the scale
                     averagePoint.y = 0;
 
@@ -180,8 +182,10 @@ namespace UnityScanner3D.ComputerVision
             
         }
 
-        public void ProcessImage(ColorDepthImage image)
+        public void ProcessImage(ICamera cam, ColorDepthImage image)
         {
+            camera = cam;
+            camera.SetImage(image);
             colorImage = image.ColorImage;
             depthImage = image.DepthImage;
             
@@ -197,7 +201,7 @@ namespace UnityScanner3D.ComputerVision
             File.WriteAllBytes("contrast.png", contrastImage.EncodeToPNG());
 
             //Identify clumps
-            //CalculateTableNormal();
+            CalculateTableNormal();
             Clumpify();
         }
 
@@ -241,24 +245,22 @@ namespace UnityScanner3D.ComputerVision
             float averageZ = 0;
 
             //Picks an arbitrary starting point
-            Pixel tail = ImageUtils.GetRandomPixel(colorImage, c => c == Color.white);
+            Pixel tailPixel = ImageUtils.GetRandomPixel(colorImage, c => c == Color.white);
+            Vector3 tailVertex = camera.Get3DPointFromPixel(tailPixel.X, tailPixel.Y);
 
             //Constructs vectors
             List<Vector3> vectors = new List<Vector3>(10);
             for (int i = 0; i < 10; i++)
             {
-                Pixel head;
+                //Finds a random pixel on the table
+                Pixel headPixel;
                 do
-                    head = ImageUtils.GetRandomPixel(colorImage, c => c == Color.white);
-                while (depthImage.GetPixel(head.X, head.Y) == Color.black);
+                    headPixel = ImageUtils.GetRandomPixel(colorImage, c => c == Color.white);
+                while (depthImage.GetPixel(headPixel.X, headPixel.Y) == Color.black);
 
-                float headZ = depthImage.GetPixel(head.X, head.Y).grayscale;
-                float tailZ = depthImage.GetPixel(tail.X, tail.Y).grayscale;
-
-                vectors.Add(new Vector3(
-                    PIXEL_UNIT_CONVERSION * (head.X - tail.X),
-                    PIXEL_UNIT_CONVERSION * (head.Y - tail.Y),
-                    headZ - tailZ));    
+                //Creates the head vertex
+                Vector3 headVertex = camera.Get3DPointFromPixel(headPixel.X, headPixel.Y);
+                vectors.Add(headVertex - tailVertex);    
             }
 
             Vector3 camView = new Vector3(0, 0, 1);
@@ -266,6 +268,9 @@ namespace UnityScanner3D.ComputerVision
             {
                 foreach(Vector3 v in vectors)
                 {
+                    if (u == v)
+                        continue;
+
                     //Calculates the normal
                     Vector3 n = Vector3.Cross(u, v);
 

@@ -267,7 +267,7 @@ public class Scanner : EditorWindow
 
             scanCount++;
             updateCam();
-            algorithm.ProcessImage(cameraImage);
+            algorithm.ProcessImage(camera, cameraImage);
 
             IEnumerable<GameObject> poseList = algorithm.GetShapes();
 
