@@ -57,7 +57,7 @@ namespace UnityScanner3D.ComputerVision
                     Vector3 averagePoint = ConvertCoordinates(AveragePoint(points3D), angle);
                 
                     //set all poses to lie on the ground (y = 0.5) times the scale
-                    averagePoint.y = OBJSCALE*0.5f;
+                    averagePoint.y = 0;
 
                     //check for object types
                     //blue
@@ -69,6 +69,9 @@ namespace UnityScanner3D.ComputerVision
                             blueMesh.transform.position = averagePoint;
                             blueMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
                             blueMesh.transform.localScale *= OBJSCALE;
+                            Bounds b = blueMesh.GetComponent<MeshFilter>().mesh.bounds;
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            blueMesh.transform.position = averagePoint - lowerCenter;
                             yield return blueMesh;
                         }
                         else
@@ -76,7 +79,10 @@ namespace UnityScanner3D.ComputerVision
                             GameObject cyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                             cyl.transform.position = averagePoint;
                             cyl.transform.rotation = new Quaternion(0, 0, 0, 0);
-                            cyl.transform.localScale *= OBJSCALE;
+                            cyl.transform.localScale = new Vector3(OBJSCALE, OBJSCALE, OBJSCALE);
+                            Bounds b = cyl.GetComponent<MeshFilter>().mesh.bounds;
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            cyl.transform.position = averagePoint - lowerCenter;
                             yield return cyl;
                         }
                     }
@@ -89,16 +95,21 @@ namespace UnityScanner3D.ComputerVision
                             redMesh.transform.position = averagePoint;
                             redMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
                             redMesh.transform.localScale *= OBJSCALE;
+                            Bounds b = redMesh.GetComponent<MeshFilter>().mesh.bounds;
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            redMesh.transform.position = averagePoint - lowerCenter;
                             yield return redMesh;
                         }
                         else
                         {
-                            GameObject obj0 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                            obj0.transform.position = averagePoint;
-                            obj0.transform.rotation = new Quaternion(0, 0, 0, 0);
-                            obj0.transform.localScale *= OBJSCALE;
-                            //Return shape at the given point
-                            yield return obj0;
+                            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            cube.transform.position = averagePoint;
+                            cube.transform.rotation = new Quaternion(0, 0, 0, 0);
+                            cube.transform.localScale *= OBJSCALE;
+                            Bounds b = cube.GetComponent<MeshFilter>().mesh.bounds;
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            cube.transform.position = averagePoint - lowerCenter;
+                            yield return cube;
                         }
                     }
                     //green
@@ -110,6 +121,9 @@ namespace UnityScanner3D.ComputerVision
                             greenMesh.transform.position = averagePoint;
                             greenMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
                             greenMesh.transform.localScale *= OBJSCALE;
+                            Bounds b = greenMesh.GetComponent<MeshFilter>().mesh.bounds;
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            greenMesh.transform.position = averagePoint - lowerCenter;
                             yield return greenMesh;
                         }
                         else
@@ -118,6 +132,9 @@ namespace UnityScanner3D.ComputerVision
                             obj1.transform.position = averagePoint;
                             obj1.transform.rotation = new Quaternion(0, 0, 0, 0);
                             obj1.transform.localScale *= OBJSCALE;
+                            Bounds b = obj1.GetComponent<MeshFilter>().mesh.bounds;
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            obj1.transform.position = averagePoint - lowerCenter;
                             //Return shape at the given point
                             yield return obj1;
                         }
@@ -129,6 +146,9 @@ namespace UnityScanner3D.ComputerVision
                         obj.transform.position = averagePoint;
                         obj.transform.rotation = new Quaternion(0, 0, 0, 0);
                         obj.transform.localScale *= OBJSCALE;
+                        Bounds b = obj.GetComponent<MeshFilter>().mesh.bounds;
+                        Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                        obj.transform.position = averagePoint - lowerCenter;
                         //Return shape at the given point
                         yield return obj;
                     }
@@ -224,6 +244,9 @@ namespace UnityScanner3D.ComputerVision
             {
                 foreach(Vector3 v in vectors)
                 {
+                    if (u == v)
+                        continue;
+
                     //Calculates the normal
                     Vector3 n = Vector3.Cross(u, v);
 
@@ -355,7 +378,7 @@ namespace UnityScanner3D.ComputerVision
                 {
                     //Checks if the difference in color is within the threshold
                     Color thisColor = this.contrastImage.GetPixel(x, y);
-                    if (ImageUtils.AreColorsDifferent(thisColor, Color.white))
+                    if (!ImageUtils.AreColorsDifferent(thisColor, Color.black))
                     {
                         //Perform flood fill
                         Clump clump = new Clump(FloodFill(x, y, Color.white));
@@ -401,9 +424,7 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Label("Scale:", GUILayout.Width(40));
             GUILayout.TextField(redObjString);
             GUILayout.Space(10);
-            GUILayout.Label("Count:", GUILayout.Width(42));
-            GUILayout.TextField(redObjString);
-
+            
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();//Green
@@ -420,8 +441,6 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Label("Scale:", GUILayout.Width(40));
             GUILayout.TextField(greenObjString);
             GUILayout.Space(10);
-            GUILayout.Label("Count:", GUILayout.Width(42));
-            GUILayout.TextField(greenObjString);
 
             GUILayout.EndHorizontal();
 
@@ -439,8 +458,6 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Label("Scale:", GUILayout.Width(40));
             GUILayout.TextField(blueObjString);
             GUILayout.Space(10);
-            GUILayout.Label("Count:", GUILayout.Width(42));
-            GUILayout.TextField(blueObjString);
 
             GUILayout.EndHorizontal();
             GUILayout.Space(10);

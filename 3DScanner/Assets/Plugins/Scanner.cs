@@ -18,11 +18,11 @@ public class Scanner : EditorWindow
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
     Stopwatch lastCameraUpdate = new Stopwatch();
-    const int CAPTURELIMIT = 100;
+    const int CAPTURELIMIT = 200;
 
     //UI Backing Fields
     string cameraName;
-    string logText = "", statusLabelText, streamText, captureText;
+    string logText = "", streamText, captureText;
     Type cameraType;
     Texture2D leftStream, rightStream;
     bool updateGUI, isStreaming, snapEnabled, showContrast;
@@ -55,7 +55,6 @@ public class Scanner : EditorWindow
     public static void ShowWindow()
     {
         GetWindow(typeof(Scanner));
-        GetWindow(typeof(Scanner)).title = "3D Scanner";
     }
 
     static Scanner()
@@ -90,18 +89,6 @@ public class Scanner : EditorWindow
         bool clearButton = GUILayout.Button("Clear All", GUILayout.Width(100));
         GUILayout.EndHorizontal();
 
-
-        /*
-        //Options
-        GUILayout.BeginHorizontal();
-        snapEnabled = GUILayout.Toggle(snapEnabled, "Snap to Objects");
-        snapEnabled = GUILayout.Toggle(snapEnabled, "Woah Look at");
-        snapEnabled = GUILayout.Toggle(snapEnabled, "All These Options");
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-  */
-
-
         GUILayout.EndVertical();
       
 
@@ -119,30 +106,15 @@ public class Scanner : EditorWindow
             if (isStreaming)
             {
                 isStreaming = false;
-                statusLabelText = "Idle";
                 streamText = "Start Stream";
                 if (camera != null)
                     camera.StopCapture();
-
-                /*
-                Texture2D[] texs = FindObjectsOfType(typeof(Texture2D)) as Texture2D[];
-                for(int i = 0;i < texs.Length; i++)
-                {
-                    DestroyImmediate(texs[i]);
-                    texs[i] = null;
-                }*/
-                //AssetDatabase.Refresh();
-                //Resources.UnloadUnusedAssets();
-                //EditorUtility.UnloadUnusedAssetsImmediate();
-                //Caching.CleanCache();
-                //GC.Collect();
             }
 
             //if not streaming, start it
             else
             {
                 isStreaming = true;
-                statusLabelText = "Streaming!";
                 streamText = "Stop Stream";
 
                 //Create an instance of the camera
@@ -237,7 +209,6 @@ public class Scanner : EditorWindow
         rightStream = null;
         cameraImage = null;
         isStreaming = false;
-        statusLabelText = "Idle";
         streamText = "Start Stream";
         captureText = "Place Objects";
         snapEnabled = true;
@@ -308,7 +279,7 @@ public class Scanner : EditorWindow
 
             scanCount++;
             updateCam();
-            algorithm.ProcessImage(cameraImage);
+            algorithm.ProcessImage(camera, cameraImage);
 
             IEnumerable<GameObject> poseList = algorithm.GetShapes();
 
