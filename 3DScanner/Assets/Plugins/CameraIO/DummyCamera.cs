@@ -7,6 +7,11 @@ namespace UnityScanner3D.CameraIO
     {
         public CameraStatus Status { get; private set; }
 
+        public Vector3 Get3DPointFromPixel(int x, int y)
+        {
+            throw new NotImplementedException();
+        }
+
         public ColorDepthImage GetImage()
         {
             if (Status != CameraStatus.Running)
@@ -18,28 +23,34 @@ namespace UnityScanner3D.CameraIO
             Texture2D color = new Texture2D(WIDTH, HEIGHT);
             Texture2D depth = new Texture2D(WIDTH, HEIGHT);
 
-            Color cColor, dColor;
-
-            if ((UnityEngine.Random.Range(0, 2) == 1))
-            {
-                cColor = new Color(255, 255, 0, 1.0f);
-                dColor = new Color(255, 255, 255, 1.0f);
-            } else
-            {
-                cColor = new Color(0, 255, 0, 1.0f);
-                dColor = new Color(0, 0, 0, 1.0f);
-            }
-
-            for (int i = 0; i < HEIGHT; i++)
-            {
-                for (int j = 0; j < WIDTH; j++)
+            for (int i = 0; i < WIDTH; i++)
+                for (int j = 0; j < HEIGHT; j++)
                 {
-                    color.SetPixel(i, j, new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value));
-                    depth.SetPixel(i, j, new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value));
+                    color.SetPixel(i, j, Color.black);
+                    depth.SetPixel(i, j, Color.black);
+                }
+
+
+            int n = UnityEngine.Random.Range(0, WIDTH - 150);
+
+                    for (int i = n; i < n + 100; i++)
+            {
+                for (int j = n; j < n + 100; j++)
+                {
+                    if(n > 300)
+                        color.SetPixel(i, j, Color.blue);
+                    else
+                        color.SetPixel(i, j, Color.red);
+                    depth.SetPixel(i, j, Color.white);
                 }
             }
 
             return new ColorDepthImage(color, depth);
+        }
+
+        public void SetImage(ColorDepthImage image)
+        {
+            throw new NotImplementedException();
         }
 
         public void StartCapture()
