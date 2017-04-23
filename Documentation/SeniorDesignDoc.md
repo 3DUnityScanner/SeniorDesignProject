@@ -1786,5 +1786,3 @@ direction.
 ![Proof of Accord.NET License](Pictures/accordLicense.png "Proof of Accord.NET License")
 
 ![Correspondence with David Della Rocca of Unity](Pictures/unityCorrespondence.png "Correspondence with David Della Rocca of Unity")
-
-\includepdf[pages=-, pagecommand={}]{Appendix/AppendixB.pdf}

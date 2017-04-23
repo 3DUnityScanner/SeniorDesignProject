@@ -22,7 +22,7 @@ public class Scanner : EditorWindow
 
     //UI Backing Fields
     string cameraName;
-    string streamText, captureText;
+    string streamText = "Start Stream";
     Type cameraType;
     Texture2D leftStream, rightStream;
     bool updateGUI, isStreaming, showContrast;
@@ -80,7 +80,7 @@ public class Scanner : EditorWindow
             streamButton = true;
         if (!isStreaming)
             GUI.enabled = false;
-        captureButton = GUILayout.Button(captureText, GUILayout.ExpandWidth(true));
+        captureButton = GUILayout.Button("Place Objects", GUILayout.ExpandWidth(true));
         if (!isStreaming)
             GUI.enabled = true;
         GUILayout.Space(5);
@@ -194,7 +194,6 @@ public class Scanner : EditorWindow
         cameraImage = null;
         isStreaming = false;
         streamText = "Start Stream";
-        captureText = "Place Objects";
         scanCount = 0;
         justRecompiled = false;
         showContrast = false;
@@ -277,7 +276,7 @@ public class Scanner : EditorWindow
             var parent = new GameObject() { name = "Scanned Objects"};
             parent.tag = "scanned_group";
             GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            plane.transform.localScale = new Vector3(300, 1, 300);
+            plane.transform.localScale = new Vector3(250, 1, 250);
             plane.transform.parent = parent.transform;
 
             newObjMat(plane);
@@ -300,7 +299,7 @@ public class Scanner : EditorWindow
                 }
 
                 //thing.transform.rotation = p.transform.rotation;
-                p.transform.position -= centerVector;
+                //p.transform.position -= centerVector;
                 p.transform.parent = parent.transform;//grouping spawned objects
 
                 if (p.name == "Cube")
@@ -316,8 +315,12 @@ public class Scanner : EditorWindow
                     p.GetComponent<Renderer>().sharedMaterial = blueMaterial;
                     //p.AddComponent<MeshCollider>(); 
                 }
-                    
+                
+
+
             }
+
+            parent.transform.position = new Vector3(0, 0, 0);
 
             algorithm.ClearShapes();
 

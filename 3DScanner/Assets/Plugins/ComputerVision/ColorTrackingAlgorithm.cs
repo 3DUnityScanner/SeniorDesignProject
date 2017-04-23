@@ -59,9 +59,10 @@ namespace UnityScanner3D.ComputerVision
                 //check for little clumps to ignore
                 if (clump.Points.Count >= CLUMPTHRESH)
                 {
+                    
                     IEnumerable<Vector3> points3D = clump.Points.Select(pix => camera.Get3DPointFromPixel((int)pix.x, (int)pix.y));
                     Vector3 averagePoint = ConvertCoordinates(AveragePoint(points3D), angle);
-                
+
                     //set all poses to lie on the ground (y = 0.5) times the scale
                     averagePoint.y = 0;
 
@@ -91,7 +92,7 @@ namespace UnityScanner3D.ComputerVision
                             cyl.transform.localScale = new Vector3(OBJSCALE, OBJSCALE / 2, OBJSCALE);
                             cyl.AddComponent<MeshFilter>();
                             Bounds b = getBounds(cyl);
-                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE, 0);
+                            Vector3 lowerCenter = b.center + new Vector3(0, -b.extents.y * OBJSCALE / 2, 0);
                             cyl.transform.position = averagePoint - lowerCenter;
                             yield return cyl;
                         }
@@ -271,17 +272,22 @@ namespace UnityScanner3D.ComputerVision
             float averageZ = 0;
 
             //Picks an arbitrary starting point
-            Pixel tailPixel = ImageUtils.GetRandomPixel(colorImage, c => c == Color.white);
+            Pixel tailPixel;
+            
+            do
+                tailPixel = ImageUtils.GetRandomPixel(contrastImage, c => c == Color.white);
+            while (depthImage.GetPixel(tailPixel.X, tailPixel.Y) == Color.black);
+
             Vector3 tailVertex = camera.Get3DPointFromPixel(tailPixel.X, tailPixel.Y);
 
             //Constructs vectors
-            List<Vector3> vectors = new List<Vector3>(10);
-            for (int i = 0; i < 10; i++)
+            List<Vector3> vectors = new List<Vector3>(100);
+            for (int i = 0; i < 100; i++)
             {
                 //Finds a random pixel on the table
                 Pixel headPixel;
                 do
-                    headPixel = ImageUtils.GetRandomPixel(colorImage, c => c == Color.white);
+                    headPixel = ImageUtils.GetRandomPixel(contrastImage, c => c == Color.white);
                 while (depthImage.GetPixel(headPixel.X, headPixel.Y) == Color.black);
 
                 //Creates the head vertex
@@ -289,7 +295,9 @@ namespace UnityScanner3D.ComputerVision
                 vectors.Add(headVertex - tailVertex);    
             }
 
-            Vector3 camView = new Vector3(0, 0, 1);
+            int babypls = 0;
+
+            Vector3 camView = new Vector3(0, 0, -1);
             foreach(Vector3 u in vectors)
             {
                 foreach(Vector3 v in vectors)
@@ -304,16 +312,17 @@ namespace UnityScanner3D.ComputerVision
                     if (Vector3.Dot(n, camView) < 0)
                         n *= -1;
 
-                    Debug.Log("normal candidate = " + n);
+                    //Debug.Log("normal candidate = " + n);
 
                     //Increments the average
                     averageX += n.x;
                     averageY += n.y;
                     averageZ += n.z;
+                    babypls++;
                 }
             }
 
-            normalVector = new Vector3(averageX, averageY, averageZ);
+            normalVector = new Vector3(averageX / babypls, averageY / babypls, averageZ / babypls);
         }
 
         private List<Vector3> FloodFill(int x, int y, Color stopColor)
@@ -428,7 +437,7 @@ namespace UnityScanner3D.ComputerVision
                 {
                     //Checks if the difference in color is within the threshold
                     Color thisColor = this.contrastImage.GetPixel(x, y);
-                    if (!ImageUtils.AreColorsDifferent(thisColor, Color.black))
+                    if (thisColor == Color.black && depthImage.GetPixel(x, y) != Color.black)
                     {
                         //Perform flood fill
                         Clump clump = new Clump(FloodFill(x, y, Color.white));
@@ -447,8 +456,8 @@ namespace UnityScanner3D.ComputerVision
         {
             float newX, newY, newZ;
             newX = point.x;
-            newY = (float) (Math.Sin(angle) * point.y + Math.Cos(angle) * point.z);
-            newZ = (float) (Math.Cos(angle) * point.y - Math.Sin(angle) * point.z);
+            newY = (float) (Math.Cos(angle) * point.y - Math.Sin(angle) * point.z);
+            newZ = (float) (Math.Sin(angle) * point.y + Math.Cos(angle) * point.z);
 
             return new Vector3(newX, newY, newZ);
         }

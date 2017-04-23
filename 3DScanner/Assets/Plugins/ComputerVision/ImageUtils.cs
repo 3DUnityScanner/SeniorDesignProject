@@ -8,7 +8,7 @@ namespace UnityScanner3D.ComputerVision
 {
     static class ImageUtils
     {
-        private const float DIFFERENCE_THRESHOLD = 0.3f;
+        private const float DIFFERENCE_THRESHOLD = 0.45f;
 
         public static bool AreColorsDifferent(Color u, Color v)
         {
