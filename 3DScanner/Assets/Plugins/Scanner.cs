@@ -18,7 +18,7 @@ public class Scanner : EditorWindow
     IAlgorithm algorithm = new ColorTrackingAlgorithm();
 
     Stopwatch lastCameraUpdate = new Stopwatch();
-    const int CAPTURELIMIT = 100;
+    const int CAPTURELIMIT = 200;
 
     //UI Backing Fields
     string cameraName;
@@ -55,7 +55,6 @@ public class Scanner : EditorWindow
     public static void ShowWindow()
     {
         GetWindow(typeof(Scanner));
-        GetWindow(typeof(Scanner)).title = "3D Scanner";
     }
 
     static Scanner()
@@ -90,18 +89,6 @@ public class Scanner : EditorWindow
         bool clearButton = GUILayout.Button("Clear All", GUILayout.Width(100));
         GUILayout.EndHorizontal();
 
-
-        /*
-        //Options
-        GUILayout.BeginHorizontal();
-        snapEnabled = GUILayout.Toggle(snapEnabled, "Snap to Objects");
-        snapEnabled = GUILayout.Toggle(snapEnabled, "Woah Look at");
-        snapEnabled = GUILayout.Toggle(snapEnabled, "All These Options");
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-  */
-
-
         GUILayout.EndVertical();
       
 
@@ -123,19 +110,6 @@ public class Scanner : EditorWindow
                 streamText = "Start Stream";
                 if (camera != null)
                     camera.StopCapture();
-
-                /*
-                Texture2D[] texs = FindObjectsOfType(typeof(Texture2D)) as Texture2D[];
-                for(int i = 0;i < texs.Length; i++)
-                {
-                    DestroyImmediate(texs[i]);
-                    texs[i] = null;
-                }*/
-                //AssetDatabase.Refresh();
-                //Resources.UnloadUnusedAssets();
-                //EditorUtility.UnloadUnusedAssetsImmediate();
-                //Caching.CleanCache();
-                //GC.Collect();
             }
 
             //if not streaming, start it
