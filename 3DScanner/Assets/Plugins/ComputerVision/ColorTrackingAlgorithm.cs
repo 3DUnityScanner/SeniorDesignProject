@@ -10,7 +10,7 @@ namespace UnityScanner3D.ComputerVision
 {
     public class ColorTrackingAlgorithm : IAlgorithm
     {
-        public const int OBJSCALE = 25;
+        public const int OBJSCALE = 70;
         public float STDEV = 2.0f;
         public const float STDEV_D = 2.0f;
         public int CLUMPTHRESH = 1700;
@@ -38,11 +38,12 @@ namespace UnityScanner3D.ComputerVision
             clumpQueue.Clear();
         }
 
-        public IEnumerable<Shape> GetShapes()
+        public IEnumerable<GameObject> GetShapes()
         {
             float angle = Vector3.Angle(normalVector, new Vector3(0, 0, -1));
             Debug.Log("normalVector = " + normalVector);
             Debug.Log("angle = " + angle);
+
             while (clumpQueue.Count > 0)
             {
                 //Calculate average position
@@ -56,15 +57,83 @@ namespace UnityScanner3D.ComputerVision
                     //set all poses to lie on the ground (y = 0.5) times the scale
                     averagePoint.y = OBJSCALE*0.5f;
 
-                    //Return shape at the given point
-                    yield return new Shape()
+                    //check for object types
+                    //blue
+                    if (clump.Color.b > clump.Color.r && clump.Color.b > clump.Color.g)
                     {
-                        Type = clump.Color.b > clump.Color.r && clump.Color.b > clump.Color.g ? ShapeType.Cylinder:ShapeType.Cube,
-                        Translation = averagePoint,
-                        Rotation = new Quaternion(0, 0, 0, 0)
-                    };
+                        if (enableBlueObj)
+                        { 
+                            GameObject blueMesh = (GameObject)UnityEngine.Object.Instantiate(Resources.Load(blueFilename));
+                            blueMesh.transform.position = averagePoint;
+                            blueMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
+                            blueMesh.transform.localScale *= OBJSCALE;
+                            yield return blueMesh;
+                        }
+                        else
+                        {
+                            GameObject cyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                            cyl.transform.position = averagePoint;
+                            cyl.transform.rotation = new Quaternion(0, 0, 0, 0);
+                            cyl.transform.localScale *= OBJSCALE;
+                            yield return cyl;
+                        }
+                    }
+                    //red
+                    else if (clump.Color.r > clump.Color.b && clump.Color.r > clump.Color.g)
+                    {
+                        if (enableRedObj)
+                        {
+                            GameObject redMesh = (GameObject)UnityEngine.Object.Instantiate(Resources.Load(redFilename));
+                            redMesh.transform.position = averagePoint;
+                            redMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
+                            redMesh.transform.localScale *= OBJSCALE;
+                            yield return redMesh;
+                        }
+                        else
+                        {
+                            GameObject obj0 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            obj0.transform.position = averagePoint;
+                            obj0.transform.rotation = new Quaternion(0, 0, 0, 0);
+                            obj0.transform.localScale *= OBJSCALE;
+                            //Return shape at the given point
+                            yield return obj0;
+                        }
+                    }
+                    //green
+                    else if (clump.Color.g > clump.Color.b && clump.Color.g > clump.Color.r)
+                    {
+                        if (enableGreenObj)
+                        {
+                            GameObject greenMesh = (GameObject)UnityEngine.Object.Instantiate(Resources.Load(greenFilename));
+                            greenMesh.transform.position = averagePoint;
+                            greenMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
+                            greenMesh.transform.localScale *= OBJSCALE;
+                            yield return greenMesh;
+                        }
+                        else
+                        {
+                            GameObject obj1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            obj1.transform.position = averagePoint;
+                            obj1.transform.rotation = new Quaternion(0, 0, 0, 0);
+                            obj1.transform.localScale *= OBJSCALE;
+                            //Return shape at the given point
+                            yield return obj1;
+                        }
+                    }
+                    //default behavior
+                    else
+                    {
+                        GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        obj.transform.position = averagePoint;
+                        obj.transform.rotation = new Quaternion(0, 0, 0, 0);
+                        obj.transform.localScale *= OBJSCALE;
+                        //Return shape at the given point
+                        yield return obj;
+                    }
+                    
                 }
             }
+            
         }
 
         public void ProcessImage(ColorDepthImage image)
@@ -84,7 +153,7 @@ namespace UnityScanner3D.ComputerVision
             File.WriteAllBytes("contrast.png", contrastImage.EncodeToPNG());
 
             //Identify clumps
-            CalculateTableNormal();
+            //CalculateTableNormal();
             Clumpify();
         }
 
@@ -323,8 +392,8 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.TextField(redFilename, GUILayout.Width(152));
             if (GUILayout.Button("Browse", GUILayout.Width(60)))
             {
-                redFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
-                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
+                redFilename = Path.GetFileNameWithoutExtension(EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
+                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" }));
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
@@ -334,7 +403,7 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.TextField(redObjString);
 
             GUILayout.EndHorizontal();
-
+            
             GUILayout.BeginHorizontal();//Green
 
             enableGreenObj = GUILayout.Toggle(enableGreenObj, "Green", GUILayout.Width(60));
@@ -342,8 +411,8 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.TextField(greenFilename, GUILayout.Width(152));
             if (GUILayout.Button("Browse", GUILayout.Width(60)))
             {
-                greenFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
-                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
+                greenFilename = Path.GetFileNameWithoutExtension(EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
+                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" }));
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));
@@ -361,8 +430,8 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.TextField(blueFilename, GUILayout.Width(152));
             if (GUILayout.Button("Browse", GUILayout.Width(60)))
             {
-                blueFilename = EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
-                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" });
+                blueFilename = Path.GetFileNameWithoutExtension(EditorUtility.OpenFilePanelWithFilters("Choose Model File", "",
+                    new string[] { "Object Files", "fbx,dae,3ds,dxf,obj,skp" }));
             }
             GUILayout.Space(81);
             GUILayout.Label("Scale:", GUILayout.Width(40));

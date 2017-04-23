@@ -8,7 +8,7 @@ namespace UnityScanner3D.ComputerVision
     {
         void ProcessImage(ColorDepthImage image);
         Texture2D PreviewImage(ColorDepthImage image);
-        IEnumerable<Shape> GetShapes();
+        IEnumerable<GameObject> GetShapes();
         void ClearShapes();
         void DrawSettings();
     }

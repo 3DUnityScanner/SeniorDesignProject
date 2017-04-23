@@ -95,7 +95,8 @@ public class Scanner : EditorWindow
         //We interrupt this gross UI stuff to bring you some logic
         if (clearButton){
             while (GameObject.FindWithTag("scanned_group") != null)
-                clearObjectsInScene();
+            { clearObjectsInScene(); }
+            
         }
 
         if (streamButton)
@@ -283,7 +284,7 @@ public class Scanner : EditorWindow
             updateCam();
             algorithm.ProcessImage(cameraImage);
 
-            IEnumerable<Shape> poseList = algorithm.GetShapes();
+            IEnumerable<GameObject> poseList = algorithm.GetShapes();
 
             Material blackMaterial = new Material(Shader.Find("Standard"));
             blackMaterial.color = Color.black;
@@ -299,7 +300,7 @@ public class Scanner : EditorWindow
             Vector3 centerVector = new Vector3();
             bool vFlag = false;
             int i = 0;
-            foreach (Shape p in poseList)
+            foreach (GameObject p in poseList)
             {
                 Material redMaterial = new Material(Shader.Find("Standard"));
                 blackMaterial.color = Color.red;
@@ -308,32 +309,30 @@ public class Scanner : EditorWindow
                 i++;
                 if (!vFlag)
                 {
-                    centerVector = new Vector3(p.Translation.x,0.0f,p.Translation.z);
+                    centerVector = new Vector3(p.transform.position.x,0.0f,p.transform.position.z);
                     vFlag = true;
                 }
-                GameObject thing = GameObject.CreatePrimitive( p.Type == ShapeType.Cube ? PrimitiveType.Cube : PrimitiveType.Cylinder);
 
-                thing.transform.rotation = p.Rotation;
-                thing.transform.position = p.Translation - centerVector;
-                thing.transform.localScale = new Vector3(70, 70, 70);
-                thing.transform.parent = parent.transform;//grouping spawned objects
+                //thing.transform.rotation = p.transform.rotation;
+                p.transform.position -= centerVector;
+                p.transform.parent = parent.transform;//grouping spawned objects
 
-                if (p.Type == ShapeType.Cube)
+                if (p.name == "Cube")
                 {
-                    thing.GetComponent<Renderer>().material = redMaterial;
-                    thing.GetComponent<Renderer>().material.color = Color.red;
+                    p.GetComponent<Renderer>().material = redMaterial;
+                    p.GetComponent<Renderer>().material.color = Color.red;
                 }
-                else
+                else if (p.name == "Cylinder")
                 {
-                    thing.GetComponent<Renderer>().material = blueMaterial;
-                    thing.GetComponent<Renderer>().material.color = Color.blue;
-                    thing.transform.localScale = new Vector3(70, 35, 70);
+                    p.GetComponent<Renderer>().material = blueMaterial;
+                    p.GetComponent<Renderer>().material.color = Color.blue;
+                    //p.transform.localScale = new Vector3(70, 35, 70);
                     //thing.transform.position -= new Vector3(0, 35f, 0);
                 }
 
 
                 logText += "Object " + i + " : ";
-                logText += "Position: " + thing.transform.position.ToString() + " - Rotation: " + thing.transform.rotation + "\n";
+                logText += "Position: " + p.transform.position.ToString() + " - Rotation: " + p.transform.rotation + "\n";
             }
 
             logText += "Objects Found: " + i + "\n\n";
