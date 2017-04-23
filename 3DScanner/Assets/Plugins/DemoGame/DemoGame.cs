@@ -6,7 +6,6 @@ using System.Text;
 namespace Assets.Plugins.DemoGame
 {
     using UnityEngine;
-    using System.Collections;
 
     using UnityEngine;
     using System.Collections;
