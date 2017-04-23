@@ -132,7 +132,7 @@ public class Scanner : EditorWindow
         }
 
         if (captureButton && camera != null)
-                runningAlgorithm = true;
+            runningAlgorithm = true;
 
         if (undoButton)
         {
