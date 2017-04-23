@@ -399,9 +399,7 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Label("Scale:", GUILayout.Width(40));
             GUILayout.TextField(redObjString);
             GUILayout.Space(10);
-            GUILayout.Label("Count:", GUILayout.Width(42));
-            GUILayout.TextField(redObjString);
-
+            
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();//Green
@@ -418,8 +416,6 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Label("Scale:", GUILayout.Width(40));
             GUILayout.TextField(greenObjString);
             GUILayout.Space(10);
-            GUILayout.Label("Count:", GUILayout.Width(42));
-            GUILayout.TextField(greenObjString);
 
             GUILayout.EndHorizontal();
 
@@ -437,8 +433,6 @@ namespace UnityScanner3D.ComputerVision
             GUILayout.Label("Scale:", GUILayout.Width(40));
             GUILayout.TextField(blueObjString);
             GUILayout.Space(10);
-            GUILayout.Label("Count:", GUILayout.Width(42));
-            GUILayout.TextField(blueObjString);
 
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
