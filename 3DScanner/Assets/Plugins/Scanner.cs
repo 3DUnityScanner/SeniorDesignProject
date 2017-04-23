@@ -304,11 +304,18 @@ public class Scanner : EditorWindow
                 p.transform.position -= centerVector;
                 p.transform.parent = parent.transform;//grouping spawned objects
 
-                newObjMat(p);
                 if (p.name == "Cube")
+                {
+                    newObjMat(p);
                     p.GetComponent<Renderer>().sharedMaterial = redMaterial;
+                }
+                    
                 else if (p.name == "Cylinder")
+                {
+                    newObjMat(p);
                     p.GetComponent<Renderer>().sharedMaterial = blueMaterial;
+                }
+                    
             }
 
             algorithm.ClearShapes();
