@@ -284,7 +284,7 @@ namespace UnityScanner3D.ComputerVision
                 {
                     //Checks if the difference in color is within the threshold
                     Color thisColor = this.contrastImage.GetPixel(x, y);
-                    if (ImageUtils.AreColorsDifferent(thisColor, Color.white))
+                    if (!ImageUtils.AreColorsDifferent(thisColor, Color.black))
                     {
                         //Perform flood fill
                         Clump clump = new Clump(FloodFill(x, y, Color.white));
