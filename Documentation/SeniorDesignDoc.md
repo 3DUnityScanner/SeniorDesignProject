@@ -1,16 +1,15 @@
 # Executive Summary
 
-The purpose of our project is to create a plugin for the Unity game engine that will allow users to scan blocks using an RGB-D camera and have a replica of the scene appear in the Unity game scene. This project is sponsored by the UCF Games Research Group. The goal of the project is to create a prototyping tool for video game levels to expedite the current process of manually creating physically-prototyped levels in Unity. Students currently create paper prototypes and manually create each corresponding GameObject in Unity. Our plugin succeeds in being a proof-of-concept for a level-scanning Unity plugin and our code has been written with the intention of future upgrades and functionality being added. 
+The purpose of our project is to create a plugin for the Unity game engine that will allow users to scan simple blocks using an RGB-D camera and have a representation appear in Unity. This project is sponsored by the UCF Games Research Group. This is prototyping tool for video game designers to expedite the process of manually recreating physically-prototyped levels in Unity. Game design students currently create paper/wooden layouts and manually set up each corresponding GameObject in Unity. Our plugin succeeds in being a proof-of-concept for a level-scanning Unity plugin and our code has been written with the intention of future upgrades and functionality being added. 
 
-The scanner is built as a Unity plugin, or package, and coded entirely in C# (targeting .NET 3.5). It consists of three major modules, the first of which
+The scanner is built as a Unity plugin, or package, and coded entirely in C# (targeting Unity's subset of .NET 3.5). It consists of three major modules, the first of which
 accepts RGB-D images from sensors, like the Intel RealSense F200, and
-processes the data to prepare it for the interpreter. The data
-interpreter uses this data as input for a proprietary computer vision system that
+processes the data to prepare it for the interpreter. The
+interpreter uses this data as input for the second module, a proprietary computer vision system that
 will run a color-based detection algorithm to determine the 3D position and type of the objects. The last module will take the information
 gathered from the computer vision system and transfer this into a format (GameObject)
-that can be ported into Unity. Then this module will render the
-appropriate models in a Unity scene. The user is able to associate a detected color with a custom 3D model, as long as the model is in a Unity-supported format.
-
+that can be ported into Unity. It will then render the
+appropriate models in a Unity scene, which can be geometric primitives or custom complex models. The user is able to associate a detected color with a custom 3D model, as long as the model is in a Unity-supported format.\
 
 # Overview
 
@@ -1375,18 +1374,14 @@ values to the algorithm that will determine how the objects are spawned.
 
 #### Objects to Draw
 
-After the algorithm is called with the color and depth images, . The current recognizable shapes that we used are:
-
-* cubes
-* cylinders
+The algorithm creates a list of game objects and maps their color to the a appropriate models (custom or primitive, depended on the user selection).
 
 The Translation refers to the position of the objects with respect to the origin of the world space in the Unity Scene. This attribute will
 determine exactly where the model is rendered in the scene. The current plan is to have a reference measurement which can be converted into
 Unity World Space coordinates.
 
 The Rotation refers to the degrees around the object's 3 center axes (x, y, z) that the object is moving circularly. The rotation can go from 0 degrees
-up to 360 degrees (360 being the original starting position). Unity allows users to change an object's rotation through using Euler Angles and the 
-rotations themselves are stored in Unity as Quaternions.
+up to 360 degrees (360 being the original starting position). Unity allows users to change an object's rotation the rotations themselves are stored in Unity as Quaternions. The algorithm we are currently using does not support rotation.
 
 The Scale refers to the size of the object with respect to the original object that it is modelled off of. For example, a cube that is twice
 as wide, long, and high as the normal cube used will have a scale of 2 in all directions. Having this implementation will allow for multiple
