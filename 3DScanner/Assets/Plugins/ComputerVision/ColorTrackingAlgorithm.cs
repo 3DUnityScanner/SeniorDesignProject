@@ -44,7 +44,7 @@ namespace UnityScanner3D.ComputerVision
 
         public IEnumerable<GameObject> GetShapes()
         {
-            float angle = Vector3.Angle(normalVector, new Vector3(0, 0, -1));
+            float angle = Vector3.Angle(normalVector, new Vector3(0, 0, 1));
 
             int i = 0;
             while (clumpQueue.Count > 0)
@@ -290,7 +290,7 @@ namespace UnityScanner3D.ComputerVision
 
             int babypls = 0;
 
-            Vector3 camView = new Vector3(0, 0, -1);
+            Vector3 camView = new Vector3(0, 0, 1);
             foreach(Vector3 u in vectors)
             {
                 foreach(Vector3 v in vectors)

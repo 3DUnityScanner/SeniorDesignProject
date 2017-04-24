@@ -348,9 +348,6 @@ public class Scanner : EditorWindow
 
             runningAlgorithm = false;
             isStreaming = true;
-
-            SceneView.lastActiveSceneView.LookAt(Vector3.zero);
-            SceneView.lastActiveSceneView.Repaint();
         }
     }
 }
