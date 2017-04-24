@@ -1222,7 +1222,8 @@ calls at all.
 ### ICamera Public Members
 The `RealSenseCamera` has three public members. All three of its public 
 members are implementations of the `ICamera` interface's public members 
-They include: `StartCapture()`, `StopCapture()`, and `GetImages()`. 
+They include: `StartCapture()`, `StopCapture()`, `GetImage()`, 
+`SetImage(ColorDepthImage image)`, `Get3DPointFromPixel(int x, int y)`. 
 Each of these public members are described below.
 
 #### StartCapture
@@ -1242,25 +1243,30 @@ all images that have been captured. Image capture will not resume again
 until the `StartCapture` method has been called.
 
 #### GetImage
-Gets the next available image from the camera as a `Bitmap`. 
+Gets the next available image from the camera as a `Texture2D`. 
 If an image is available, it will be returned. Otherwise, the
-function will block if the `Status` member equals `CameraStatus.RUNNING`
+function will block if the `Status` member equals
+`CameraStatus.RUNNING`
 and return the next available image once it becomes available. 
 If the `Status` member equals `CameraStatus.STOPPED`, the 
 method will return `null` to signal that there are no available
 images.
 
-### Concurrency
-The ICamera Interface should be able to return a `Bitmap` image while still 
-capturing data. This will be accomplished by placing captured images into a 
-`ConcurrentQueue<Bitmap>`. When the queue reaches a certain capacity the remaining
-captured images will be written to a disk. As the `ConcurrentQueue<Bitmap>` empties 
-the images will be read from disk and loaded back into the queue. In order to accomplish
-this concurrency, two threads will be needed. One thread will be used to produce
-data. The other thread will belong to the caller of the `GetImage` method and
-will be used to dequeue the next image, by blocking if necessary, and serve it the caller. 
-The only resource shared between the two threads are the `ConcurrentQueue<Bitmap>` which
-will account for synchronization issues between the two.
+#### SetImage
+`SetImage` takes a `ColorDepthImage` as a parameter and stores it
+as the image to be used by the `Get3DPointFromPixel` method.
+The image is stored by the ICamera implementation so that any
+expensive conversion required to convert a points in uvz 
+coordinate space to xyz coordinate space can be performed 
+once by the `SetImage` method and reused multiple times by the
+`Get3DPointFromPixel` method.
+
+#### Get3DPointFromPixel
+Takes pixel coordinates, x and y, as parameters and returns a point
+in xyz coordinate space. If `SetImage` has not yet been called, an 
+exception is thrown. `Get3DPointFromPixel` uses the image 
+received by the `SetImage` method as the basis for the uvz 
+coordinate space.
 
 ## Computer Vision Design
 
