@@ -1393,18 +1393,6 @@ as wide, long, and high as the normal cube used will have a scale of 2 in all di
 block types to be used without having to restrict the user to a specific brand of blocks. The original block's scale will be saved and compared
 to the scanned blocks, allowing the Unity module to scale the stored prefab to whatever it needs to be.
 
-### Object Creator
-
-The object creator is the class that the UI class will feed the processed object data to. This class extends Unity's MonoBehavior and is what makes
-the calls to draw the objects onto the scene. Unity has a method called `Instantiate()` that allows one to instantiate prefabs through a
-script. The Instantiate method has multiple constructors that can be called to load a prefab. The one that will be mainly used in this class
-is:
-
-`public static Object Instantiate(Object original, Vector3 position, Quaternion rotation);`
-
-This instantiation will allow us to set a variable equal to the newly instantiated prefab that is already set to the position and rotation
-necessary. From there the variable can be used to adjust the scale attribute for the newly created GameObject.
-
 # Design Summary
 
 ## Camera Module UML
