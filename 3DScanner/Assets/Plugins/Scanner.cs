@@ -148,10 +148,6 @@ public class Scanner : EditorWindow
         GUILayout.BeginVertical();
         if (GUILayout.Button(leftStreamLabel, GUILayout.Width(640 / 2)))
         {
-            showCool = !showCool;
-            if (showCool)
-                leftStreamLabel = "Cool Stream";
-            else
                 leftStreamLabel = "RGB Stream";
         }
         if (leftStream == null || !isStreaming)
@@ -242,10 +238,46 @@ public class Scanner : EditorWindow
         thing = null;
     }
 
+    Bounds getRenderBounds(GameObject objeto)
+    {
+        Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
+        MeshRenderer render = objeto.GetComponent<MeshRenderer>();
+        if (render != null)
+            return render.bounds;
+        return bounds;
+    }
+
+    Bounds getBounds(GameObject objeto)
+    {
+        Bounds bounds = getRenderBounds(objeto);
+        Bounds b = new Bounds(Vector3.zero, Vector3.zero);
+
+        foreach (var r in objeto.GetComponentsInChildren<MeshRenderer>())
+        {
+            if (bounds == b)
+            {
+                bounds = r.bounds;
+            }
+            else
+            {
+                bounds.Encapsulate(r.bounds);
+            }
+
+        }
+
+        return bounds;
+    }
+
     public static void newObjMat(GameObject input)
     {
         Material mat = input.GetComponent<MeshRenderer>().sharedMaterial;
         input.GetComponent<MeshRenderer>().sharedMaterial = new Material(mat);
+    }
+
+    public static void newObjMesh(GameObject input)
+    {
+        Mesh mat = input.GetComponent<MeshFilter>().sharedMesh;
+        //input.GetComponent<MeshFilter>().sharedMesh = new Mesh(mat);
     }
 
     private void Update()
@@ -276,14 +308,12 @@ public class Scanner : EditorWindow
             var parent = new GameObject() { name = "Scanned Objects"};
             parent.tag = "scanned_group";
             GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            plane.transform.localScale = new Vector3(250, 1, 250);
+            plane.transform.localScale = new Vector3(400, 1, 400);
             plane.transform.parent = parent.transform;
 
             newObjMat(plane);
             plane.GetComponent<Renderer>().sharedMaterial = blackMaterial;
 
-            Vector3 centerVector = new Vector3();
-            bool vFlag = false;
             int i = 0;
             foreach (GameObject p in poseList)
             {
@@ -292,14 +322,7 @@ public class Scanner : EditorWindow
                 Material blueMaterial = new Material(Shader.Find("Standard"));
                 blueMaterial.color = Color.blue;
                 i++;
-                if (!vFlag)
-                {
-                    centerVector = new Vector3(p.transform.position.x,0.0f,p.transform.position.z);
-                    vFlag = true;
-                }
 
-                //thing.transform.rotation = p.transform.rotation;
-                //p.transform.position -= centerVector;
                 p.transform.parent = parent.transform;//grouping spawned objects
 
                 if (p.name == "Cube")
@@ -315,19 +338,18 @@ public class Scanner : EditorWindow
                     p.GetComponent<Renderer>().sharedMaterial = blueMaterial;
                     //p.AddComponent<MeshCollider>(); 
                 }
-                
 
+                
 
             }
 
-            parent.transform.position = new Vector3(0, 0, 0);
 
             algorithm.ClearShapes();
 
             runningAlgorithm = false;
             isStreaming = true;
 
-            SceneView.lastActiveSceneView.LookAt(new Vector3(0, 0, 0));
+            SceneView.lastActiveSceneView.LookAt(Vector3.zero);
             SceneView.lastActiveSceneView.Repaint();
         }
     }
