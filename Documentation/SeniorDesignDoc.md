@@ -1,22 +1,16 @@
 # Executive Summary
 
-The purpose of our 3D scanner for Unity is to provide a useful and novel
-tool for the Unity game engine. This application will be free to use for
-UCF students and potentially added to the Unity Asset Store for use by
-indie game developers. The only similar application that is currently
-available is Intel® RealSense™, which does not offer the 3D scene
-segmentation features to help developers with level creation that we are
-planning.
+The purpose of our project is to create a plugin for the Unity game engine that will allow users to scan blocks using an RGB-D camera and have a digital copy of the blocks appear in the Unity game scene. This application will be free to use for UCF students and potentially added to the Unity Asset Store for use by other game developers. The goal of the project is to make as much progress as we can towards allowing students to scan entire levels of adjacent blocks and awing for occlusion of blocks. In accordance with that goal, our code has been written with the intention of future upgrades and functionality being added. 
 
-The scanner will consist of three major modules, the first of which
-accepts RGB-D images from sensors, like the Microsoft Kinect, and
-preprocesses the data to prepare it for the interpreter. The data
+The scanner consists of three major modules, the first of which
+accepts RGB-D images from sensors, like the Intel RealSense F200, and
+processes the data to prepare it for the interpreter. The data
 interpreter uses this data as input for a computer vision system that
-will run a scene understanding algorithm to detect objects and estimate
-object poses in 3D space. The last module will take the information
+will run a detection algorithm to determine the 3D position and type of the objects. The last module will take the information
 gathered from the computer vision system and transfer this into a format
 that can be ported into Unity. Then this module will render the
 appropriate models in a Unity scene.
+
 
 # Overview
 
