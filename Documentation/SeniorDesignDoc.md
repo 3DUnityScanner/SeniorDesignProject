@@ -1329,7 +1329,7 @@ Using the `ProcessImage` method in the primary `IAlgorithm` interface we will be
 The metadata associated with each detected object will be exported to Unity in a data-structure containing the x translation, y translation, z translation, x rotation, y rotation, z rotation, scale, and the object type according to the pre-existing 3D models. The translation values will be provided according to the estimated center of the observed scene. This information will then be used to create and transform the object in a Unity scene.
 
 ## Unity Design
-
+The Unity UI module is responsible for creating the User Interface of the pluin through a custom window, as well as handling object spawning logic.
 When the user starts up Unity, they will be directed to the base Unity Editor screen which is shown right under. From there, they will have the
 option to go into the Window tab and select our custom screen.
 
@@ -1337,38 +1337,48 @@ option to go into the Window tab and select our custom screen.
 
 ### Custom Window
 
-The design of the Unity module will be centered around 2 different parts. The first part is the UI/central control class which
-will implement and create a new Unity Editor window. This window will contain the button that the user can press to begin the
-plugins function. On initial press of the button, the UI will call on the camera module's interface. It will wait for the camera
-to send images back, which it will then feed to the computer vision interface so that the computer vision module can process
-the images. An example of a simple custom screen and the script in the assets is shown below, without any of the functionality described above.
+The design of the Unity module will be centered around 2 different parts. The first part is the UI/central control which
+will implement and create a new Unity Editor window. The main plugin class, Scanner in our case, derives from Unity's EditorWindow
+class which gives access to various methods to allow for custom editor window creation. It is important to do the following:
+
+`[MenuItem("Window/winName")]`
+
+This needs to be placed before the `public static void ShowWindow()` method which then calls `GetWindow(typeof(Scanner));`.
+The first line of code creates a menu item under the Window menu in Unity and names it winName, in our plugin it's called Scanner.
+The ShowWindow method is what creates the window when the menu item is clicked, it takes in the class type of the window
+which is Scanner in our case.
 
 ![Unity Test Custom Window](Pictures/editorwindow.png "Unity Test Custom Window")
 
 #### UI Features
 
-While the plugin is in different stages of execution, the overall status will be translated into user-friendly terms, outputted as a
-string, and displayed as a label in the window. When the camera starts up, the label will display "Scanning Objects..." and will continue
-displaying that label until the camera software stops sending images back to the UI/Controller class. Once the images stop, the label will
-switch to "Processing Images..." while the computer vision module processes the scanned images into a usable format for the Object Creator.
-The time that it takes the Object Creator to spawn the items on the scene should be negligible enough such that a label is not needed, but
-should the time be noticeable, the label may be switched to "Drawing Scanned Objects" while the Object Creator executes it's task. Once the
-plugin's execution is finished, the UI/Controller will revert back to a ready state to potentially scan one more time. 
+The plugin UI is drawn onto the screen by means of the `void OnGUI()` method that is inherited from EditorWindow. All of the
+UI must be drawn in this method, which is called every time an action is performed on the GUI be it by the user or other processes.
+We use `GUILayout.BeginVertical, GUILayout.EndVertical, GUILayout.BeginHorizontal,` and `GUILayout.EndHorizontal` as organization tags
+similar to divs in html. The UI consists of a dropdown menu that allows users to choose a camera from a list of camera options defined
+at the beginning of the class. The next UI elements are three buttons: the stream button which starts and later stops the camera
+capture, the place objects button which sends the current images to the image analysis module and then populates the scene, and
+the undo button which will undo the last object population that was called.
+
+After the three buttons is the camera elements. First there are two buttons which toggle between the types of streams that users 
+see in either of the two livestream boxes. Currently the RGB Stream button does not toggle since there are only 3 types of 
+streams that we are using. The second button toggles between the Depth Stream and the Processed Stream of the camera. The two 
+livestream areas are instances of `GUILayout.Box` which take in the images being sent from the camera module. On the left is
+the RGB stream and the right toggles.
+
+Underneath the livestream boxes are the Algorithm Settings. These are drawn by calling the IAlgorithm drawSettings() method.
+Depending on the algorithm this could mean different settings and different UI elements. Our specific algorithm spawns three
+different sections. First, the custom models section contains three layers consisting of one checkbox, a file picker, and a scale slider.
+These allow the user to select a color of block, and replace that color with the chosen mesh at a specific scale. After that section
+is the Constants section. It contains three sliders: Background Threshold, Grouping Threshold, and Overall Scaling. All of these pass
+values to the algorithm that will determine how the objects are spawned.
 
 #### Objects to Draw
 
-The processed images will return in the form of a list comprised of type, translation, rotation, and scale. The type refers to the types
-of the specific objects scanned. Our implementation will call for prebuilt assets to be stored in our plugin files as prefabs that are
-base versions of all possible blocks that will be scanned into the Unity project. Should more block shapes be introduced into the algorithm, 
-our sponsors have already agreed to create base models for us to use in Unity. The prebuilt objects that we already have at our disposal are:
+After the algorithm is called with the color and depth images, . The current recognizable shapes that we used are:
 
 * cubes
-* cones
 * cylinders
-* rectangular prisms
-* pyramids
-* bridges
-* wedges/ramps
 
 The Translation refers to the position of the objects with respect to the origin of the world space in the Unity Scene. This attribute will
 determine exactly where the model is rendered in the scene. The current plan is to have a reference measurement which can be converted into
