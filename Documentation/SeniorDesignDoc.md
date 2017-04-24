@@ -1,29 +1,28 @@
 # Executive Summary
 
-The purpose of our project is to create a plugin for the Unity game engine that will allow users to scan blocks using an RGB-D camera and have a digital copy of the blocks appear in the Unity game scene. This application will be free to use for UCF students and potentially added to the Unity Asset Store for use by other game developers. The goal of the project is to make as much progress as we can towards allowing students to scan entire levels of adjacent blocks and awing for occlusion of blocks. In accordance with that goal, our code has been written with the intention of future upgrades and functionality being added. 
+The purpose of our project is to create a plugin for the Unity game engine that will allow users to scan blocks using an RGB-D camera and have a replica of the scene appear in the Unity game scene. This project is sponsored by the UCF Games Research Group. The goal of the project is to create a prototyping tool for video game levels to expedite the current process of manually creating physically-prototyped levels in Unity. Students currently create paper prototypes and manually create each corresponding GameObject in Unity. Our plugin succeeds in being a proof-of-concept for a level-scanning Unity plugin and our code has been written with the intention of future upgrades and functionality being added. 
 
-The scanner consists of three major modules, the first of which
+The scanner is built as a Unity plugin, or package, and coded entirely in C# (targeting .NET 3.5). It consists of three major modules, the first of which
 accepts RGB-D images from sensors, like the Intel RealSense F200, and
 processes the data to prepare it for the interpreter. The data
-interpreter uses this data as input for a computer vision system that
-will run a detection algorithm to determine the 3D position and type of the objects. The last module will take the information
-gathered from the computer vision system and transfer this into a format
+interpreter uses this data as input for a proprietary computer vision system that
+will run a color-based detection algorithm to determine the 3D position and type of the objects. The last module will take the information
+gathered from the computer vision system and transfer this into a format (GameObject)
 that can be ported into Unity. Then this module will render the
-appropriate models in a Unity scene.
+appropriate models in a Unity scene. The user is able to associate a detected color with a custom 3D model, as long as the model is in a Unity-supported format.
 
 
 # Overview
 
 ## Broader Impact
 
-What we are creating is more than just a tool to build prototypes of
-videogame levels. It breaks down many of the barriers of entry to
-videogame development, softens the learning curve of game design in
+What we have created is more than just a tool to build prototypes of
+videogame levels. It is a proof-of-concept for a tool that breaks down many of the barriers of entry to videogame development, softens the learning curve of game design in
 general, and makes game design accessible to a wider audience. One of
 the barriers to video game design is the time required to build a game.
 To build anything of reasonable complexity, a significant investment of
 time is required to both design the level and then implement it. Our
-tool aims to consolidate the design and implement stages into a single
+tool aims to consolidate the design and implementation stages into a single
 step. By doing so designs can be quickly evaluated, modified, and
 revaluated to arrive at the best course of action in as little time as
 possible. This significantly lowers the barriers of entry to small game
@@ -34,14 +33,10 @@ learning curve for learning how to create videogames. The tool
 eliminates the need to learn any new skill to design levels. This allows
 individuals who are interested in learning about game design to complete
 initial projects faster and more quickly evaluate how they feel about
-the field of videogame design in general. Finally, our tool makes game
-design more accessible to those who would otherwise not be able to
-develop videogames via traditional means. By using blocks to design
-levels rather than writing code or using a two-dimensional drag and drop
+the field of videogame design in general. By using blocks to design
+levels rather than writing code or using a drag-and-drop
 interface, people with underdeveloped computer skills can engage in
-videogame design. This means that young children, elderly, and those
-lacking finer motor skills would be able to play levels of their own
-creation.
+videogame design. The modularity and extendability of our plugin allows for future additions to create a fully-fledged level creation toolkit for the Unity game engine.
 
 ## Personal Motivations
 
@@ -746,7 +741,7 @@ We will present brief definitions for most of the terms related to computer visi
 
 We have studied many state-of-the-art computer vision methods for 3D
 scene processing, object detection, object recognition, and model
-alignment. Our goal with this research is to find a method or methods to
+alignment. Our goal with this research was to find a method or methods to
 adapt for our application that will provide a fast, accurate, and robust
 method of processing a 3D scene from our camera and exporting usable
 information to the Unity Game Engine to create a template level layout
@@ -754,12 +749,9 @@ for the user.
 
 We ensured our search was broad and included as many different methods
 as possible to allow for the mitigation of any single method failing or
-not satisfying the needs of the user. All of the following methods will
-require significant refinement and alteration to meet our needs but will
-save us time overall because we will not have to develop a 3D computer
-vision algorithm from scratch.
+not satisfying the needs of the user. 
 
-The heart of the problem that this project faces is pose estimation of a rigid object in a 3D scene with six degrees of freedom. This problem can be described as converting the position of a physical object from its own coordinate system to the camera's coordinate system. The important aspects of an object's rotation are defined as its rotation and translation relative to the total coordinate system.
+The heart of the problem that this project faces is pose estimation of a rigid object in a 3D scene ideally with six degrees of freedom. This problem can be described as converting the position of a physical object from its own coordinate system to the camera's coordinate system. The important aspects of an object's rotation are defined as its rotation and translation relative to the total coordinate system.
 
 Most of these methods provide bounding-box information as output after
 processing. If rotational information is not provided this bounding box
@@ -884,6 +876,24 @@ This dataset includes 600 images, 600 RGB-D-based point clouds, pose information
 
 #### Hinterstoisser *et al.* ACCV Dataset
 This dataset was created for a paper presented at the Asian Conference for Computer Vision (ACCV) by Hinterstoisser *et al.*. This dataset contains 15 videos of 15 different objects with texture-less models for matching. There are corresponding ground truth poses for all scenes and objects. There is sufficient variation in clutter, camera angle, camera tilt, scene scale, and object rotation in the scenes for robust pose estimation testing. Every video is comprised of over 1100 images from varying angles [@hinterstoisser]. This dataset is used to test the method presented in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" and we would like to test our implementation on this dataset to benchmark test our implementation against the one presented by Brachmann *et al* [@brachmann]. 
+
+### Accord.NET Framework
+
+The Accord.NET framework is a machine learning framework written in C# for signal processing, statistics, computer audition, and computer vision applications. Accord.NET extends AForge.NET which is another popular C# machine learning framework, but Accord adds extra scientific computing features. 
+
+The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included [@accord].
+
+ Another useful namespace for this project could be `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation [@accord]. 
+
+![Accord.Math.Integration Classes Provided under the Creative Commons Attribution/Share-Alike License](Pictures/Accord.Math.Integration.png "Accord.Math.Integration Classes Provided under the Creative Commons Attribution/Share-Alike License")
+
+ The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics [@accord].
+
+Accord is made available in the NuGet package manager, making it easily integrated into our Visual Studio project environment.  
+
+
+### Challenges
+After researching and attempting to implement some of the methods mentioned above, our team learned the limitations of our development environment. Unity, allowing for only .NET 3.5 and restricting external DLLs, prevented us from using most libraries and frameworks we required for more cutting-edge methods of pose estimation. This required us to write a proprietary method of object detection and typecasting based on color and contrast that will be detailed later in this document.
 
 ## Unity Game Engine Research
 
@@ -1269,38 +1279,18 @@ received by the `SetImage` method as the basis for the uvz
 coordinate space.
 
 ## Computer Vision Design
+The Image Analysis Module is responsible for analyzing the data acquired by the Camera Module and producing the GameObjects to populate the Unity Scene with. The Image Analysis Module is abstracted by the IAlgorithm interface. By abstracting the analysis through the IAlgorithm interface, future algorithms can be implemented to perform different types of analysis. This coupled with the ICamera interface of the Camera Module, allows for any camera to provide the data for any image analysis that is implemented for the plugin.
+The IAlgorithm interface consists of five method members: DrawSettings, PreviewImage, ProcessImage, GetShapes, and ClearShapes. DrawSettings is called by the Unity Module’s OnGui method and is not only responsible for drawing the user interface which is specific to a specific implementation of the IAlgorithm interface but also saving the values that the user interface is used to capture from the user. PreviewImage is a method which takes a ColorDepthImage as a parameter and returns a Texture2D image. The Texture2D image which is returned, represents intermediate processing performed by the image analysis algorithm in real time. This is presentable to the user so that an ideal positioning and framing of the image can be chosen to be used for the full image processing. ProcessImage is a method which takes a ColorDepthImage as a parameter. The method is responsible for performing the full processing on the image and saving the results. The ProcessImage does not return the final results to allow for algorithms which compile final results from the processing of multiple images. GetShapes is a method which returns an enumeration of GameObjects to be populated into the Unity scene. ClearShapes is a method which resets the state of the algorithm back to its initial state with no images processed and no results yet calculated.
+Our specific implementation of IAlgorithm was the ColorTrackingAlgorithm class. The underlying algorithm works by isolating the blocks within the image from the background/table and mapping each of the distinct blocks to a user chosen GameObject based on the color of the block. Our algorithm assumes that the background/table is relatively monochromatic and that the blocks on the table are red, green, or blue. 
+When ProcessImage is called, first the algorithm determines the color of the background by calculating the average color of the entire image. Then the standard deviation of the average color is calculated. The difference of two colors is calculated as the distance between the average color and a given pixel’s color as if the two colors were three dimensional vectors composed of red, green, and blue components. Using the average color of the image and the standard deviation of the average color, a refined average color is calculated by only considering pixels which fall within a user-specifiable number of standard deviations from the average color. After the refined average color of the image has been calculated, a new version of the image (called the contrast image) is created using only black and white pixels. All the pixels of the original color image which fall within a threshold distance of the refined average color are made white in the contrast image. All pixels from the original color image which fall outside of the threshold distance from the refined average color are made black in the contrast image. Once the contrast image has been created, an iterative flood fill algorithm is used to combine adjacent groups of black pixels into organizations called clumps. Once a clump has been created the average color of the pixels which compose the clump is calculated using the original color image. The clump object, which includes the pixels which compose it as well as the average color is placed into a queue. The table normal is then calculated to determine what angle the camera is viewing the block scene on the table from. To calculate the table normal by sampling 11 random pixels that have been marked as background pixels. One pixel is chosen to be tail of all vectors and the remaining 10 are the heads of the generated vectors. The process produces 10 vectors which are parallel to the table. We then calculate all possible pairing which do not consist of the same two vectors. We calculate the cross product of all such pairings and take their average by summing the cross products and normalizing them.
+When GetShapes is called on the ColorTrackingAlgorithm object, the queue of clumps begins to be dequeued. Each pixel is mapped from uvz coordinates to xyz coordinates to create a three-dimensional point in space. The average position of all the three-dimensional points created from a clump is then calculated. This point is then rotated about the x-axis by the angle between the table normal vector and the vector that represents the perspective of the camera. The final three-dimensional point is then used as the position of the GameObject which will represent the clump and the block that it corresponds to from the image. The dominant color channel of the average color of the clump is then used to determine whether the block was red, green, or blue. A GameObject of the model type which the block color maps to is then created at the calculated average position. A sequence of these blocks is then returned to the caller of the GetShapes method. 
 
-### Accord.NET Framework
-
-The Accord.NET framework is a machine learning framework written in C# for signal processing, statistics, computer audition, and computer vision applications. Accord.NET extends AForge.NET which is another popular C# machine learning framework, but Accord adds extra scientific computing features. 
-
-The libraries available in the Accord.NET framework are divided into three sections: scientific computing, signal and image processing, and support libraries. One primary namespace we will be using is `Accord.MachineLearning` for `DecisionTrees`, `GaussianMixtureModel` and the RANSAC implementation included [@accord].
-
- Another useful namespace for this project is `Accord.Math` for integration techniques among other mathematical implementations that will prove useful for calculating loss minimization, refining the RANSAC pose estimation, and any other mathematical equations we incorporate into our implementation [@accord]. 
-
-![Accord.Math.Integration Classes Provided under the Creative Commons Attribution/Share-Alike License](Pictures/Accord.Math.Integration.png "Accord.Math.Integration Classes Provided under the Creative Commons Attribution/Share-Alike License")
-
- The `Accord.Neuro` is useful for any neural network structures. The visualization features of Accord can be used during testing, benchmarking, and development of our implementation to better show our progress and metrics [@accord].
-
-Accord is made available in the NuGet package manager, making it easily integrated into our Visual Studio project environment.  
 
 ### Input from Unity Interface
 
-Using the `putImage` method in the primary `CVInterface` class we will be importing images captured by the Intel® RealSense™ camera after it is passed through the Unity interface. These images will be read in and stored using the `System.Drawing.Bitmap` format. This format's pixel structure can be altered depending on the needs of the computer vision implementation. 
+Using the `putImage` method in the primary `IAlgorithm` interface we will be importing images captured by the Intel® RealSense™ camera after it is passed through the Unity interface. These images will be read in and stored using the `System.Drawing.Bitmap` format. This format's pixel structure can be altered depending on the needs of the computer vision implementation. 
 
-### Random Forest Implementation
 
-Our implementation of the auto-context random forest suggested in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" will be built using the `Accord.MachineLearning` namespace. More specifically the structure will be built with the  `RandomForest`, `DecisionTree`, and `DecisionNode` classes. The random forest will first use the built-in learning functions for training and later be modified to more closely resemble the training of Brachmann *et al.* [@brachmann;@accord]. 
-
-### RANSAC Implementation
-
-Our random sampling consensus (RANSAC) implementation will be built to approximately mimic the implementation explained in "Uncertainty-Driven 6D Pose Estimation of Objects and Scenes from a Single RGB Image" [@brachmann]. The `RANSAC<TModel>` class in the Accord.NET framework will be utilized to create our implementation [@accord]. This implementation will be modified to run parallel hypothesis checks to follow the structure of preemptive RANSAC. 
-
-Our instance of RANSAC will have a set of Hypotheses which have the pose information stored. During processing these will be culled, refined, and added to as necessary.
-
-### Pose Refinement Implementation
-
-We would like to implement a similar method to Brachmann *et al.* to refine the poses gathered by RANSAC [@brachmann]. Each Hypothesis in the RANSAC instance will have a refinement method called `refine()` which will be able to improve the pose estimation if that hypothesis is chosen for refinement. The poses chosen for refinement will be handled within our RANSAC implementation.
 
 ### Output to the Unity Interface
 
