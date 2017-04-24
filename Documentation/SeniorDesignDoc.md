@@ -1288,7 +1288,7 @@ When GetShapes is called on the ColorTrackingAlgorithm object, the queue of clum
 
 ### Input from Unity Interface
 
-Using the `putImage` method in the primary `IAlgorithm` interface we will be importing images captured by the Intel® RealSense™ camera after it is passed through the Unity interface. These images will be read in and stored using the `System.Drawing.Bitmap` format. This format's pixel structure can be altered depending on the needs of the computer vision implementation. 
+Using the `ProcessImage` method in the primary `IAlgorithm` interface we will be importing images captured by the Intel® RealSense™ camera after it is passed through the Unity interface. These images will be read in and stored using the `Texture2D` format. This format's pixel structure can be altered depending on the needs of the computer vision implementation. 
 
 
 
@@ -1503,15 +1503,15 @@ generate `Image` objects from the Intel® RealSense™ SDK as input for the
 * **TestRSImage2** - Simple white background with black text in the foreground
 * **TestRSImage3** - Picture of the table with blocks
 
-The test would make sure that the `Bitmap` (denoted as ImageGeneratingBitmap#)
+The test would make sure that the `Texture2D` (denoted as ImageGeneratingTexture#)
 that was used to produce the Intel® RealSense™ SDK `Image` objects (denoted as TestRSImage#) 
 are what the `ConvertImage` method produces.
 
 |        Input |                 Output | Starting Conditions | Ending Conditions |
 |--------------|------------------------|---------------------|-------------------|
-| TestRSImage1 | ImageGeneratingBitmap1 |                 N/A |               N/A |
-| TestRSImage2 | ImageGeneratingBitmap2 |                 N/A |               N/A |
-| TestRSImage3 | ImageGeneratingBitmap3 |                 N/A |               N/A |
+| TestRSImage1 | ImageGeneratingTexture1 |                 N/A |               N/A |
+| TestRSImage2 | ImageGeneratingTexture2 |                 N/A |               N/A |
+| TestRSImage3 | ImageGeneratingTexture3 |                 N/A |               N/A |
 
 ## Computer Vision Testing
 
@@ -1590,7 +1590,7 @@ The first set of computer vision tests will begin in late December 2016 and cont
 
 ## Integration Testing
 
-As mentioned in the above test cases, by January 2017, when we have access to the necessary hardware for testing, the camera interface will be able to output an image in a bitmap format to the Unity interface. The Unity interface will then receive the input image data from the camera interface and send it to the computer vision interface. The computer vision interface will then output placeholder information into the Unity interface, completing the flow of data in our application. This will allow us to begin integration tests.
+As mentioned in the above test cases, by January 2017, when we have access to the necessary hardware for testing, the camera interface will be able to output an image in the `Texture2D` format to the Unity interface. The Unity interface will then receive the input image data from the camera interface and send it to the computer vision interface. The computer vision interface will then output placeholder information into the Unity interface, completing the flow of data in our application. This will allow us to begin integration tests.
 
 # Budget and Resources Provided by Sponsors
 
