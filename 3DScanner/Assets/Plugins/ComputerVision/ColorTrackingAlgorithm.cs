@@ -76,7 +76,7 @@ namespace UnityScanner3D.ComputerVision
                             blueMesh.transform.position = averagePoint;
                             blueMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
                             blueMesh.transform.localScale *= BLUESCALE * OBJSCALE;
-                            //blueMesh.AddComponent<MeshFilter>();
+                            blueMesh.AddComponent<MeshFilter>();
                             Bounds b = getBounds(blueMesh);
                             Vector3 lowerCenter = new Vector3(0, b.center.y - b.extents.y, 0);
                             blueMesh.transform.position = averagePoint - lowerCenter;
@@ -104,7 +104,7 @@ namespace UnityScanner3D.ComputerVision
                             redMesh.transform.position = averagePoint;
                             redMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
                             redMesh.transform.localScale *= REDSCALE * OBJSCALE;
-                            //redMesh.AddComponent<MeshFilter>();
+                            redMesh.AddComponent<MeshFilter>();
                             Bounds b = getBounds(redMesh);
                             Vector3 lowerCenter = new Vector3(0, b.center.y - b.extents.y, 0);
                             redMesh.transform.position = averagePoint - lowerCenter;
@@ -132,7 +132,7 @@ namespace UnityScanner3D.ComputerVision
                             greenMesh.transform.position = averagePoint;
                             greenMesh.transform.rotation = new Quaternion(0, 0, 0, 0);
                             greenMesh.transform.localScale *= GREENSCALE * OBJSCALE;
-                            //greenMesh.AddComponent<MeshFilter>();
+                            greenMesh.AddComponent<MeshFilter>();
                             Bounds b = getBounds(greenMesh);
                             Vector3 lowerCenter = new Vector3(0, b.center.y - b.extents.y, 0);
                             greenMesh.transform.position = averagePoint - lowerCenter;
