@@ -35,7 +35,7 @@ public class Scanner : EditorWindow
     private string rightStreamLabel = "Depth Stream";
     string[] cameraOptions = new string[]
     {
-        "Dummy Camera",
+        "Test Camera",
         "Intel F200",
         //"Kinect",
     };
@@ -43,7 +43,7 @@ public class Scanner : EditorWindow
     //A lookup that maps camera names to classes
     Dictionary<string, Type> cameraNameLookup = new Dictionary<string, Type>
     {
-        { "Dummy Camera", typeof(DummyCamera) },
+        { "Test Camera", typeof(DummyCamera) },
         { "Intel F200", typeof(IntelCamera) },
         //{ "Kinect", null },
     };
@@ -93,7 +93,7 @@ public class Scanner : EditorWindow
 
         //We interrupt this gross UI stuff to bring you some logic
         if (undoButton){
-            while (GameObject.FindWithTag("scanned_group") != null)
+            while (GameObject.FindGameObjectWithTag("scanned_group") != null)
             { clearObjectsInScene(); }
             
         }
@@ -233,7 +233,7 @@ public class Scanner : EditorWindow
 
     private void clearObjectsInScene()
     {
-        GameObject thing = GameObject.FindWithTag("scanned_group");
+        GameObject thing = GameObject.FindGameObjectWithTag("scanned_group");
         DestroyImmediate(thing);
         thing = null;
     }

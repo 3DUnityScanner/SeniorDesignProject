@@ -76,60 +76,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Accord.Audition">
-      <HintPath>Assets\Plugins\Libs\Accord.Audition.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord">
-      <HintPath>Assets\Plugins\Libs\Accord.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Fuzzy">
-      <HintPath>Assets\Plugins\Libs\Accord.Fuzzy.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Genetic">
-      <HintPath>Assets\Plugins\Libs\Accord.Genetic.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Imaging">
-      <HintPath>Assets\Plugins\Libs\Accord.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.IO">
-      <HintPath>Assets\Plugins\Libs\Accord.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.MachineLearning">
-      <HintPath>Assets\Plugins\Libs\Accord.MachineLearning.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math.Core">
-      <HintPath>Assets\Plugins\Libs\Accord.Math.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math">
-      <HintPath>Assets\Plugins\Libs\Accord.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Neuro">
-      <HintPath>Assets\Plugins\Libs\Accord.Neuro.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Statistics">
-      <HintPath>Assets\Plugins\Libs\Accord.Statistics.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video.DirectShow">
-      <HintPath>Assets\Plugins\Libs\Accord.Video.DirectShow.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video">
-      <HintPath>Assets\Plugins\Libs\Accord.Video.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video.Kinect">
-      <HintPath>Assets\Plugins\Libs\Accord.Video.Kinect.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video.VFW">
-      <HintPath>Assets\Plugins\Libs\Accord.Video.VFW.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Video.Ximea">
-      <HintPath>Assets\Plugins\Libs\Accord.Video.Ximea.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Vision">
-      <HintPath>Assets\Plugins\Libs\Accord.Vision.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>Assets\Plugins\Libs\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data">
       <HintPath>Assets\Plugins\Libs\System.Data.dll</HintPath>
     </Reference>
@@ -145,8 +91,11 @@
     <Compile Include="Assets\Plugins\CameraIO\DummyCamera.cs" />
     <Compile Include="Assets\Plugins\CameraIO\ICamera.cs" />
     <Compile Include="Assets\Plugins\CameraIO\IntelCamera.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\Clump.cs" />
     <Compile Include="Assets\Plugins\ComputerVision\ColorTrackingAlgorithm.cs" />
     <Compile Include="Assets\Plugins\ComputerVision\IAlgorithm.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\ImageUtils.cs" />
+    <Compile Include="Assets\Plugins\ComputerVision\Pixel.cs" />
     <Compile Include="Assets\Plugins\ComputerVision\Shape.cs" />
     <Compile Include="Assets\Plugins\Scanner.cs" />
   </ItemGroup>

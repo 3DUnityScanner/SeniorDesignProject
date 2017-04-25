@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Intel.RealSense;
 
 namespace UnityScanner3D.CameraIO
 {
@@ -9,7 +10,7 @@ namespace UnityScanner3D.CameraIO
 
         public Vector3 Get3DPointFromPixel(int x, int y)
         {
-            throw new NotImplementedException();
+            return new Vector3(0,0,0);
         }
 
         public ColorDepthImage GetImage()
@@ -50,7 +51,7 @@ namespace UnityScanner3D.CameraIO
 
         public void SetImage(ColorDepthImage image)
         {
-            throw new NotImplementedException();
+            return;
         }
 
         public void StartCapture()
